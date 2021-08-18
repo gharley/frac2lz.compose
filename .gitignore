@@ -1,0 +1,14 @@
+.gradle
+build
+classes
+out
+META-INF
+*.f2z
+*.2lz
+/*.png
+*.log
+conf/
+more.zip
+Frac2lz.zip
+/frac2lz.xml
+wrapper/
