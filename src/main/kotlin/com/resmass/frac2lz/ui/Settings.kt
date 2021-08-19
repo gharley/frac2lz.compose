@@ -5,7 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 class Settings {
-    val default = "Frac2lz"
+    private val default = "Frac2lz"
     var title by mutableStateOf(default)
         private set
 
