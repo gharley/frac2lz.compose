@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 
+import com.resmass.frac2lz.common.LocalAppResources
 import com.resmass.frac2lz.ui.components.FractalImage
 import com.resmass.frac2lz.ui.components.StatusBar
 
@@ -21,8 +22,7 @@ import com.resmass.frac2lz.ui.components.StatusBar
 @Composable
 fun MainWindow(state: Frac2lzApplicationState, onClose: () -> Unit) {
     MaterialTheme {
-        Window(onCloseRequest = onClose, title = state.settings.title) {
-//            Window(onCloseRequest = onClose, title = state.settings.title, icon = painterResource(classLoader.getResource("resources/frac2lz32.png").toString())) {
+        Window(onCloseRequest = onClose, title = state.settings.title, icon = LocalAppResources.current.icon) {
             window.placement = WindowPlacement.Maximized
             MainMenu(state)
             Box(Modifier.fillMaxSize()) {
