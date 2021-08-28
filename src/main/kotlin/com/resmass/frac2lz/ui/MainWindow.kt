@@ -22,7 +22,7 @@ import com.resmass.frac2lz.ui.components.StatusBar
 @Composable
 fun MainWindow(state: Frac2lzApplicationState, onClose: () -> Unit) {
     MaterialTheme {
-        Window(onCloseRequest = onClose, title = state.settings.title, icon = LocalAppResources.current.icon) {
+        Window(onCloseRequest = onClose, title = state.settings.title, icon = LocalAppResources.current.resources.icon32) {
             window.placement = WindowPlacement.Maximized
             MainMenu(state)
             Box(Modifier.fillMaxSize()) {
