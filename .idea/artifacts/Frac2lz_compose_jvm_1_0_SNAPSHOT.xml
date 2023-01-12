@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Frac2lz_compose-jvm-1.0-SNAPSHOT">
+    <output-path>$PROJECT_DIR$/build/libs</output-path>
+    <root id="archive" name="Frac2lz_compose-jvm-1.0-SNAPSHOT.jar">
+      <element id="module-output" name="Frac2lz_compose.jvmMain" />
+    </root>
+  </artifact>
+</component>
