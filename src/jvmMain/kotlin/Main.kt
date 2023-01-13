@@ -1,4 +1,4 @@
-import action.AppTitle
+import action.*
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.desktop.ui.tooling.preview.Preview
@@ -25,7 +25,12 @@ fun App() {
     MaterialTheme {
         Button(onClick = {
             text = "Hello, Desktop!"
+            EventBus.listen(HaveProperties::class.java).subscribe {
+                it.props["does so"] = "work"
+            }
             EventBus.publish(AppTitle("working"))
+            EventBus.publish(SetProperty("working", "true"))
+            EventBus.publish(GetProperties())
         }) {
             Text(text)
         }
@@ -37,7 +42,7 @@ fun main() = application {
     val appTitle = remember { mutableStateOf(appName) }
 
     val propFile = "./conf/frac2lz.properties"
-    val properties = Properties()
+    val properties = remember{ Properties() }
 
     fun loadProperties(){
         val file = File(propFile)
@@ -56,13 +61,22 @@ fun main() = application {
         }
     }
 
+    EventBus.listen(GetProperties::class.java).subscribe {
+        EventBus.publish(HaveProperties(properties))
+    }
+
+    EventBus.listen(SetProperty::class.java).subscribe {
+        properties[it.key] = it.value
+    }
+
     fun exitApplication(){
         val file = File(propFile)
 
         if (!file.isFile) {
             file.createNewFile()
         }
-        properties.store(FileOutputStream(propFile, true), "Frac2lz Properties")
+
+        properties.store(FileOutputStream(propFile), "Frac2lz Properties")
         exitProcess(0)
     }
 
