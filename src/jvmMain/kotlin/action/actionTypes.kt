@@ -1,0 +1,16 @@
+package action
+
+enum class CalculateAction {
+    CALCULATE_BASE, RECALCULATE, REFINE, REFRESH, SHOW_HISTOGRAM
+}
+enum class FileAction {
+    OPEN_FRACTAL, OPEN_JSON, OPEN_PALETTE, SAVE_FRACTAL, SAVE_JSON, SAVE_IMAGE, SAVE_PALETTE
+}
+
+enum class PaletteAction {
+    ANIMATE, DEFAULT, RANDOM, SMOOTH, INTERPOLATE
+}
+
+enum class UIAction {
+    INIT, CHANGE
+}
