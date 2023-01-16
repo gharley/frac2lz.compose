@@ -125,12 +125,12 @@ class Palette(initSize: Int = 64) {
         buildPalette(grayScaleColor)
     }
 
-    fun buildRandomPalette() {
+    private fun buildRandomPalette() {
         paletteType = PaletteType.RANDOM
         buildPalette(randomColor)
     }
 
-    fun buildSmoothPalette() {
+    private fun buildSmoothPalette() {
         paletteType = PaletteType.SMOOTH
         buildPalette(smoothColor)
     }
@@ -178,16 +178,11 @@ class Palette(initSize: Int = 64) {
     }
 
     private fun fireUpdate() {
-//        try {
-//            if (Slider.isMouseDown) return  // Avoid updating with every Slider move
-//        } catch (_: Throwable) {
-//        }
-
         EventBus.publish(NewPaletteEvent(this))
     }
 
-    private var animating: Boolean = false
-
+//    private var animating: Boolean = false
+//
 //    fun startAnimation(image: Canvas) {
 //        if (animating) stopAnimation()
 //        else {

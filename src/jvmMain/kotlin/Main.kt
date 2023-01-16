@@ -13,9 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import components.PaletteBar
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -137,6 +139,7 @@ fun App() {
                         content = { Image(painterResource("animate32.png"), "") }
                     )
                 }
+                PaletteBar(3840.dp, Palette(), onPaletteTypeChange = {})
             }
         }
     }
