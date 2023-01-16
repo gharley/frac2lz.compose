@@ -1,13 +1,13 @@
-import action.FractalPointData
-import action.NewPaletteEvent
-import action.UIAction
-import action.UIEvent
+import action.*
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.util.*
 import javax.swing.event.ChangeListener
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.sin
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 class Palette(initSize: Int = 64) {
 //    class RotationTimer : AnimationTimer() {
@@ -23,14 +23,14 @@ class Palette(initSize: Int = 64) {
 //        fun initialize(image: Canvas, palette: Palette) {
 //            this.image = image
 //            this.palette = palette
-//            interval = (nanosecondsPerSecond / palette.size.value * 2)
+//            interval = (nanosecondsPerSecond / palette.size * 2)
 //            effect = ColorAdjust()
 //
 //            if (palette.paletteType == PaletteType.GRAY_SCALE) {
 //                effect.contrast = -1.0 / 120
 //            } else {
-//                effect.hue = -1.0 / 120//palette.size.value
-//                effect.saturation = 1.0 / 120//palette.size.value
+//                effect.hue = -1.0 / 120//palette.size
+//                effect.saturation = 1.0 / 120//palette.size
 //            }
 //        }
 //
@@ -45,30 +45,50 @@ class Palette(initSize: Int = 64) {
         GRAY_SCALE, RANDOM, SMOOTH
     }
 
-//    private val rotationTimer: RotationTimer = RotationTimer()
+    //    private val rotationTimer: RotationTimer = RotationTimer()
     var paletteType = PaletteType.GRAY_SCALE
         private set
 
     internal var colors = Array(initSize) { Color32() }
 
-    val size = SimpleIntegerProperty(initSize)
 
-    var getColorFromFractal = SimpleBooleanProperty(false)
-    var useSecondarySmoothing = SimpleBooleanProperty(false)
-    var colorRange = SimpleIntegerProperty(1)
-    var refineRange = SimpleIntegerProperty(0)
+    private class Delegate<T>(private var value: T) {
+        operator fun getValue(palette: Palette, property: KProperty<*>): T {
+            return value
+        }
+
+        operator fun setValue(palette: Palette, property: KProperty<*>, t: T) {
+            if (value == t) return
+            value = t
+
+            if (property.name == "size") {
+                when (palette.paletteType) {
+                    PaletteType.GRAY_SCALE -> palette.buildPalette(palette.grayScaleColor)
+                    PaletteType.RANDOM -> palette.buildPalette(palette.randomColor)
+                    PaletteType.SMOOTH -> palette.buildPalette(palette.smoothColor)
+                }
+            }
+        }
+    }
+
+    var size: Int by Delegate(initSize)
+    var getColorFromFractal: Boolean by Delegate(false)
+    var useSecondarySmoothing: Boolean by Delegate(false)
+    var colorRange: Int by Delegate(1)
+    var refineRange: Int by Delegate(0)
 
     private val grayScaleColor: (Int) -> Color32 = {
-        val value = (it + 1) / size.value.toDouble()
+        val value = (it + 1) / size.toFloat()
 
         Color32(value, value, value)
     }
-    private val randomColor: (Int) -> Color32 = { Color32(Math.random().toFloat(), Math.random().toFloat(), Math.random().toFloat()) }
+    private val randomColor: (Int) -> Color32 =
+        { Color32(Math.random().toFloat(), Math.random().toFloat(), Math.random().toFloat()) }
     private val smoothColor: (Int) -> Color32 = {
         Color32(
-            ((sin(0.016 * it / size.value + 4) * 230 + 25) % 1.0).toFloat(),
-            ((sin(0.013 * it / size.value + 2) * 230 + 25) % 1.0).toFloat(),
-            ((sin(0.01 * it / size.value + 1) * 230 + 25) % 1.0).toFloat()
+            ((sin(0.016 * it / size + 4) * 230 + 25) % 1.0).toFloat(),
+            ((sin(0.013 * it / size + 2) * 230 + 25) % 1.0).toFloat(),
+            ((sin(0.01 * it / size + 1) * 230 + 25) % 1.0).toFloat()
         )
     }
 
@@ -77,24 +97,23 @@ class Palette(initSize: Int = 64) {
             if (it.action == UIAction.CHANGE) fireUpdate()
         }
 
-//        val changeListener = ChangeListener<Number> { _, oldValue, newValue ->
-//            if (oldValue == newValue) return@ChangeListener
-//
-//            when (paletteType) {
-//                PaletteType.GRAY_SCALE -> buildPalette(grayScaleColor)
-//                PaletteType.RANDOM -> buildPalette(randomColor)
-//                PaletteType.SMOOTH -> buildPalette(smoothColor)
-//            }
-//        }
-//
-//        size.addListener(changeListener)
+        EventBus.listen(PaletteEvent::class.java).subscribe {
+            when (it.action) {
+//            PaletteAction.ANIMATE -> startAnimation(fractalImage.canvas)
+                PaletteAction.DEFAULT -> buildDefaultPalette()
+                PaletteAction.RANDOM -> buildRandomPalette()
+                PaletteAction.SMOOTH -> buildSmoothPalette()
+                else -> {
+                }
+            }
+        }
 
-        size.value = initSize
+        size = initSize
         buildDefaultPalette()
     }
 
     private fun buildPalette(colorFunc: (Int) -> Color32) {
-        colors = Array(size.value) { idx ->
+        colors = Array(size) { idx ->
             colorFunc(idx)
         }
 
@@ -119,7 +138,7 @@ class Palette(initSize: Int = 64) {
     fun color(value: FractalPointData): Color32 {
         if (value.iterations == -1L) return Color32()
 
-        if (getColorFromFractal.value && !(value.z.real == -10.0 || value.z.imaginary == -10.0)) return colorFromComplex(
+        if (getColorFromFractal && !(value.z.real == -10.0 || value.z.imaginary == -10.0)) return colorFromComplex(
             value
         )
 
@@ -127,7 +146,7 @@ class Palette(initSize: Int = 64) {
     }
 
     fun indexFromIterations(iterations: Long): Int {
-        return ((iterations / colorRange.value) % colors.size).toInt()
+        return ((iterations / colorRange) % colors.size).toInt()
     }
 
     // Thanks to Rod Stephens - http://csharphelper.com/blog/2014/07/draw-a-mandelbrot-set-fractal-with-smoothly-shaded-colors-in-c/
@@ -137,18 +156,18 @@ class Palette(initSize: Int = 64) {
         if (value.iterations == -1L) return Color32()
 
         var z = value.z
-        for (idx in 0 until refineRange.value) {
+        for (idx in 0 until refineRange) {
             z = z * z + value.zStart
         }
 
         var mu = abs(value.iterations + 1 - ln(ln(z.hypotenuse())) / logEscape)
 
-        if (useSecondarySmoothing.value) mu /= (value.maxIterations / colors.size.toDouble())
+        if (useSecondarySmoothing) mu /= (value.maxIterations / colors.size.toDouble())
 
         var clr1 = mu.toInt()
         val t2 = mu - clr1
         val t1 = 1 - t2
-        clr1 = (clr1 / colorRange.value) % colors.size
+        clr1 = (clr1 / colorRange) % colors.size
         val clr2 = (clr1 + 1) % colors.size
 
         val r = ((colors[clr1].red * t1 + colors[clr2].red * t2)).toFloat()
@@ -159,10 +178,10 @@ class Palette(initSize: Int = 64) {
     }
 
     private fun fireUpdate() {
-        try {
-            if (Slider.isMouseDown) return  // Avoid updating with every Slider move
-        } catch (_: Throwable) {
-        }
+//        try {
+//            if (Slider.isMouseDown) return  // Avoid updating with every Slider move
+//        } catch (_: Throwable) {
+//        }
 
         EventBus.publish(NewPaletteEvent(this))
     }
@@ -185,8 +204,8 @@ class Palette(initSize: Int = 64) {
 
     fun readObject(stream: ObjectInputStream) {
         try {
-            size.value = stream.readInt()
-            colorRange.value = stream.readInt()
+            size = stream.readInt()
+            colorRange = stream.readInt()
             @Suppress("UNCHECKED_CAST")
             colors = stream.readObject() as Array<Color32>
 
@@ -196,8 +215,9 @@ class Palette(initSize: Int = 64) {
     }
 
     fun writeObject(stream: ObjectOutputStream) {
-        stream.writeInt(size.value)
-        stream.writeInt(colorRange.value)
+        stream.writeInt(size)
+        stream.writeInt(colorRange)
         stream.writeObject(colors)
     }
 }
+

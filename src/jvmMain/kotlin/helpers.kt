@@ -10,6 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
+import java.util.Properties
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 @Composable
 fun <T> AsyncImage(

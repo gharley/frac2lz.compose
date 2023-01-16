@@ -39,6 +39,8 @@ fun App() {
 
             properties.load(stream)
         }
+        var palette = Palette()
+        palette.size = 128
     }
 
     EventBus.listen(AppTitle::class.java).subscribe {
