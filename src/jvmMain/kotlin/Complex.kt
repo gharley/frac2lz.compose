@@ -1,3 +1,5 @@
+import kotlin.math.sqrt
+
 /***
  * A class for performing complex number math
  *
@@ -32,6 +34,6 @@ class Complex(val real: Double, val imaginary: Double) {
     }
 
     private fun hypotenuse(sidesSquared: Double): Double {
-        return Math.sqrt(sidesSquared)
+        return sqrt(sidesSquared)
     }
 }

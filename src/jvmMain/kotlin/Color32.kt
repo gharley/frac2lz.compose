@@ -5,12 +5,12 @@ import kotlin.math.abs
 class Color32(var red: Float, var green: Float, var blue: Float, var alpha: Float = 1.0f) : Serializable {
     constructor() : this(0.0f, 0.0f, 0.0f)
 
-    companion object{
+    companion object {
 //        fun bgraFromRgb(red: Double, green: Double, blue: Double) : Int{
 //            return (0xff + ((red * 255).toByte() * 0x100) + ((green * 255).toByte() * 0x10000) + ((blue * 255).toByte() * 0x1000000))
 //        }
 
-        fun fromColor(color: Color) : Color32{
+        fun fromColor(color: Color): Color32 {
             return Color32(color.red, color.green, color.blue, color.alpha)
         }
     }
@@ -19,7 +19,7 @@ class Color32(var red: Float, var green: Float, var blue: Float, var alpha: Floa
         return Color(abs(red), abs(green), abs(blue), alpha)
     }
 
-    fun toByteValue(value: Double): Byte{
+    fun toByteValue(value: Double): Byte {
         return (value * 255).toInt().toByte()
     }
 }
