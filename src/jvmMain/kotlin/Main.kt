@@ -1,9 +1,8 @@
 import action.*
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.MenuBar
 import androidx.compose.ui.window.Window
@@ -54,6 +54,12 @@ fun App() {
 
     EventBus.listen(SetProperty::class.java).subscribe {
         properties[it.key] = it.value
+    }
+
+    EventBus.listen(Any::class.java).subscribe {
+        if (it is ActionEvent){
+            EventBus.publish(SetProperty(it.action.toString(), "true"))
+        }
     }
 
     fun exitApplication() {
@@ -103,16 +109,32 @@ fun App() {
                     Item("Show Histogram", onClick = {EventBus.publish(CalculateEvent(CalculateAction.SHOW_HISTOGRAM)) })
                 }
             }
-            Button(onClick = {
-                text = "Hello, Desktop!"
-                EventBus.listen(HaveProperties::class.java).subscribe {
-                    it.props["does so"] = "work"
+            Column{
+                Button(onClick = {
+                    text = "Hello, Desktop!"
+                    EventBus.listen(HaveProperties::class.java).subscribe {
+                        it.props["does so"] = "work"
+                    }
+                    EventBus.publish(AppTitle("working"))
+                    EventBus.publish(SetProperty("working", "true"))
+                    EventBus.publish(GetProperties())
+                }) {
+                    Text(text)
                 }
-                EventBus.publish(AppTitle("working"))
-                EventBus.publish(SetProperty("working", "true"))
-                EventBus.publish(GetProperties())
-            }) {
-                Text(text)
+                Row {
+                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
+                        content = { Image(painterResource("random32.png"), "", contentScale = ContentScale.FillBounds) }
+                    )
+                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
+                        content = { Image(painterResource("smooth32.png"), "") }
+                    )
+                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
+                        content = { Image(painterResource("default32.png"), "Grayscale Palette") }
+                    )
+                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.ANIMATE)) },
+                        content = { Image(painterResource("animate32.png"), "") }
+                    )
+                }
             }
         }
     }
