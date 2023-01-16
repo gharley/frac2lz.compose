@@ -1,17 +1,10 @@
 import action.*
-
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.MenuBar
@@ -21,7 +14,7 @@ import components.PaletteBar
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.util.Properties
+import java.util.*
 import kotlin.system.exitProcess
 
 @Composable
@@ -41,8 +34,6 @@ fun App() {
 
             properties.load(stream)
         }
-        var palette = Palette()
-        palette.size = 128
     }
 
     EventBus.listen(AppTitle::class.java).subscribe {
@@ -61,7 +52,7 @@ fun App() {
     }
 
     EventBus.listen(Any::class.java).subscribe {
-        if (it is ActionEvent){
+        if (it is ActionEvent) {
             EventBus.publish(SetProperty(it.action.toString(), "true"))
         }
     }
@@ -86,7 +77,7 @@ fun App() {
         var text by remember { mutableStateOf("Hello, World!") }
 
         MaterialTheme {
-            MenuBar() {
+            MenuBar {
                 Menu("File") {
                     Item("Open Fractal", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_FRACTAL)) })
                     Item("Open JSON file", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_JSON)) })
@@ -103,17 +94,21 @@ fun App() {
                     Item("Exit", onClick = { exitProcess(0) })
                 }
                 Menu("Fractal") {
-                    Item("Calculate Base Fractal", onClick = {EventBus.publish(CalculateEvent(CalculateAction.CALCULATE_BASE)) })
+                    Item(
+                        "Calculate Base Fractal",
+                        onClick = { EventBus.publish(CalculateEvent(CalculateAction.CALCULATE_BASE)) })
                     Separator()
-                    Item("Recalculate", onClick = {EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE)) })
-                    Item("Refine", onClick = {EventBus.publish(CalculateEvent(CalculateAction.REFINE)) })
+                    Item("Recalculate", onClick = { EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE)) })
+                    Item("Refine", onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFINE)) })
                     Separator()
-                    Item("Refresh Image", onClick = {EventBus.publish(CalculateEvent(CalculateAction.REFRESH)) })
+                    Item("Refresh Image", onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFRESH)) })
                     Separator()
-                    Item("Show Histogram", onClick = {EventBus.publish(CalculateEvent(CalculateAction.SHOW_HISTOGRAM)) })
+                    Item(
+                        "Show Histogram",
+                        onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_HISTOGRAM)) })
                 }
             }
-            Column{
+            Column {
                 Button(onClick = {
                     text = "Hello, Desktop!"
                     EventBus.listen(HaveProperties::class.java).subscribe {
@@ -125,21 +120,7 @@ fun App() {
                 }) {
                     Text(text)
                 }
-                Row {
-                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
-                        content = { Image(painterResource("random32.png"), "", contentScale = ContentScale.FillBounds) }
-                    )
-                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
-                        content = { Image(painterResource("smooth32.png"), "") }
-                    )
-                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
-                        content = { Image(painterResource("default32.png"), "Grayscale Palette") }
-                    )
-                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.ANIMATE)) },
-                        content = { Image(painterResource("animate32.png"), "") }
-                    )
-                }
-                PaletteBar(3840.dp, Palette(), onPaletteTypeChange = {})
+                PaletteBar(3840.dp, Palette())
             }
         }
     }

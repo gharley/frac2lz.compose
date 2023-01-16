@@ -3,30 +3,27 @@ package components
 import EventBus
 import Palette
 import action.NewPaletteEvent
+import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun PaletteCanvas(pal: Palette) {
-    var palette:Palette = remember { pal }
+    var palette: Palette by remember { mutableStateOf(pal) }
 
-    EventBus.listen(NewPaletteEvent::class.java).subscribe(){
+    EventBus.listen(NewPaletteEvent::class.java).subscribe {
         palette = it.palette
     }
 
@@ -50,29 +47,50 @@ fun PaletteCanvas(pal: Palette) {
 }
 
 @Composable
-fun PaletteBar(width: Dp, palette: Palette, onPaletteTypeChange: (paletteType: Palette.PaletteType) -> Unit) {
+fun PaletteBar(width: Dp, palette: Palette) {
 //    val resources = LocalAppResources.current.resources
+    val iconScale = 4.0f
 
     Surface(modifier = Modifier.width(width), elevation = 5.dp) {
-        Row {
+        Row(Modifier.height(48.dp)) {
             Column {
-                IconButton(onClick = { onPaletteTypeChange(Palette.PaletteType.GRAY_SCALE) }) {
-                    Icon(painterResource("default32.png"), "Default Palette", tint = Color.Unspecified)
+                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) }) {
+                    Icon(
+                        painterResource("random32.png"),
+                        "Random Palette",
+                        Modifier.scale(iconScale),
+                        Color.Unspecified
+                    )
                 }
             }
             Column {
-                IconButton(onClick = { onPaletteTypeChange(Palette.PaletteType.RANDOM) }) {
-                    Icon(painterResource("random32.png"), "Random Palette", tint = Color.Unspecified)
+                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) }) {
+                    Icon(
+                        painterResource("smooth32.png"),
+                        "Smooth Palette",
+                        Modifier.scale(iconScale),
+                        Color.Unspecified
+                    )
                 }
             }
             Column {
-                IconButton(onClick = { onPaletteTypeChange(Palette.PaletteType.SMOOTH) }) {
-                    Icon(painterResource("smooth32.png"), "Smooth Palette", tint = Color.Unspecified)
+                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) }) {
+                    Icon(
+                        painterResource("default32.png"),
+                        "Default Palette",
+                        Modifier.scale(iconScale),
+                        Color.Unspecified
+                    )
                 }
             }
             Column {
                 IconButton(onClick = {}) {
-                    Icon(painterResource("animate32.png"), "Animate Palette", tint = Color.Unspecified)
+                    Icon(
+                        painterResource("animate32.png"),
+                        "Animate Palette",
+                        Modifier.scale(iconScale),
+                        Color.Unspecified
+                    )
                 }
             }
             Column { PaletteCanvas(palette) }

@@ -2,14 +2,85 @@ import action.*
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.*
-import javax.swing.event.ChangeListener
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.sin
-import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
 class Palette(initSize: Int = 64) {
+    private class Delegate<T>(private var value: T) {
+        operator fun getValue(palette: Palette, property: KProperty<*>): T {
+            return value
+        }
+
+        operator fun setValue(palette: Palette, property: KProperty<*>, t: T) {
+            if (value == t) return
+            value = t
+
+            if (property.name == "size") {
+                when (palette.paletteType) {
+                    PaletteType.GRAY_SCALE -> palette.buildPalette(palette.grayScaleColor)
+                    PaletteType.RANDOM -> palette.buildPalette(palette.randomColor)
+                    PaletteType.SMOOTH -> palette.buildPalette(palette.smoothColor)
+                }
+            }
+        }
+    }
+
+    enum class PaletteType {
+        GRAY_SCALE, RANDOM, SMOOTH
+    }
+
+    //    private val rotationTimer: RotationTimer = RotationTimer()
+    var paletteType = PaletteType.GRAY_SCALE
+        private set
+
+    internal var colors = Array(initSize) { Color32() }
+
+
+    var size: Int by Delegate(initSize)
+    var getColorFromFractal: Boolean by Delegate(false)
+    var useSecondarySmoothing: Boolean by Delegate(false)
+    var colorRange: Int by Delegate(1)
+    var refineRange: Int by Delegate(0)
+
+    private val grayScaleColor: (Int) -> Color32 = {
+        val value = (it + 1) / size.toFloat()
+
+        Color32(value, value, value)
+    }
+
+    private val randomColor: (Int) -> Color32 =
+        { Color32(Math.random().toFloat(), Math.random().toFloat(), Math.random().toFloat()) }
+
+    private val smoothColor: (Int) -> Color32 = {
+        Color32(
+            ((sin(0.016 * it / size + 4) * 230 + 25) % 1.0).toFloat(),
+            ((sin(0.013 * it / size + 2) * 230 + 25) % 1.0).toFloat(),
+            ((sin(0.01 * it / size + 1) * 230 + 25) % 1.0).toFloat()
+        )
+    }
+
+    init {
+        EventBus.listen(UIEvent::class.java).subscribe {
+            if (it.action == UIAction.CHANGE) fireUpdate()
+        }
+
+        EventBus.listen(PaletteEvent::class.java).subscribe {
+            when (it.action) {
+//            PaletteAction.ANIMATE -> startAnimation(fractalImage.canvas)
+                PaletteAction.DEFAULT -> buildDefaultPalette()
+                PaletteAction.RANDOM -> buildRandomPalette()
+                PaletteAction.SMOOTH -> buildSmoothPalette()
+                else -> {
+                }
+            }
+        }
+
+        size = initSize
+        buildDefaultPalette()
+    }
+
 //    class RotationTimer : AnimationTimer() {
 //        private val nanosecondsPerSecond: Long = 1e9.toLong()
 //
@@ -40,77 +111,6 @@ class Palette(initSize: Int = 64) {
 //            }
 //        }
 //    }
-
-    enum class PaletteType {
-        GRAY_SCALE, RANDOM, SMOOTH
-    }
-
-    //    private val rotationTimer: RotationTimer = RotationTimer()
-    var paletteType = PaletteType.GRAY_SCALE
-        private set
-
-    internal var colors = Array(initSize) { Color32() }
-
-
-    private class Delegate<T>(private var value: T) {
-        operator fun getValue(palette: Palette, property: KProperty<*>): T {
-            return value
-        }
-
-        operator fun setValue(palette: Palette, property: KProperty<*>, t: T) {
-            if (value == t) return
-            value = t
-
-            if (property.name == "size") {
-                when (palette.paletteType) {
-                    PaletteType.GRAY_SCALE -> palette.buildPalette(palette.grayScaleColor)
-                    PaletteType.RANDOM -> palette.buildPalette(palette.randomColor)
-                    PaletteType.SMOOTH -> palette.buildPalette(palette.smoothColor)
-                }
-            }
-        }
-    }
-
-    var size: Int by Delegate(initSize)
-    var getColorFromFractal: Boolean by Delegate(false)
-    var useSecondarySmoothing: Boolean by Delegate(false)
-    var colorRange: Int by Delegate(1)
-    var refineRange: Int by Delegate(0)
-
-    private val grayScaleColor: (Int) -> Color32 = {
-        val value = (it + 1) / size.toFloat()
-
-        Color32(value, value, value)
-    }
-    private val randomColor: (Int) -> Color32 =
-        { Color32(Math.random().toFloat(), Math.random().toFloat(), Math.random().toFloat()) }
-    private val smoothColor: (Int) -> Color32 = {
-        Color32(
-            ((sin(0.016 * it / size + 4) * 230 + 25) % 1.0).toFloat(),
-            ((sin(0.013 * it / size + 2) * 230 + 25) % 1.0).toFloat(),
-            ((sin(0.01 * it / size + 1) * 230 + 25) % 1.0).toFloat()
-        )
-    }
-
-    init {
-        EventBus.listen(UIEvent::class.java).subscribe {
-            if (it.action == UIAction.CHANGE) fireUpdate()
-        }
-
-        EventBus.listen(PaletteEvent::class.java).subscribe {
-            when (it.action) {
-//            PaletteAction.ANIMATE -> startAnimation(fractalImage.canvas)
-                PaletteAction.DEFAULT -> buildDefaultPalette()
-                PaletteAction.RANDOM -> buildRandomPalette()
-                PaletteAction.SMOOTH -> buildSmoothPalette()
-                else -> {
-                }
-            }
-        }
-
-        size = initSize
-        buildDefaultPalette()
-    }
 
     private fun buildPalette(colorFunc: (Int) -> Color32) {
         colors = Array(size) { idx ->

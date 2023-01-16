@@ -1,5 +1,6 @@
 import androidx.compose.ui.graphics.Color
 import java.io.Serializable
+import kotlin.math.abs
 
 class Color32(var red: Float, var green: Float, var blue: Float, var alpha: Float = 1.0f) : Serializable {
     constructor() : this(0.0f, 0.0f, 0.0f)
@@ -15,7 +16,7 @@ class Color32(var red: Float, var green: Float, var blue: Float, var alpha: Floa
     }
 
     fun toColor(): Color {
-        return Color(red, green, blue, alpha)
+        return Color(abs(red), abs(green), abs(blue), alpha)
     }
 
     fun toByteValue(value: Double): Byte{
