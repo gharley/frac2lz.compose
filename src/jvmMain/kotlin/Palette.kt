@@ -207,6 +207,7 @@ class Palette(initSize: Int = 64) {
             fireUpdate()
         } catch (_: Exception) {
         }
+        fireUpdate()
     }
 
     fun writeObject(stream: ObjectOutputStream) {

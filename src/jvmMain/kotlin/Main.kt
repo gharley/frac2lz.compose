@@ -9,6 +9,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import components.MainMenu
 import components.PaletteBar
 import java.io.File
 import java.io.FileInputStream
@@ -19,9 +20,6 @@ import kotlin.system.exitProcess
 @Composable
 @Preview
 fun App() {
-    val appName = "Frac2lz"
-    val appTitle = remember { mutableStateOf(appName) }
-
     val propFile = "./conf/frac2lz.properties"
     val properties = remember { Properties() }
 
@@ -32,13 +30,6 @@ fun App() {
             val stream = FileInputStream(file)
 
             properties.load(stream)
-        }
-    }
-
-    EventBus.listen(AppTitle::class.java).subscribe {
-        appTitle.value = appName
-        if (it.title.isNotEmpty()) {
-            appTitle.value += " - " + it.title
         }
     }
 
@@ -67,32 +58,8 @@ fun App() {
         exitProcess(0)
     }
 
-    Window(
-        onCloseRequest = { exitApplication() },
-        title = appTitle.value,
-        icon = painterResource("frac2lz128.png")
-    ) {
-        loadProperties()
-        var text by remember { mutableStateOf("Hello, World!") }
-
-        MaterialTheme {
-            MainMenu()
-            Column {
-                Button(onClick = {
-                    text = "Hello, Desktop!"
-                    EventBus.listen(HaveProperties::class.java).subscribe {
-                        it.props["does so"] = "work"
-                    }
-                    EventBus.publish(AppTitle("working"))
-                    EventBus.publish(SetProperty("working", "true"))
-                    EventBus.publish(GetProperties())
-                }) {
-                    Text(text)
-                }
-                PaletteBar(3840.dp, Palette())
-            }
-        }
-    }
+    loadProperties()
+    MainWindow(properties) { exitApplication() }
 }
 
 fun main() = application {

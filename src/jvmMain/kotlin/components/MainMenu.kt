@@ -1,3 +1,6 @@
+package components
+
+import EventBus
 import action.CalculateAction
 import action.CalculateEvent
 import action.FileAction

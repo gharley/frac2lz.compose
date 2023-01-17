@@ -1,3 +1,5 @@
+import action.GetProperties
+import action.HaveProperties
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
