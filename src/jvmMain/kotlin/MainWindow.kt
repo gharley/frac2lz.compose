@@ -20,7 +20,7 @@ import javax.swing.filechooser.FileSystemView
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
-    val palette = remember { Palette() }
+    val palette by remember { mutableStateOf(Palette()) }
     val appName = "Frac2lz"
     val appTitle = remember { mutableStateOf(appName) }
 

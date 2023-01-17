@@ -1,3 +1,5 @@
+package com.resmass.frac2lz
+
 import androidx.compose.ui.graphics.Color
 import java.io.Serializable
 import kotlin.math.abs

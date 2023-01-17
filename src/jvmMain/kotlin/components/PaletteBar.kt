@@ -21,11 +21,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PaletteCanvas(pal: Palette) {
-    var palette: Palette by remember { mutableStateOf(pal) }
-
-    EventBus.listen(NewPaletteEvent::class.java).subscribe {
-        palette = it.palette
-    }
+    val palette: Palette = remember { pal }
 
     Canvas(Modifier.height(48.dp).fillMaxWidth()) {
 //    removeMarkers()
@@ -54,42 +50,38 @@ fun PaletteBar(width: Dp, palette: Palette) {
     Surface(modifier = Modifier.width(width), elevation = 5.dp) {
         Row(Modifier.height(48.dp)) {
             Column {
-                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) }) {
+                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) }, Modifier.scale(iconScale)) {
                     Icon(
                         painterResource("random32.png"),
                         "Random Palette",
-                        Modifier.scale(iconScale),
-                        Color.Unspecified
+                        tint = Color.Unspecified
                     )
                 }
             }
             Column {
-                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) }) {
+                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) }, Modifier.scale(iconScale)) {
                     Icon(
                         painterResource("smooth32.png"),
                         "Smooth Palette",
-                        Modifier.scale(iconScale),
-                        Color.Unspecified
+                        tint = Color.Unspecified
                     )
                 }
             }
             Column {
-                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) }) {
+                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) }, Modifier.scale(iconScale)) {
                     Icon(
                         painterResource("default32.png"),
                         "Default Palette",
-                        Modifier.scale(iconScale),
-                        Color.Unspecified
+                        tint = Color.Unspecified
                     )
                 }
             }
             Column {
-                IconButton(onClick = {}) {
+                IconButton(onClick = {}, Modifier.scale(iconScale)) {
                     Icon(
                         painterResource("animate32.png"),
                         "Animate Palette",
-                        Modifier.scale(iconScale),
-                        Color.Unspecified
+                        tint = Color.Unspecified
                     )
                 }
             }

@@ -1,4 +1,5 @@
 import action.*
+import com.resmass.frac2lz.Color32
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.*
@@ -116,8 +117,6 @@ class Palette(initSize: Int = 64) {
         colors = Array(size) { idx ->
             colorFunc(idx)
         }
-
-        fireUpdate()
     }
 
     private fun buildDefaultPalette() {
@@ -178,7 +177,7 @@ class Palette(initSize: Int = 64) {
     }
 
     private fun fireUpdate() {
-        EventBus.publish(NewPaletteEvent(this))
+//        EventBus.publish(NewPaletteEvent(this))
     }
 
 //    private var animating: Boolean = false
@@ -203,11 +202,8 @@ class Palette(initSize: Int = 64) {
             colorRange = stream.readInt()
             @Suppress("UNCHECKED_CAST")
             colors = stream.readObject() as Array<Color32>
-
-            fireUpdate()
         } catch (_: Exception) {
         }
-        fireUpdate()
     }
 
     fun writeObject(stream: ObjectOutputStream) {
