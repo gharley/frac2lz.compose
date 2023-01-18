@@ -57,9 +57,9 @@ class Palette(initSize: Int = 64) {
 
     private val smoothColor: (Int) -> Color = {
         Color(
-            ((sin(0.016 * it / size + 4) * 230 + 25) % 1.0).toFloat(),
-            ((sin(0.013 * it / size + 2) * 230 + 25) % 1.0).toFloat(),
-            ((sin(0.01 * it / size + 1) * 230 + 25) % 1.0).toFloat()
+            abs(((sin(0.016 * it / size + 4) * 230 + 25) % 1.0).toFloat()),
+            abs(((sin(0.013 * it / size + 2) * 230 + 25) % 1.0).toFloat()),
+            abs(((sin(0.01 * it / size + 1) * 230 + 25) % 1.0).toFloat())
         )
     }
 

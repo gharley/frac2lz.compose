@@ -19,7 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
-    var palette by remember { mutableStateOf(Palette()) }
+    var palette = remember { Palette() }
     val appName = "Frac2lz"
     val appTitle = remember { mutableStateOf(appName) }
 
@@ -29,10 +29,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             appTitle.value += " - " + it.title
         }
     }
-
-    EventBus.listen(NewPaletteEvent::class.java).subscribe{
-        palette = it.palette
-    }
+//
+//    EventBus.listen(NewPaletteEvent::class.java).subscribe{
+//        palette = it.palette
+//    }
 
     fun getInitPath(key: String): String {
         return if (properties.containsKey(key)) properties[key] as String
