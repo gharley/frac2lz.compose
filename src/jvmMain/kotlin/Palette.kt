@@ -1,4 +1,5 @@
 import action.*
+import androidx.compose.ui.graphics.Color
 import com.resmass.frac2lz.Color32
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -36,7 +37,7 @@ class Palette(initSize: Int = 64) {
     var paletteType = PaletteType.GRAY_SCALE
         private set
 
-    internal var colors = Array(initSize) { Color32() }
+    internal var colors = Array(initSize) { Color(0) }
 
 
     var size: Int by Delegate(initSize)
@@ -45,17 +46,17 @@ class Palette(initSize: Int = 64) {
     var colorRange: Int by Delegate(1)
     var refineRange: Int by Delegate(0)
 
-    private val grayScaleColor: (Int) -> Color32 = {
+    private val grayScaleColor: (Int) -> Color = {
         val value = (it + 1) / size.toFloat()
 
-        Color32(value, value, value)
+        Color(value, value, value)
     }
 
-    private val randomColor: (Int) -> Color32 =
-        { Color32(Math.random().toFloat(), Math.random().toFloat(), Math.random().toFloat()) }
+    private val randomColor: (Int) -> Color =
+        { Color(Math.random().toFloat(), Math.random().toFloat(), Math.random().toFloat()) }
 
-    private val smoothColor: (Int) -> Color32 = {
-        Color32(
+    private val smoothColor: (Int) -> Color = {
+        Color(
             ((sin(0.016 * it / size + 4) * 230 + 25) % 1.0).toFloat(),
             ((sin(0.013 * it / size + 2) * 230 + 25) % 1.0).toFloat(),
             ((sin(0.01 * it / size + 1) * 230 + 25) % 1.0).toFloat()
@@ -113,7 +114,7 @@ class Palette(initSize: Int = 64) {
 //        }
 //    }
 
-    private fun buildPalette(colorFunc: (Int) -> Color32) {
+    private fun buildPalette(colorFunc: (Int) -> Color) {
         colors = Array(size) { idx ->
             colorFunc(idx)
         }
@@ -134,8 +135,8 @@ class Palette(initSize: Int = 64) {
         buildPalette(smoothColor)
     }
 
-    fun color(value: FractalPointData): Color32 {
-        if (value.iterations == -1L) return Color32()
+    fun color(value: FractalPointData): Color {
+        if (value.iterations == -1L) return Color(0)
 
         if (getColorFromFractal && !(value.z.real == -10.0 || value.z.imaginary == -10.0)) return colorFromComplex(
             value
@@ -151,8 +152,8 @@ class Palette(initSize: Int = 64) {
     // Thanks to Rod Stephens - http://csharphelper.com/blog/2014/07/draw-a-mandelbrot-set-fractal-with-smoothly-shaded-colors-in-c/
     private val logEscape = ln(2.0)
 
-    private fun colorFromComplex(value: FractalPointData): Color32 {
-        if (value.iterations == -1L) return Color32()
+    private fun colorFromComplex(value: FractalPointData): Color {
+        if (value.iterations == -1L) return Color(0)
 
         var z = value.z
         for (idx in 0 until refineRange) {
@@ -173,7 +174,7 @@ class Palette(initSize: Int = 64) {
         val g = ((colors[clr1].green * t1 + colors[clr2].green * t2)).toFloat()
         val b = ((colors[clr1].blue * t1 + colors[clr2].blue * t2)).toFloat()
 
-        return Color32(r, g, b)
+        return Color(r, g, b)
     }
 
     private fun fireUpdate() {
@@ -200,8 +201,14 @@ class Palette(initSize: Int = 64) {
         try {
             size = stream.readInt()
             colorRange = stream.readInt()
-            @Suppress("UNCHECKED_CAST")
-            colors = stream.readObject() as Array<Color32>
+            colors = Array(size) { _ ->
+                val red = stream.readFloat()
+                val green = stream.readFloat()
+                val blue = stream.readFloat()
+                val alpha = stream.readFloat()
+
+                Color(red, green, blue, alpha)
+            }
         } catch (_: Exception) {
         }
     }
@@ -209,7 +216,12 @@ class Palette(initSize: Int = 64) {
     fun writeObject(stream: ObjectOutputStream) {
         stream.writeInt(size)
         stream.writeInt(colorRange)
-        stream.writeObject(colors)
+        colors.forEach{ color ->
+            stream.writeFloat(color.red)
+            stream.writeFloat(color.green)
+            stream.writeFloat(color.blue)
+            stream.writeFloat(color.alpha)
+        }
     }
 }
 

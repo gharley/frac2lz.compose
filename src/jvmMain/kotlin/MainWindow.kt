@@ -12,6 +12,7 @@ import components.PaletteBar
 import java.awt.FileDialog
 import java.io.File
 import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.util.Properties
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -41,17 +42,37 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 //        fractal.refresh()
     }
 
-    fun onOpenPalette() {
-        val initPath: String = getInitPath("palPath")
+    fun getFile(initPath: String, extFilter: FileNameExtensionFilter, save: Boolean = false): File? {
         val dlg = JFileChooser()
-        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
 
         dlg.fileFilter = extFilter
         dlg.currentDirectory = File(initPath)
 
-        if (dlg.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            val file = File(dlg.selectedFile.absolutePath)
+        var file: File? = null
 
+        val result = if (save) dlg.showSaveDialog(null) else dlg.showOpenDialog(null)
+        if (result == JFileChooser.APPROVE_OPTION) {
+            var filename = dlg.selectedFile.absolutePath
+            val ext = extFilter.extensions[0]
+
+            if (save) {
+                if (!filename.endsWith(ext, true)){
+                    filename += ".$ext"
+                }
+            }
+            file = File(filename)
+        }
+
+        return file
+    }
+
+    fun onOpenPalette() {
+        val initPath: String = getInitPath("palPath")
+        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal2")
+
+        val file = getFile(initPath, extFilter)
+
+        if (file != null) {
             properties["palPath"] = file.parent ?: "./"
 
             val stream = ObjectInputStream(file.inputStream())
@@ -63,9 +84,28 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
+    fun onSavePalette() {
+        val initPath: String = getInitPath("palPath")
+        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal2")
+
+        val file = getFile(initPath, extFilter, true)
+
+        if (file != null) {
+            properties["palPath"] = file.parent ?: "./"
+
+            val stream = ObjectOutputStream(file.outputStream())
+
+            palette.writeObject(stream)
+            stream.close()
+
+            refreshImage()
+        }
+    }
+
     EventBus.listen(FileEvent::class.java).subscribe {
         when (it.action) {
             FileAction.OPEN_PALETTE -> onOpenPalette()
+            FileAction.SAVE_PALETTE -> onSavePalette()
             else -> {}
         }
     }

@@ -2,7 +2,6 @@ package components
 
 import EventBus
 import Palette
-import action.NewPaletteEvent
 import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.Canvas
@@ -35,7 +34,7 @@ fun PaletteCanvas(pal: Palette) {
                 drawLine(
                     start = Offset(x = (colorIndex * stripeWidth + stripeIndex).toFloat(), y = 0f),
                     end = Offset(x = (colorIndex * stripeWidth + stripeIndex).toFloat(), y = size.height),
-                    color = color.toColor()
+                    color = color
                 )
             }
         }
@@ -43,7 +42,9 @@ fun PaletteCanvas(pal: Palette) {
 }
 
 @Composable
-fun PaletteBar(width: Dp, palette: Palette) {
+fun PaletteBar(width: Dp, pal: Palette) {
+    val palette: Palette = remember { pal }
+
 //    val resources = LocalAppResources.current.resources
     val iconScale = 4.0f
 
