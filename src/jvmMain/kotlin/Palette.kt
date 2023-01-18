@@ -178,7 +178,7 @@ class Palette(initSize: Int = 64) {
     }
 
     private fun fireUpdate() {
-//        EventBus.publish(NewPaletteEvent(this))
+        EventBus.publish(NewPaletteEvent(this))
     }
 
 //    private var animating: Boolean = false
@@ -209,6 +209,8 @@ class Palette(initSize: Int = 64) {
 
                 Color(red, green, blue, alpha)
             }
+
+            fireUpdate()
         } catch (_: Exception) {
         }
     }

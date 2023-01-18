@@ -9,19 +9,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import components.MainMenu
 import components.PaletteBar
-import java.awt.FileDialog
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.Properties
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
-import javax.swing.filechooser.FileSystemView
 
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
-    val palette by remember { mutableStateOf(Palette()) }
+    var palette by remember { mutableStateOf(Palette()) }
     val appName = "Frac2lz"
     val appTitle = remember { mutableStateOf(appName) }
 
@@ -30,6 +28,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         if (it.title.isNotEmpty()) {
             appTitle.value += " - " + it.title
         }
+    }
+
+    EventBus.listen(NewPaletteEvent::class.java).subscribe{
+        palette = it.palette
     }
 
     fun getInitPath(key: String): String {
