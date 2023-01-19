@@ -41,10 +41,10 @@ fun PaletteCanvas(pal: Palette) {
 }
 
 @Composable
-fun PaletteBar(width: Dp) {
-    val iconScale = 4.0f
+fun PaletteBar() {
+    val iconScale = 3.0f
 
-    Surface(modifier = Modifier.width(width), elevation = 5.dp) {
+    Surface(modifier = Modifier.fillMaxWidth(), elevation = 5.dp) {
         Row(Modifier.height(48.dp)) {
             Column {
                 IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) }, Modifier.scale(iconScale)) {

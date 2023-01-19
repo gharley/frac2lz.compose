@@ -1,10 +1,12 @@
 import action.*
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -124,9 +126,9 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         MaterialTheme {
             MainMenu()
             Column {
-                FractalImage(fractal.value.params, palette.value)
+                Row(Modifier.weight(1f)) { FractalImage(fractal.value.params, palette.value) }
                 PaletteCanvas(palette.value)
-                PaletteBar(3840.dp)
+                PaletteBar()
             }
         }
     }

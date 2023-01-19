@@ -25,7 +25,7 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
 
     Surface(Modifier.onGloballyPositioned { coords -> parentBounds = coords.size.toSize() }, elevation = 5.dp) {
         Canvas(
-            Modifier.size(width = parameters.width.dp, height = parameters.height.dp)
+            Modifier.size(width = fractalWidth.dp, height = fractalHeight.dp)
                 .background(color = Color.Gray).onGloballyPositioned { coords -> parentBounds = coords.size.toSize() }
         ) {
             var scaleValue =
