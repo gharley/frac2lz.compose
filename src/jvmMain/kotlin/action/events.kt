@@ -14,6 +14,6 @@ class UIEvent(override val action: UIAction, val data: Any) : ActionEvent
 
 data class NewPaletteEvent(val palette: Palette)
 
-data class FractalEvent(val row: Int, val column: Int, val data: FractalPointData, var endOfRow: Boolean = false)
+data class FractalEvent(val row: Int = 0, val column: Int = 0, val data: FractalPointData = FractalPointData(), var endOfRow: Boolean = false)
 data class FractalIterationEvent(val allowed: Long, val used: Long)
-data class FractalPointData(val iterations: Long, val maxIterations: Long, val z: Complex, val zStart: Complex)
+data class FractalPointData(val iterations: Long = 0, val z: Complex = Complex(0.0, 0.0), val zStart: Complex = Complex(0.0, 0.0))

@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PaletteCanvas(palette: Palette) {
+fun PaletteCanvas(pal: Palette) {
+    val palette = remember { pal }
     Canvas(Modifier.height(48.dp).fillMaxWidth()) {
 //    removeMarkers()
         val width = size.width
@@ -40,8 +41,7 @@ fun PaletteCanvas(palette: Palette) {
 }
 
 @Composable
-fun PaletteBar(width: Dp, pal: Palette) {
-    val palette = remember { pal }
+fun PaletteBar(width: Dp) {
     val iconScale = 4.0f
 
     Surface(modifier = Modifier.width(width), elevation = 5.dp) {
@@ -82,7 +82,6 @@ fun PaletteBar(width: Dp, pal: Palette) {
                     )
                 }
             }
-            Column { PaletteCanvas(palette) }
         }
     }
 }

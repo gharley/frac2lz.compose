@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import components.MainMenu
 import components.PaletteBar
+import components.PaletteCanvas
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
@@ -134,7 +135,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 }) {
                     Text(text)
                 }
-                PaletteBar(3840.dp, palette.value)
+                PaletteCanvas(palette.value)
+                PaletteBar(3840.dp)
             }
         }
     }
