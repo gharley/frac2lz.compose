@@ -1,15 +1,23 @@
 import action.*
 import androidx.compose.ui.graphics.Color
-import com.resmass.frac2lz.Color32
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.util.*
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.sin
 import kotlin.reflect.KProperty
 
 class Palette(initSize: Int = 64) {
+    constructor(palette: Palette) : this() {
+        this.paletteType = palette.paletteType
+        this.colors = palette.colors
+        this.size = palette.size
+        this.getColorFromFractal = palette.getColorFromFractal
+        this.useSecondarySmoothing = palette.useSecondarySmoothing
+        this.colorRange = palette.colorRange
+        this.refineRange = palette.refineRange
+    }
+
     private class Delegate<T>(private var value: T) {
         operator fun getValue(palette: Palette, property: KProperty<*>): T {
             return value
@@ -218,7 +226,7 @@ class Palette(initSize: Int = 64) {
     fun writeObject(stream: ObjectOutputStream) {
         stream.writeInt(size)
         stream.writeInt(colorRange)
-        colors.forEach{ color ->
+        colors.forEach { color ->
             stream.writeFloat(color.red)
             stream.writeFloat(color.green)
             stream.writeFloat(color.blue)
@@ -226,4 +234,3 @@ class Palette(initSize: Int = 64) {
         }
     }
 }
-

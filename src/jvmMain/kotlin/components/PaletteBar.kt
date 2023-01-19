@@ -41,7 +41,7 @@ fun PaletteCanvas(palette: Palette) {
 
 @Composable
 fun PaletteBar(width: Dp, pal: Palette) {
-    val palette by remember { mutableStateOf(pal) }
+    val palette = remember { pal }
     val iconScale = 4.0f
 
     Surface(modifier = Modifier.width(width), elevation = 5.dp) {

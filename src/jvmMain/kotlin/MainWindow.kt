@@ -4,6 +4,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -19,7 +20,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
-    var palette = remember { Palette() }
+    val palette = rememberSaveable { mutableStateOf(Palette()) }
     val appName = "Frac2lz"
     val appTitle = remember { mutableStateOf(appName) }
 
@@ -29,10 +30,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             appTitle.value += " - " + it.title
         }
     }
-//
-//    EventBus.listen(NewPaletteEvent::class.java).subscribe{
-//        palette = it.palette
-//    }
+
+    EventBus.listen(NewPaletteEvent::class.java).subscribe{
+        palette.value = Palette(it.palette)
+    }
 
     fun getInitPath(key: String): String {
         return if (properties.containsKey(key)) properties[key] as String
@@ -70,7 +71,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
     fun onOpenPalette() {
         val initPath: String = getInitPath("palPath")
-        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal2")
+        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
 
         val file = getFile(initPath, extFilter)
 
@@ -79,7 +80,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
             val stream = ObjectInputStream(file.inputStream())
 
-            palette.readObject(stream)
+            palette.value.readObject(stream)
             stream.close()
 
             refreshImage()
@@ -88,7 +89,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
     fun onSavePalette() {
         val initPath: String = getInitPath("palPath")
-        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal2")
+        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
 
         val file = getFile(initPath, extFilter, true)
 
@@ -97,7 +98,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
             val stream = ObjectOutputStream(file.outputStream())
 
-            palette.writeObject(stream)
+            palette.value.writeObject(stream)
             stream.close()
 
             refreshImage()
@@ -133,7 +134,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 }) {
                     Text(text)
                 }
-                PaletteBar(3840.dp, palette)
+                PaletteBar(3840.dp, palette.value)
             }
         }
     }
