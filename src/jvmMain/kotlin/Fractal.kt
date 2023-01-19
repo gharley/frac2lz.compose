@@ -1,6 +1,8 @@
 import action.FractalEvent
 import action.FractalIterationEvent
 import action.FractalPointData
+import state.FractalBounds
+import state.FractalParameters
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -16,13 +18,6 @@ fun array2dOfDouble(sizeOuter: Int, sizeInner: Int): Array<DoubleArray> =
 
 fun array2dOfLong(sizeOuter: Int, sizeInner: Int): Array<LongArray> = Array(sizeOuter) { LongArray(sizeInner) { -1L } }
 
-data class FractalBounds(var top: Double, var right: Double, var bottom: Double, var left: Double) : Serializable
-data class FractalParameters(
-    var width: Double, var height: Double, var centerX: Double, var centerY: Double,
-    var maxIterations: Long, val bounds: FractalBounds = FractalBounds(-1.0, 1.0, 1.0, -2.0),
-    var magnify: Double = 1.0
-) : Serializable
-
 abstract class Fractal : Serializable {
     private var cancelCalc = false
 
@@ -30,7 +25,7 @@ abstract class Fractal : Serializable {
 
     var name: String = ""
 
-    private var version: String = "1.1"
+    private var version: String = "1.2"
     private var aspectAdjustX: Double = 1.0
     private var aspectAdjustY: Double = 1.0
     private val boundsHeight: Double
@@ -61,7 +56,7 @@ abstract class Fractal : Serializable {
         { maxY - it * incY }  // Screen y-axis is the opposite of Cartesian y-axis
     private val startReal: (Int) -> Double = { minX + it * incX }
 
-    internal var iterations: Array<LongArray> = array2dOfLong(100, 100)
+    private var iterations: Array<LongArray> = array2dOfLong(100, 100)
     private var reals = array2dOfDouble(100, 100)
     private var imaginarys = array2dOfDouble(100, 100)
 
@@ -310,12 +305,11 @@ abstract class Fractal : Serializable {
     }
 }
 
-open class Mandelbrot : Fractal(), Serializable {
-    private val defaultParams =
-        FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L, FractalBounds(-1.0, 1.0, 1.0, -2.0), 1.0)
+private val defaultParams =
+    FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L, FractalBounds(), 1.0)
 
-    //private val defaultParams = FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L, FractalBounds(-1.08, 1.28, 1.08, -2.56), 1.0)
-    override var params = defaultParams.copy()
+open class Mandelbrot(params: FractalParameters = defaultParams.copy()) : Fractal(), Serializable {
+    override var params = params
 
     init {
         name = "Mandelbrot"

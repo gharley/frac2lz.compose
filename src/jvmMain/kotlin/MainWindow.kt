@@ -8,6 +8,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import components.FractalImage
 import components.MainMenu
 import components.PaletteBar
 import components.PaletteCanvas
@@ -22,6 +23,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
     val palette = rememberSaveable { mutableStateOf(Palette()) }
+    val fractal = rememberSaveable { mutableStateOf(Mandelbrot()) }
     val appName = "Frac2lz"
     val appTitle = remember { mutableStateOf(appName) }
 
@@ -119,22 +121,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         title = appTitle.value,
         icon = painterResource("frac2lz128.png")
     ) {
-        var text by remember { mutableStateOf("Hello, World!") }
-
         MaterialTheme {
             MainMenu()
             Column {
-                Button(onClick = {
-                    text = "Hello, Desktop!"
-                    EventBus.listen(HaveProperties::class.java).subscribe {
-                        it.props["does so"] = "work"
-                    }
-                    EventBus.publish(AppTitle("working"))
-                    EventBus.publish(SetProperty("working", "true"))
-                    EventBus.publish(GetProperties())
-                }) {
-                    Text(text)
-                }
+                FractalImage(fractal.value.params, palette.value)
                 PaletteCanvas(palette.value)
                 PaletteBar(3840.dp)
             }

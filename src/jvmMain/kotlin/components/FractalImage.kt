@@ -5,8 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -14,18 +13,19 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import state.FractalState
+import state.FractalParameters
 import kotlin.math.min
 
 @Composable
-fun FractalImage(fractalState: FractalState, palette: Palette) {
+fun FractalImage(params: FractalParameters, palette: Palette) {
+    var parameters = remember { params }
     var parentBounds = remember { Size.Zero }
-    val fractalHeight = fractalState.parameters.height
-    val fractalWidth = fractalState.parameters.width
+    val fractalHeight = parameters.height
+    val fractalWidth = parameters.width
 
     Surface(Modifier.onGloballyPositioned { coords -> parentBounds = coords.size.toSize() }, elevation = 5.dp) {
         Canvas(
-            Modifier.size(width = fractalState.parameters.width.dp, height = fractalState.parameters.height.dp)
+            Modifier.size(width = parameters.width.dp, height = parameters.height.dp)
                 .background(color = Color.Gray).onGloballyPositioned { coords -> parentBounds = coords.size.toSize() }
         ) {
             var scaleValue =
