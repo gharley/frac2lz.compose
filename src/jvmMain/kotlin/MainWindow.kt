@@ -1,23 +1,22 @@
 import action.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import components.FractalImage
 import components.MainMenu
 import components.PaletteBar
 import components.PaletteCanvas
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.util.Properties
+import java.util.*
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -36,18 +35,34 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
-    EventBus.listen(NewPaletteEvent::class.java).subscribe{
+    fun baseCalc() = runBlocking{
+        fractal.value.setDefaultParameters()
+        launch { fractal.value.calcAll() }
+    }
+
+    fun startCalc() {
+        suspend { fractal.value.calcAll() }
+    }
+
+    fun refreshImage(){
+        suspend { fractal.value.refresh() }
+    }
+
+    EventBus.listen(CalculateEvent::class.java).subscribe {
+        when (it.action) {
+            CalculateAction.CALCULATE_BASE -> baseCalc()
+            CalculateAction.REFRESH -> refreshImage()
+            else -> {}
+        }
+    }
+
+    EventBus.listen(NewPaletteEvent::class.java).subscribe {
         palette.value = Palette(it.palette)
     }
 
     fun getInitPath(key: String): String {
         return if (properties.containsKey(key)) properties[key] as String
         else "./"
-    }
-
-    fun refreshImage() {
-//        fractalImage.prepareForCalc(fractal.params.width, fractal.params.height)
-//        fractal.refresh()
     }
 
     fun getFile(initPath: String, extFilter: FileNameExtensionFilter, save: Boolean = false): File? {
@@ -64,7 +79,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             val ext = extFilter.extensions[0]
 
             if (save) {
-                if (!filename.endsWith(ext, true)){
+                if (!filename.endsWith(ext, true)) {
                     filename += ".$ext"
                 }
             }

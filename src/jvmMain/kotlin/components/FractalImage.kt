@@ -1,14 +1,19 @@
 package components
 
+import EventBus
 import Palette
+import action.FractalEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
@@ -43,18 +48,28 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
 
             scale(scaleValue){}
 
-//            val pixels = IntArray(fractalState.parameters.width.toInt())
+            val pixels = ByteArray(parameters.width.toInt()*4)
+            var image = ImageBitmap(fractalWidth.toInt(), fractalHeight.toInt())
 //            val bitmap = Bitmap()
-//
-//            pixels[fractalState.event.column] = palette.color(fractalState.event.data).value.toInt()
-//
-//            if (fractalState.event.endOfRow) {
-//                drawIntoCanvas {
-//                    bitmap
-//                    it.nativeCanvas.writePixels(bitmap, 0, fractalState.event.row)
-//                    it.nativeCanvas
-//                }
-//            }
+
+            EventBus.listen(FractalEvent::class.java).subscribe { event ->
+                val color = palette.color(event.data)
+                val column = event.column * 4
+                pixels[column] = (color.red * 255).toInt().toByte()
+                pixels[column+1] = (color.green * 255).toInt().toByte()
+                pixels[column+2] = (color.blue * 255).toInt().toByte()
+                pixels[column+3] = (color.alpha * 255).toInt().toByte()
+
+                if (event.endOfRow) {
+                    image.asSkiaBitmap().installPixels(pixels)
+                    drawImage(image)
+//                    drawIntoCanvas {
+//                        bitmap.installPixels(ImageInfo(10,10,ColorType.RGBA_8888,ColorAlphaType.OPAQUE))
+//                        it.nativeCanvas.writePixels(bitmap, 0, event.row)
+//                        it.nativeCanvas
+//                    }
+                }
+            }
 //
 //            if (rowList.isNotEmpty()) {
 ////                lock.lock()
