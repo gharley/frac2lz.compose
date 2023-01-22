@@ -5,8 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.geometry.Size
@@ -23,9 +22,11 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
     val parameters = remember { params }
     val fractalHeight = parameters.height
     val fractalWidth = parameters.width
-    val swingImage = remember { SwingImage(params, palette) }
 
     Surface(Modifier.fillMaxSize(), elevation = 5.dp) {
+        var row by remember { mutableStateOf(0) }
+        val swingImage = SwingImage(params, palette) { row++ }
+
         SwingPanel(modifier = Modifier
             .size(width = fractalWidth.dp, height = fractalHeight.dp)
             .background(color = Color.Gray),
@@ -36,7 +37,7 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
                 }
             },
             update = {
-                swingImage.prepareForCalc(fractalWidth, fractalHeight)
+                swingImage.update()
             }
         )
 //            val scaleValue =

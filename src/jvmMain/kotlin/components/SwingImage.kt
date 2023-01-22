@@ -2,6 +2,7 @@ package components
 
 import Palette
 import action.FractalEvent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import state.FractalParameters
 import java.awt.Canvas
@@ -14,25 +15,32 @@ import java.util.concurrent.locks.ReentrantLock
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-class SwingImage(params: FractalParameters, palette: Palette) : Canvas() {
+class SwingImage(params: FractalParameters, palette: Palette, onChange: () -> Unit ) : Canvas() {
     private val height = params.height.toInt()
     private val width = params.width.toInt()
     private var pixels = IntArray(width * height)
     private val source = MemoryImageSource(width, height, pixels, 0, width)
     private var image = createImage(source)
 
+    var currentRow = 0
+
     init {
+        source.setAnimated(true)
 //        add(ZoomBox(this))
 
         EventBus.listen(FractalEvent::class.java).subscribe {
-            val column = it.column
             val color = palette.color(it.data).toArgb()
 
-            pixels[it.row * width + column] = color.rotateLeft(8)
+            if (it.row == 0 && it.column == 0){
+                prepareForCalc(params.width, params.height)
+            }
+
+            pixels[it.row * width + it.column] = color //.rotateLeft(24)
 
             if (it.endOfRow) {
                 source.newPixels(0, it.row, width, 1)
-                update(graphics)
+                if (it.row == 0) update(graphics)
+                onChange()
             }
         }
     }
@@ -43,9 +51,16 @@ class SwingImage(params: FractalParameters, palette: Palette) : Canvas() {
         graphics.drawImage(image, null, null)
     }
 
+    fun update(){
+        if (graphics != null) update(graphics)
+    }
+
     fun prepareForCalc(fractalWidth: Double, fractalHeight: Double, clear: Boolean = true) {
-        pixels.fill(0xffd3d3d3.toInt())
-        source.newPixels(0, 0, width, height)
+        if (clear) {
+            pixels.fill(0xffff00ff.toInt())
+            prepareImage(image, null)
+            source.newPixels(0, 0, width, height)
+        }
 //        with(canvas) {
 //            if (clear) graphicsContext2D.clearRect(0.0, 0.0, width, height)
 //
