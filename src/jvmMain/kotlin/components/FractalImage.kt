@@ -2,6 +2,7 @@ package components
 
 import Palette
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -19,16 +20,15 @@ import javax.swing.JPanel
 
 @Composable
 fun FractalImage(params: FractalParameters, palette: Palette) {
-    var parameters = remember { params }
-    var parentBounds = remember { Size.Zero }
+    val parameters = remember { params }
     val fractalHeight = parameters.height
     val fractalWidth = parameters.width
-    val swingImage = SwingImage(params, palette)
+    val swingImage = remember { SwingImage(params, palette) }
 
-    Surface(Modifier.onGloballyPositioned { coords -> parentBounds = coords.size.toSize() }, elevation = 5.dp) {
+    Surface(Modifier.fillMaxSize(), elevation = 5.dp) {
         SwingPanel(modifier = Modifier
             .size(width = fractalWidth.dp, height = fractalHeight.dp)
-            .background(color = Color.Gray).onGloballyPositioned { coords -> parentBounds = coords.size.toSize() },
+            .background(color = Color.Gray),
             factory = {
                 JPanel().apply {
                     layout = BoxLayout(this, BoxLayout.Y_AXIS)

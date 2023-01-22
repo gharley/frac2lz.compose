@@ -26,18 +26,13 @@ class SwingImage(params: FractalParameters, palette: Palette) : Canvas() {
 
         EventBus.listen(FractalEvent::class.java).subscribe {
             val column = it.column
-            val color = palette.color(it.data)
+            val color = palette.color(it.data).toArgb()
 
-            pixels[it.row * width + column] = color.toArgb()
-//            val offset = column * 4
-//
-//            this@SwingImage.buffer[offset] = color.red.toInt().toByte()
-//            this@SwingImage.buffer[offset + 1] = color.green.toInt().toByte()
-//            this@SwingImage.buffer[offset + 2] = color.blue.toInt().toByte()
-//            this@SwingImage.buffer[offset + 3] = color.alpha.toInt().toByte()
+            pixels[it.row * width + column] = color.rotateLeft(8)
 
             if (it.endOfRow) {
                 source.newPixels(0, it.row, width, 1)
+                update(graphics)
             }
         }
     }
@@ -49,7 +44,7 @@ class SwingImage(params: FractalParameters, palette: Palette) : Canvas() {
     }
 
     fun prepareForCalc(fractalWidth: Double, fractalHeight: Double, clear: Boolean = true) {
-        pixels.fill(0xd3d3d3ff.toInt())
+        pixels.fill(0xffd3d3d3.toInt())
         source.newPixels(0, 0, width, height)
 //        with(canvas) {
 //            if (clear) graphicsContext2D.clearRect(0.0, 0.0, width, height)
