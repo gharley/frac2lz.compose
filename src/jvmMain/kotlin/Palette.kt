@@ -210,12 +210,13 @@ class Palette(initSize: Int = 64) {
             size = stream.readInt()
             colorRange = stream.readInt()
             colors = Array(size) { _ ->
-                val red = stream.readFloat()
-                val green = stream.readFloat()
-                val blue = stream.readFloat()
-                val alpha = stream.readFloat()
-
-                Color(red, green, blue, alpha)
+                Color(stream.readInt())
+//                val red = stream.readFloat()
+//                val green = stream.readFloat()
+//                val blue = stream.readFloat()
+//                val alpha = stream.readFloat()
+//
+//                Color(red, green, blue, alpha)
             }
 
             fireUpdate()
