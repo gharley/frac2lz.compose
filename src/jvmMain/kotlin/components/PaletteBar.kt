@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PaletteCanvas(pal: Palette) {
     val palette = remember { pal }
+
     Canvas(Modifier.height(48.dp).fillMaxWidth()) {
 //    removeMarkers()
         val width = size.width
