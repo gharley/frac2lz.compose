@@ -144,7 +144,7 @@ class Palette(initSize: Int = 64) {
     }
 
     fun color(value: FractalPointData): Color {
-        if (value.iterations == -1L) return Color(0)
+        if (value.iterations == -1L) return Color.Black
 
         if (getColorFromFractal && !(value.z.real == -10.0 || value.z.imaginary == -10.0)) return colorFromComplex(
             value

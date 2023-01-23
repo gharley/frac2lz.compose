@@ -12,7 +12,7 @@ import java.awt.image.MemoryImageSource
 import java.lang.Double.min
 import javax.swing.JPanel
 
-class SwingImage(private val params: FractalParameters, palette: Palette, onChange: () -> Unit ) :
+class SwingImage(private val params: FractalParameters, palette: Palette) :
     JPanel() {
     private val height = params.height.toInt()
     private val width = params.width.toInt()
@@ -21,8 +21,6 @@ class SwingImage(private val params: FractalParameters, palette: Palette, onChan
     private var image = createImage(source)
     private val imageTransform = AffineTransform()
 
-    private var currentRow = 0
-
     init {
         source.setAnimated(true)
 //        add(ZoomBox(this))
@@ -30,7 +28,7 @@ class SwingImage(private val params: FractalParameters, palette: Palette, onChan
         EventBus.listen(FractalEvent::class.java).subscribe {
             val color = palette.color(it.data).toArgb()
 
-            if (it.row == 0 && it.column == 0){
+            if (it.row == 0 && it.column == 0) {
                 prepareForCalc()
             }
 
@@ -38,25 +36,25 @@ class SwingImage(private val params: FractalParameters, palette: Palette, onChan
 
             if (it.endOfRow) {
                 source.newPixels(0, it.row, width, 1)
-                if (it.row == 0) update(graphics)
-                currentRow = it.row
-                onChange()
+                if (it.row % 10 == 0) update(graphics)
             }
         }
     }
 
     override fun paint(g: Graphics?) {
+        if (g == null) return
+
         val graphics = g as Graphics2D
 
         scale()
         graphics.drawImage(image, imageTransform, null)
     }
 
-    fun update(){
+    fun update() {
         if (graphics != null) update(graphics)
     }
 
-    fun prepareForCalc(clear: Boolean = true) {
+    private fun prepareForCalc(clear: Boolean = true) {
         if (clear) {
             pixels.fill(0xff000000.toInt())
             prepareImage(image, null)
@@ -66,32 +64,32 @@ class SwingImage(private val params: FractalParameters, palette: Palette, onChan
         scale()
     }
 
-    fun scale(){
+    private fun scale() {
         val bounds = getBounds(null)
         val height = params.height
         val width = params.width
 
         imageTransform.setToIdentity()
-            val scale: Double =
-                when {
-                    width > height -> when {
-                        bounds.width > bounds.height -> min(
-                            bounds.width / width,
-                            bounds.height / height
-                        )
+        val scale: Double =
+            when {
+                width > height -> when {
+                    bounds.width > bounds.height -> min(
+                        bounds.width / width,
+                        bounds.height / height
+                    )
 
-                        else ->bounds.width / width
-                    }
-
-                    width < height -> when {
-                        bounds.width > bounds.height -> bounds.height / height
-                        else -> 1.0
-                    }
-
-                    else -> min(bounds.width / width, bounds.height / height)
+                    else -> bounds.width / width
                 }
 
-            imageTransform.scale(scale, scale)
+                width < height -> when {
+                    bounds.width > bounds.height -> bounds.height / height
+                    else -> 1.0
+                }
+
+                else -> min(bounds.width / width, bounds.height / height)
+            }
+
+        imageTransform.scale(scale, scale)
     }
 
 //        fun saveToImageFile(file: File, fileType: String = "png") {
