@@ -8,7 +8,7 @@ interface ActionEvent {
 }
 
 class CalculateEvent(override val action: CalculateAction) : ActionEvent
-class FileEvent(override val action: FileAction) : ActionEvent
+class FileEvent(override val action: FileAction, val data: String = "") : ActionEvent
 class PaletteEvent(override val action: PaletteAction) : ActionEvent
 class UIEvent(override val action: UIAction, val data: Any) : ActionEvent
 

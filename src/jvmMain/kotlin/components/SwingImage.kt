@@ -2,15 +2,21 @@ package components
 
 import EventBus
 import Palette
+import action.FileAction
+import action.FileEvent
 import action.FractalEvent
 import androidx.compose.ui.graphics.toArgb
 import state.FractalParameters
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.geom.AffineTransform
+import java.awt.image.BufferedImage
 import java.awt.image.MemoryImageSource
+import java.io.File
 import java.lang.Double.min
+import javax.imageio.ImageIO
 import javax.swing.JPanel
+
 
 class SwingImage(private val params: FractalParameters, palette: Palette) :
     JPanel() {
@@ -37,6 +43,12 @@ class SwingImage(private val params: FractalParameters, palette: Palette) :
             if (it.endOfRow) {
                 source.newPixels(0, it.row, width, 1)
                 if (it.row % 10 == 0 || it.row == height - 1) update(graphics)
+            }
+        }
+
+        EventBus.listen(FileEvent::class.java).subscribe{
+            if (it.action == FileAction.WRITE_IMAGE){
+                saveToImageFile(it.data)
             }
         }
     }
@@ -96,13 +108,17 @@ class SwingImage(private val params: FractalParameters, palette: Palette) :
         imageTransform.scale(scale, scale)
     }
 
-//        fun saveToImageFile(file: File, fileType: String = "png") {
-//            val writableImage = WritableImage(canvas.width.toInt(), canvas.height.toInt())
-//            val snapshotParams = SnapshotParameters()
-//
-//            snapshotParams.transform = Transform.scale(1.0 / canvas.scaleX, 1.0 / canvas.scaleY)
-//            canvas.snapshot(snapshotParams, writableImage)
-//            val renderedImage: java.awt.image.RenderedImage = javafx.embed.swing.SwingFXUtils.fromFXImage(writableImage, null)
-//            javax.imageio.ImageIO.write(renderedImage, fileType, file)
-//        }
+    private fun saveToImageFile(filename: String) {
+        try {
+            val imageOut = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+            val g2d = imageOut.createGraphics()
+
+            g2d.drawImage(image, 0, 0, null)
+            g2d.dispose()
+
+            ImageIO.write(imageOut, "png", File(filename))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

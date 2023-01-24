@@ -14,6 +14,7 @@ import java.io.File
 import java.io.InputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.nio.file.Path
 import java.util.*
 import javax.json.Json
 import javax.json.JsonObject
@@ -140,6 +141,20 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
+    fun onSaveImage() {
+        val initPath: String = getInitPath("imgPath")
+        val extFilter = FileNameExtensionFilter("Save to PNG", "png")
+
+        val file = getFile(initPath, extFilter, true)
+
+        if (file != null) {
+            properties["imgPath"] = file.parent ?: "./"
+            val filename = file.absolutePath
+
+            EventBus.publish(FileEvent(FileAction.WRITE_IMAGE, filename))
+        }
+    }
+
     fun onSavePalette() {
         val initPath: String = getInitPath("palPath")
         val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
@@ -163,6 +178,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             FileAction.OPEN_JSON -> onOpenJson()
             FileAction.OPEN_PALETTE -> onOpenPalette()
             FileAction.SAVE_PALETTE -> onSavePalette()
+            FileAction.SAVE_IMAGE -> onSaveImage()
             else -> {}
         }
     }
