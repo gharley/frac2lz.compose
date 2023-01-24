@@ -2,7 +2,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.subjects.PublishSubject
 
 /**
- * Created by gharley on 5/30/2017.
+ * Created by Greg Harley on 5/30/2017.
  * Simple event bus using rxJava
  */
 

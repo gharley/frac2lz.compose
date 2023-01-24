@@ -3,9 +3,9 @@ package components
 import EventBus
 import Palette
 import action.FractalEvent
-import action.NewPaletteEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import state.FractalParameters
 
@@ -34,7 +35,7 @@ fun StatusBar(pal: Palette) {
         usedIterations = it.data.iterations
     }
 
-    EventBus.listen(FractalParameters::class.java).subscribe{
+    EventBus.listen(FractalParameters::class.java).subscribe {
         centerX = it.centerX
         centerY = it.centerY
         magnify = it.magnify
@@ -49,7 +50,7 @@ fun StatusBar(pal: Palette) {
 
     Column(Modifier.fillMaxWidth().padding(2.dp)) {
         Divider()
-        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             addTextField("Iterations -> Allowed: ", maxIterations.toString())
             addTextField("Used: ", usedIterations.toString())
             addTextField("RE Center: ", centerX.toString())
@@ -64,18 +65,32 @@ fun StatusBar(pal: Palette) {
 }
 
 @Composable
+fun ClipText(text: String, modifier: Modifier, maxLines: Int = 1) {
+    Text(
+        text,
+        maxLines = maxLines,
+        overflow = TextOverflow.Clip,
+        style = LocalTextStyle.current.copy(
+            fontSize = LocalTextStyle.current.fontSize * .85
+        ),
+        modifier = modifier
+    )
+
+}
+
+@Composable
 fun addTextField(labelText: String, boundProperty: String, addBorder: Boolean = true) {
     Surface {
         Row {
-            Text(labelText, Modifier.padding(horizontal = 5.dp, vertical = 10.dp))
-            Text(
+            ClipText(labelText, Modifier.padding(horizontal = 5.dp, vertical = 10.dp))
+            ClipText(
                 boundProperty,
                 Modifier
                     .padding(end = 5.dp, top = 10.dp, bottom = 10.dp)
                     .drawBehind {
                         try {
                             check(addBorder)
-                            val x = size.width + 5.dp.toPx()
+                            val x = size.width + 3.dp.toPx()
                             drawLine(
                                 Color.Black,
                                 Offset(x, 0f),
