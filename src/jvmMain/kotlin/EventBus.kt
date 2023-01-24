@@ -13,5 +13,5 @@ object EventBus {
         publisher.onNext(event)
     }
 
-    fun <T> listen(eventType: Class<T>): Observable<T> = publisher.ofType(eventType)
+    fun <T : Any> listen(eventType: Class<T>): Observable<T> = publisher.ofType(eventType)
 }

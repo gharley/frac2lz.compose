@@ -1,6 +1,10 @@
 import action.FractalEvent
 import action.FractalIterationEvent
 import action.FractalPointData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import state.FractalBounds
 import state.FractalParameters
 import java.io.ObjectInputStream
@@ -69,23 +73,23 @@ abstract class Fractal : Serializable {
 
 //            MainController.showWaitCursor()
 
-            calcLoop@ for (row in 0 until imageHeight) {
-                val startImaginary = startImaginary(row)
+        calcLoop@ for (row in 0 until imageHeight) {
+            val startImaginary = startImaginary(row)
 
-                for (column in 0 until imageWidth) {
-                    if (cancelCalc) break@calcLoop
+            for (column in 0 until imageWidth) {
+                if (cancelCalc) break@calcLoop
 
-                    val startReal = startReal(column)
+                val startReal = startReal(column)
 
-                    with(calcOne(Complex(startReal, startImaginary), params.maxIterations)) {
-                        this@Fractal.iterations[row][column] = iterations
-                        reals[row][column] = z.real
-                        imaginarys[row][column] = z.imaginary
-                    }
-
-                    fireCalcUpdate(row, column)
+                with(calcOne(Complex(startReal, startImaginary), params.maxIterations)) {
+                    this@Fractal.iterations[row][column] = iterations
+                    reals[row][column] = z.real
+                    imaginarys[row][column] = z.imaginary
                 }
+
+                fireCalcUpdate(row, column)
             }
+        }
 
 //            MainController.showDefaultCursor()
 
@@ -115,17 +119,17 @@ abstract class Fractal : Serializable {
 
 //            MainController.showWaitCursor()
 
-            refreshLoop@ for (row in iterations.indices) {
-                for (column in iterations[0].indices) {
-                    if (cancelCalc || reals[row][column] == zInit) break@refreshLoop
+        refreshLoop@ for (row in iterations.indices) {
+            for (column in iterations[0].indices) {
+                if (cancelCalc || reals[row][column] == zInit) break@refreshLoop
 
-                    fireCalcUpdate(row, column)
-                }
+                fireCalcUpdate(row, column)
             }
+        }
 
 //            MainController.showDefaultCursor()
 
-            refreshInProgress = false
+        refreshInProgress = false
     }
 
     open suspend fun refineSet() {
@@ -134,29 +138,29 @@ abstract class Fractal : Serializable {
 
 //            MainController.showWaitCursor()
 
-            refineLoop@ for (row in iterations.indices) {
-                val startImaginary = maxY - row * incY  // Screen y-axis is the opposite of Cartesian y-axis
+        refineLoop@ for (row in iterations.indices) {
+            val startImaginary = maxY - row * incY  // Screen y-axis is the opposite of Cartesian y-axis
 
-                for (column in iterations[0].indices) {
-                    if (iterations[row][column] == -1L) {
-                        if (cancelCalc) break@refineLoop
+            for (column in iterations[0].indices) {
+                if (iterations[row][column] == -1L) {
+                    if (cancelCalc) break@refineLoop
 
-                        val startReal = minX + column * incX
+                    val startReal = minX + column * incX
 
-                        with(calcOne(Complex(startReal, startImaginary), params.maxIterations)) {
-                            this@Fractal.iterations[row][column] = iterations
+                    with(calcOne(Complex(startReal, startImaginary), params.maxIterations)) {
+                        this@Fractal.iterations[row][column] = iterations
 
-                            // In case we load an image w/o Z Values
-                            if (reals.size > row && reals[0].size > column) {
-                                reals[row][column] = z.real
-                                imaginarys[row][column] = z.imaginary
-                            }
+                        // In case we load an image w/o Z Values
+                        if (reals.size > row && reals[0].size > column) {
+                            reals[row][column] = z.real
+                            imaginarys[row][column] = z.imaginary
                         }
                     }
-
-                    fireCalcUpdate(row, column)
                 }
+
+                fireCalcUpdate(row, column)
             }
+        }
 
 //            MainController.showDefaultCursor()
 
@@ -174,8 +178,11 @@ abstract class Fractal : Serializable {
         EventBus.publish(FractalIterationEvent(params.maxIterations, maxIterationsActual))
     }
 
-    private fun fireParameterUpdate() {
+    private suspend fun fireParameterUpdate() {
         EventBus.publish(params)
+        withContext(Dispatchers.IO) {
+            Thread.sleep(1)
+        }
     }
 
     open fun setDefaultParameters() {}
@@ -195,8 +202,10 @@ abstract class Fractal : Serializable {
             aspectAdjustY = fractalAspect / imageAspect
         }
 
-        fireIterationUpdate()
-        fireParameterUpdate()
+        runBlocking {
+            fireIterationUpdate()
+            launch { fireParameterUpdate() }
+        }
     }
 
     abstract fun calcOne(start: Complex, maxIterations: Long): FractalPointData
@@ -222,10 +231,11 @@ abstract class Fractal : Serializable {
                     maxIterations = fracParams.getJsonNumber("maxIterations").longValue()
                 }
             }
+
             else -> {}
         }
 
-        fireParameterUpdate()
+        runBlocking{ launch{ fireParameterUpdate() } }
     }
 
     open fun toJson(): JsonObject {
@@ -291,7 +301,7 @@ abstract class Fractal : Serializable {
             iterations[0].size
         )
 
-        fireParameterUpdate()
+        runBlocking{ launch{ fireParameterUpdate() } }
     }
 
     open fun writeObject(stream: ObjectOutputStream) {
@@ -325,6 +335,7 @@ open class Mandelbrot(params: FractalParameters = defaultParams.copy()) : Fracta
                     EventBus.publish(result)
                     result
                 }
+
                 else -> iterate((z * z) + start, iterations + 1)
             }
         }

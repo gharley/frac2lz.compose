@@ -4,10 +4,7 @@ import EventBus
 import Palette
 import action.FractalEvent
 import action.NewPaletteEvent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -17,15 +14,16 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import state.FractalParameters
 
 @Composable
 fun StatusBar(pal: Palette) {
     val palette = remember { pal }
     var maxIterations by remember { mutableStateOf(0L) }
     var usedIterations by remember { mutableStateOf(0L) }
-    var centerX by remember { mutableStateOf(0f) }
-    var centerY by remember { mutableStateOf(0f) }
-    var magnify by remember { mutableStateOf(0f) }
+    var centerX by remember { mutableStateOf(0.0) }
+    var centerY by remember { mutableStateOf(0.0) }
+    var magnify by remember { mutableStateOf(0.0) }
     var width by remember { mutableStateOf(0) }
     var height by remember { mutableStateOf(0) }
     var colorRange = remember { palette.colorRange }
@@ -35,13 +33,21 @@ fun StatusBar(pal: Palette) {
         maxIterations = it.data.maxIterations
         usedIterations = it.data.iterations
     }
+
+    EventBus.listen(FractalParameters::class.java).subscribe{
+        centerX = it.centerX
+        centerY = it.centerY
+        magnify = it.magnify
+        width = it.width.toInt()
+        height = it.height.toInt()
+    }
 //
 //    EventBus.listen(NewPaletteEvent::class.java).subscribe {
 //        colorRange = it.palette.colorRange
 //        size = it.palette.size
 //    }
 
-    Column {
+    Column(Modifier.fillMaxWidth().padding(2.dp)) {
         Divider()
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
             addTextField("Iterations -> Allowed: ", maxIterations.toString())
@@ -75,7 +81,7 @@ fun addTextField(labelText: String, boundProperty: String, addBorder: Boolean = 
                                 Offset(x, 0f),
                                 Offset(x, size.height)
                             )
-                        } catch (ex: Exception) {
+                        } catch (_: Exception) {
                         }
                     }
             )
