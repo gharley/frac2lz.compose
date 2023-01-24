@@ -5,7 +5,7 @@ import action.FractalPointData
 import androidx.compose.runtime.*
 import java.io.Serializable
 
-data class FractalBounds(var top: Double = -1.0, var right: Double = 1.0, var bottom: Double = 1.0, var left: Double = -2.0)
+data class FractalBounds(var top: Double = -2.1, var right: Double = 1.0, var bottom: Double = 2.1, var left: Double = -1.0)
 data class FractalParameters(
     var width: Double, var height: Double, var centerX: Double, var centerY: Double,
     var maxIterations: Long, val bounds: FractalBounds = FractalBounds(),

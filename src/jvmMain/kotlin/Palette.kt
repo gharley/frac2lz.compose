@@ -27,7 +27,7 @@ class Palette(initSize: Int = 64) {
             if (value == t) return
             value = t
 
-            if (property.name == "size") {
+            if (property.name == "size" || property.name == "colorRange") {
                 when (palette.paletteType) {
                     PaletteType.GRAY_SCALE -> palette.buildPalette(palette.grayScaleColor)
                     PaletteType.RANDOM -> palette.buildPalette(palette.randomColor)
@@ -153,7 +153,7 @@ class Palette(initSize: Int = 64) {
         return colors[indexFromIterations(value.iterations)]
     }
 
-    fun indexFromIterations(iterations: Long): Int {
+    private fun indexFromIterations(iterations: Long): Int {
         return ((iterations / colorRange) % colors.size).toInt()
     }
 
@@ -220,7 +220,8 @@ class Palette(initSize: Int = 64) {
             }
 
             fireUpdate()
-        } catch (_: Exception) {
+        } catch (ex: Exception) {
+            ex.message
         }
     }
 
