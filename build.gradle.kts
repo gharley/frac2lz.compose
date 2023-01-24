@@ -27,6 +27,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation("io.reactivex.rxjava3:rxjava:$rxVersion")
+                implementation("org.glassfish:javax.json:1.1.4")
                 implementation("javax.json:javax.json-api:1.1.4")
             }
         }

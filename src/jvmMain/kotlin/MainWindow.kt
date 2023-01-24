@@ -14,9 +14,13 @@ import components.PaletteCanvas
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
+import java.io.InputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.util.*
+import javax.json.Json
+import javax.json.JsonObject
+import javax.json.JsonReader
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -35,22 +39,28 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
-    fun baseCalc() = runBlocking{
-        fractal.value.setDefaultParameters()
+    fun startCalc() = runBlocking {
         launch { fractal.value.calcAll() }
     }
 
-    fun startCalc() {
-        suspend { fractal.value.calcAll() }
+    fun baseCalc() = runBlocking {
+        fractal.value.setDefaultParameters()
+        startCalc()
     }
 
-    fun refreshImage(){
-        suspend { fractal.value.refresh() }
+    fun refineImage() = runBlocking {
+        launch { fractal.value.refineSet() }
+    }
+
+    fun refreshImage() = runBlocking {
+        launch { fractal.value.refresh() }
     }
 
     EventBus.listen(CalculateEvent::class.java).subscribe {
         when (it.action) {
             CalculateAction.CALCULATE_BASE -> baseCalc()
+            CalculateAction.RECALCULATE -> startCalc()
+            CalculateAction.REFINE -> refineImage()
             CalculateAction.REFRESH -> refreshImage()
             else -> {}
         }
@@ -87,6 +97,32 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
 
         return file
+    }
+
+    fun onOpenJson() {
+        val initPath: String = getInitPath("jsonPath")
+        val extFilter = FileNameExtensionFilter("JSON Fractal Spec", "json")
+
+        val file = getFile(initPath, extFilter)
+
+        if (file != null) {
+            properties["jsonPath"] = file.parent ?: "./"
+
+            val stream: InputStream = file.inputStream()
+            val reader: JsonReader = Json.createReader(stream)
+            val data: JsonObject = reader.readObject()
+
+            EventBus.publish(AppTitle(file.name))
+
+            fractal.value.fromJson(data)
+            EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
+//            val calcAlert = Alert(Alert.AlertType.CONFIRMATION, "Calculate Now?")
+//
+//            calcAlert.showAndWait()
+//                .filter { response -> response === ButtonType.OK }
+//                .ifPresent { EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE)) }
+//        }
+        }
     }
 
     fun onOpenPalette() {
@@ -127,6 +163,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
     EventBus.listen(FileEvent::class.java).subscribe {
         when (it.action) {
+            FileAction.OPEN_JSON -> onOpenJson()
             FileAction.OPEN_PALETTE -> onOpenPalette()
             FileAction.SAVE_PALETTE -> onSavePalette()
             else -> {}
@@ -147,5 +184,4 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             }
         }
     }
-
 }

@@ -17,7 +17,7 @@ class SwingImage(private val params: FractalParameters, palette: Palette) :
     private val height = params.height.toInt()
     private val width = params.width.toInt()
     private var pixels = IntArray(width * height)
-    private val source = MemoryImageSource(width, height, pixels, 0, width)
+    private var source = MemoryImageSource(width, height, pixels, 0, width)
     private var image = createImage(source)
     private val imageTransform = AffineTransform()
 
@@ -36,7 +36,7 @@ class SwingImage(private val params: FractalParameters, palette: Palette) :
 
             if (it.endOfRow) {
                 source.newPixels(0, it.row, width, 1)
-                if (it.row % 10 == 0) update(graphics)
+                if (it.row % 10 == 0 || it.row == height - 1) update(graphics)
             }
         }
     }
@@ -55,8 +55,12 @@ class SwingImage(private val params: FractalParameters, palette: Palette) :
     }
 
     private fun prepareForCalc(clear: Boolean = true) {
+//        pixels = IntArray(width * height)
+//        source = MemoryImageSource(width, height, pixels, 0, width)
+//        image = createImage(source)
+
         if (clear) {
-            pixels.fill(0xff000000.toInt())
+            pixels.fill(0xffefefef.toInt())
             prepareImage(image, null)
             source.newPixels(0, 0, width, height)
         }

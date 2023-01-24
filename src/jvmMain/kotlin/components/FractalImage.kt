@@ -21,7 +21,7 @@ fun FractalImage(params: FractalParameters, pal: Palette) {
     val fractalWidth = parameters.width
 
     Surface(Modifier.fillMaxSize(), elevation = 5.dp) {
-        val swingImage = SwingImage(params, palette)
+        val swingImage = remember { SwingImage(params, palette) }
 
         SwingPanel(modifier = Modifier
             .size(width = fractalWidth.dp, height = fractalHeight.dp)
