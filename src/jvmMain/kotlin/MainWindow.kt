@@ -7,10 +7,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
-import components.FractalImage
-import components.MainMenu
-import components.PaletteBar
-import components.PaletteCanvas
+import components.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -181,6 +178,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 Row(Modifier.weight(1f)) { FractalImage(fractal.value.params, palette.value) }
                 PaletteCanvas(palette.value)
                 PaletteBar()
+                StatusBar(palette.value)
             }
         }
     }
