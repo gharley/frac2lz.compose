@@ -14,7 +14,6 @@ import java.io.File
 import java.io.InputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.nio.file.Path
 import java.util.*
 import javax.json.Json
 import javax.json.JsonObject
@@ -97,6 +96,26 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         return file
     }
 
+    fun onOpen() {
+        val initPath: String = getInitPath("2lzPath")
+        val extFilter = FileNameExtensionFilter("Frac2lz image", "2lz")
+
+        val file = getFile(initPath, extFilter)
+
+        if (file != null) {
+            properties["2lzPath"] = file.parent ?: "./"
+
+            val stream = ObjectInputStream(file.inputStream())
+
+            fractal.value.readObject(stream)
+            stream.close()
+
+            EventBus.publish(AppTitle(file.name))
+
+            refreshImage()
+        }
+    }
+
     fun onOpenJson() {
         val initPath: String = getInitPath("jsonPath")
         val extFilter = FileNameExtensionFilter("JSON Fractal Spec", "json")
@@ -175,6 +194,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
     EventBus.listen(FileEvent::class.java).subscribe {
         when (it.action) {
+            FileAction.OPEN_FRACTAL -> onOpen()
             FileAction.OPEN_JSON -> onOpenJson()
             FileAction.OPEN_PALETTE -> onOpenPalette()
             FileAction.SAVE_PALETTE -> onSavePalette()

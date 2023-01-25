@@ -178,11 +178,8 @@ abstract class Fractal : Serializable {
         EventBus.publish(FractalIterationEvent(params.maxIterations, maxIterationsActual))
     }
 
-    private suspend fun fireParameterUpdate() {
+    private fun fireParameterUpdate() {
         EventBus.publish(params)
-        withContext(Dispatchers.IO) {
-            Thread.sleep(1)
-        }
     }
 
     open fun setDefaultParameters() {}
@@ -243,7 +240,7 @@ abstract class Fractal : Serializable {
 
         return factory.createObjectBuilder()
             .add("name", name)
-            .add("version", "1.0")
+            .add("version", "1.2")
             .add(
                 "params", factory.createObjectBuilder()
                     .add("width", params.width)
@@ -286,6 +283,7 @@ abstract class Fractal : Serializable {
         name = stream.readUTF()
         version = stream.readUTF()
         maxIterationsActual = stream.readLong()
+        @Suppress("UNCHECKED_CAST")
         params = stream.readObject() as FractalParameters
         @Suppress("UNCHECKED_CAST")
         iterations = stream.readObject() as Array<LongArray>
@@ -318,8 +316,7 @@ abstract class Fractal : Serializable {
 private val defaultParams =
     FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L, FractalBounds(), 1.0)
 
-open class Mandelbrot(params: FractalParameters = defaultParams.copy()) : Fractal(), Serializable {
-    override var params = params
+open class Mandelbrot(override var params: FractalParameters = defaultParams.copy()) : Fractal(), Serializable {
 
     init {
         name = "Mandelbrot"
