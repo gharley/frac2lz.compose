@@ -3,7 +3,7 @@ package components
 import androidx.compose.ui.graphics.Color
 import org.jetbrains.skia.Point
 
-class PaletteMarker(private val index: Int = 0, private val height: Float = 0f, val fillColor: Color = Color.Black){
+class PaletteMarker(val index: Int = 0, private val height: Float = 0f, val fillColor: Color = Color.Black){
     var points: Array<Point> = arrayOf()
     private var offset: Float = 0f
 

@@ -2,7 +2,6 @@ package components
 
 import EventBus
 import Palette
-import action.NewPaletteEvent
 import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.Canvas
@@ -11,9 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -31,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PaintMode
+import rgbToHsv
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -38,10 +36,10 @@ fun PaletteCanvas(pal: Palette) {
     val palette = remember { pal }
     val markerMap = mutableMapOf<Int, PaletteMarker>()
     var trigger by remember { mutableStateOf(0) }
-    var index = 0
+    var index: Int
     var stripeWidth = 0
     var height = 0f
-    var width = 0f
+    var width: Float
 
     fun paletteIndex(x: Int): Int {
         return x / stripeWidth
@@ -66,54 +64,62 @@ fun PaletteCanvas(pal: Palette) {
             val fillColor = palette.colors[index]
             val marker = PaletteMarker(index, height / 2, fillColor)
 
-//                with(marker) {
-//                    layoutX = (index * stripeWidth + stripeWidth / 2).toDouble()
-//                    layoutY = 0.0 //canvas.height / 2
-//
-//                    this@ColorBar.children.add(this)
-//                }
-
             markerMap[index] = marker
             trigger += 1
         }
+    }
 
-//            EventBus.publish(this)
+    fun interpolate() {
+        if (markerMap.count() < 2) return
+
+        var startMarker: PaletteMarker? = null
+
+        markerMap.forEach { (_, marker) ->
+            if (startMarker == null) startMarker = marker
+            else {
+                val startColor = palette.colors[startMarker!!.index]
+                val endColor = palette.colors[marker.index]
+                val range = marker.index - startMarker!!.index + 1
+                val startHSV = rgbToHsv(startColor)
+                val endHSV = rgbToHsv(endColor)
+                val hueInc = (endHSV.hue - startHSV.hue) / range.toFloat()
+                val saturationInc = (endHSV.saturation - startHSV.saturation) / range.toFloat()
+                val valueInc = (endHSV.value - startHSV.value) / range.toFloat()
+
+                for (idx in 0 until range) {
+                    val colorIndex = startMarker!!.index + idx
+                    val hue = (startHSV.hue + hueInc * idx)// % 360.0
+                    val saturation = (startHSV.saturation + saturationInc * idx)
+                    val value = (startHSV.value + valueInc * idx)
+
+                    palette.colors[colorIndex] = Color.hsv(hue, saturation, value, 1f)
+                }
+
+                startMarker = marker
+            }
+        }
+
+        EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
     }
 
     EventBus.listen(PaletteEvent::class.java).subscribe {
         if (it.action == PaletteAction.CHANGED) removeMarkers()
+        else if (it.action == PaletteAction.INTERPOLATE) interpolate()
     }
 
     fun onMouseClicked(it: PointerEvent) {
         val positionX = it.changes.last().position.x
 
-        val setColor = {
-//            palette.colors[index] = Color32.fromColor(colorChooser!!.value)
-//            palette.colors[index].alpha = 1.0f
-
-            removeMarker(index)
-            setMarker(index)
-        }
-
-//        if (colorChooser == null) {
-//            colorChooser = ColorPicker()
-//            colorChooser!!.setOnAction { setColor() }
-//        }
+        it.awtEventOrNull?.consume()
 
         index = paletteIndex(positionX.toInt())
-
-//        if (it.button == MouseButton.SECONDARY) {
-//            colorChooser!!.value = palette.colors[index]
-//            colorChooser!!.show()
-//        }
-
         setMarker(index)
     }
 
     Canvas(Modifier.height(48.dp).fillMaxWidth().onPointerEvent(PointerEventType.Release) { onMouseClicked(it) }) {
         height = size.height
         width = size.width
-        val test = trigger  // Don't remove, tricks app into recomposing
+        val roy = trigger  // Don't remove, tricks app into recomposing
 
         stripeWidth = (width / palette.size * palette.colorRange).toInt()
 
@@ -199,6 +205,11 @@ fun PaletteBar() {
                         "Animate Palette",
                         tint = Color.Unspecified
                     )
+                }
+            }
+            Column {
+                Button(onClick = {EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE))}){
+                    Text("Interpolate between markers")
                 }
             }
         }

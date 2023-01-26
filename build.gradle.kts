@@ -30,8 +30,8 @@ kotlin {
                 implementation("org.glassfish:javax.json:1.1.4")
                 implementation("javax.json:javax.json-api:1.1.4")
             }
+            val jvmTest by getting
         }
-        val jvmTest by getting
     }
 }
 
