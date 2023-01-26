@@ -1,13 +1,9 @@
 package components
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import org.jetbrains.skia.Point
-import java.awt.BasicStroke
-import java.awt.Graphics2D
-import java.awt.Polygon
 
-class PaletteMarker(private val index: Int, private val height: Float, val fillColor: Color){
+class PaletteMarker(private val index: Int = 0, private val height: Float = 0f, val fillColor: Color = Color.Black){
     var points: Array<Point> = arrayOf()
     private var offset: Float = 0f
 
