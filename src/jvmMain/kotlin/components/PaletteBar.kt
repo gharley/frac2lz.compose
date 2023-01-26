@@ -2,6 +2,7 @@ package components
 
 import EventBus
 import Palette
+import action.NewPaletteEvent
 import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.Canvas
@@ -29,6 +30,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.jetbrains.skia.Paint
+import org.jetbrains.skia.PaintMode
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -60,7 +62,7 @@ fun PaletteCanvas(pal: Palette) {
     fun setMarker(index: Int) {
         if (markerMap.containsKey(index)) {
             removeMarker(index)
-        } else {
+        } else if (index < palette.size) {
             val fillColor = palette.colors[index]
             val marker = PaletteMarker(index, height / 2, fillColor)
 
@@ -78,9 +80,12 @@ fun PaletteCanvas(pal: Palette) {
 //            EventBus.publish(this)
     }
 
+    EventBus.listen(PaletteEvent::class.java).subscribe {
+        if (it.action == PaletteAction.CHANGED) removeMarkers()
+    }
+
     fun onMouseClicked(it: PointerEvent) {
-        val positionX = it.awtEventOrNull!!.xOnScreen
-        val positionY = it.awtEventOrNull!!.yOnScreen
+        val positionX = it.changes.last().position.x
 
         val setColor = {
 //            palette.colors[index] = Color32.fromColor(colorChooser!!.value)
@@ -95,7 +100,7 @@ fun PaletteCanvas(pal: Palette) {
 //            colorChooser!!.setOnAction { setColor() }
 //        }
 
-        index = paletteIndex(positionX)
+        index = paletteIndex(positionX.toInt())
 
 //        if (it.button == MouseButton.SECONDARY) {
 //            colorChooser!!.value = palette.colors[index]
@@ -108,6 +113,7 @@ fun PaletteCanvas(pal: Palette) {
     Canvas(Modifier.height(48.dp).fillMaxWidth().onPointerEvent(PointerEventType.Release) { onMouseClicked(it) }) {
         height = size.height
         width = size.width
+        val test = trigger  // Don't remove, tricks app into recomposing
 
         stripeWidth = (width / palette.size * palette.colorRange).toInt()
 
@@ -123,19 +129,22 @@ fun PaletteCanvas(pal: Palette) {
             }
         }
 
+        val paint = Paint()
+        val stroke = Paint()
+
+        paint.mode = PaintMode.FILL
+        stroke.mode = PaintMode.STROKE
+        stroke.strokeWidth = 10f
+        stroke.color = Color.Black.toArgb()
+
         markerMap.forEach { entry ->
             val marker = entry.value
-            val paint = Paint()
-
             marker.setPoints(stripeWidth)
-            paint.strokeWidth = 2f
 
             drawIntoCanvas {
-                paint.color = Color.LightGray.toArgb() // marker.fillColor.toArgb()
+                paint.color = (marker.fillColor.toArgb() xor 0xffffff)
                 it.nativeCanvas.drawPolygon(marker.points, paint = paint)
-//                paint.setStroke(true)
-//                paint.color = Color.Black.toArgb()
-//                it.nativeCanvas.drawPolygon(marker.points, paint = paint)
+                it.nativeCanvas.drawPolygon(marker.points, paint = stroke)
             }
         }
     }

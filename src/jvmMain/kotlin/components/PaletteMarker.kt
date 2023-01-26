@@ -12,8 +12,8 @@ class PaletteMarker(private val index: Int = 0, private val height: Float = 0f, 
 
         points = arrayOf(
             Point(offset, height),
-            Point((-height / 2) + offset, 0f),
-            Point((height / 2) + offset, 0f)
+            Point((-stripeWidth / 2) + offset, 0f),
+            Point((stripeWidth / 2) + offset, 0f)
         )
     }
 }

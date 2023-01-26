@@ -125,6 +125,8 @@ class Palette(initSize: Int = 64) {
         colors = Array(size) { idx ->
             colorFunc(idx)
         }
+
+        fireChanged()
     }
 
     private fun buildDefaultPalette() {
@@ -184,8 +186,13 @@ class Palette(initSize: Int = 64) {
         return Color(r, g, b)
     }
 
+    private fun fireChanged(){
+        EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
+    }
+
     private fun fireUpdate() {
         EventBus.publish(NewPaletteEvent(this))
+        fireChanged()
     }
 
 //    private var animating: Boolean = false

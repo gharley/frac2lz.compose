@@ -8,7 +8,7 @@ enum class FileAction {
 }
 
 enum class PaletteAction {
-    ANIMATE, DEFAULT, RANDOM, SMOOTH, INTERPOLATE
+    ANIMATE, CHANGED, DEFAULT, RANDOM, SMOOTH, INTERPOLATE
 }
 
 enum class UIAction {
