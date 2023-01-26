@@ -2,21 +2,22 @@ package components
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import org.jetbrains.skia.Point
+import java.awt.BasicStroke
 import java.awt.Graphics2D
 import java.awt.Polygon
-import java.awt.Stroke
 
-class PaletteMarker(val height: Double, private val fillColor: Color, val index: Int) :
-    Polygon(){
-    init {
-        this.addPoint(0, height.toInt())
-        this.addPoint((-height / 2).toInt(), 0)
-        this.addPoint((height / 2).toInt(), 0)
-    }
+class PaletteMarker(private val index: Int, private val height: Float, val fillColor: Color){
+    var points: Array<Point> = arrayOf()
+    private var offset: Float = 0f
 
-    fun draw(g2d: Graphics2D){
-        g2d.background = java.awt.Color(fillColor.toArgb())
-        g2d.color = java.awt.Color.BLACK
-        g2d.drawPolygon(this)
+    fun setPoints(stripeWidth: Int){
+        offset = (index * stripeWidth + stripeWidth / 2).toFloat()
+
+        points = arrayOf(
+            Point(offset, height),
+            Point((-height / 2) + offset, 0f),
+            Point((height / 2) + offset, 0f)
+        )
     }
 }

@@ -45,8 +45,7 @@ class Palette(initSize: Int = 64) {
     var paletteType = PaletteType.GRAY_SCALE
         private set
 
-    internal var colors = Array(initSize) { Color(0) }
-
+    var colors = Array(initSize) { Color(0) }
 
     var size: Int by Delegate(initSize)
     var getColorFromFractal: Boolean by Delegate(false)
