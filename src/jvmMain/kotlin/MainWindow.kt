@@ -27,7 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
-    val palette = rememberSaveable { mutableStateOf(Palette()) }
+    var palette by remember { mutableStateOf(Palette()) }
     val fractal = rememberSaveable { mutableStateOf(Mandelbrot()) }
     val appName = "Frac2lz"
     val appTitle = remember { mutableStateOf(appName) }
@@ -67,7 +67,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     }
 
     EventBus.listen(NewPaletteEvent::class.java).subscribe {
-        palette.value = Palette(it.palette)
+        palette = Palette(it.palette)
     }
 
     fun getInitPath(key: String): String {
@@ -156,7 +156,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
             val stream = ObjectInputStream(file.inputStream())
 
-            palette.value.readObject(stream)
+            palette.readObject(stream)
             stream.close()
 
             refreshImage()
@@ -188,7 +188,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
             val stream = ObjectOutputStream(file.outputStream())
 
-            palette.value.writeObject(stream)
+            palette.writeObject(stream)
             stream.close()
         }
     }
@@ -212,10 +212,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         MaterialTheme {
             MainMenu()
             Column {
-                Row(Modifier.weight(1f)) { FractalImage(fractal.value.params, palette.value) }
-                PaletteCanvas(palette.value)
+                Row(Modifier.weight(1f)) { FractalImage(fractal.value.params, palette) }
+                PaletteCanvas(palette)
                 PaletteBar()
-                StatusBar(palette.value)
+                StatusBar(palette)
             }
         }
     }

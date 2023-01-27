@@ -1,5 +1,8 @@
 import action.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import com.resmass.frac2lz.Color32
+import java.awt.color.ColorSpace
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import kotlin.math.abs
@@ -192,7 +195,7 @@ class Palette(initSize: Int = 64) {
 
     private fun fireUpdate() {
         EventBus.publish(NewPaletteEvent(this))
-        fireChanged()
+//        fireChanged()
     }
 
 //    private var animating: Boolean = false
@@ -217,12 +220,6 @@ class Palette(initSize: Int = 64) {
             colorRange = stream.readInt()
             colors = Array(size) { _ ->
                 Color(stream.readInt())
-//                val red = stream.readFloat()
-//                val green = stream.readFloat()
-//                val blue = stream.readFloat()
-//                val alpha = stream.readFloat()
-//
-//                Color(red, green, blue, alpha)
             }
 
             fireUpdate()
@@ -231,14 +228,34 @@ class Palette(initSize: Int = 64) {
         }
     }
 
+//    fun readObject(stream: ObjectInputStream) {
+//        try {
+//            size = stream.readInt()
+//            colorRange = stream.readInt()
+//            colors = Array(size) { _ ->
+//                var red = stream.readDouble() * 255    // Colors are stored as rgba for compatibility with JavaFX version
+//                var green = stream.readDouble() * 255
+//                var blue = stream.readDouble() * 255
+////                var alpha = stream.readDouble()
+//
+////                while (red > 1.0f) red /= 10f
+////                while (green > 1.0f) green /= 10f
+////                while (blue > 1.0f) blue /= 10f
+////                while (alpha > 1.0f) alpha /= 10f
+//
+//                Color(red.toInt(), green.toInt(), blue.toInt())
+//            }
+//
+//            fireUpdate()
+//        } catch (_: Exception) {
+//        }
+//    }
+
     fun writeObject(stream: ObjectOutputStream) {
         stream.writeInt(size)
         stream.writeInt(colorRange)
         colors.forEach { color ->
-            stream.writeFloat(color.red)
-            stream.writeFloat(color.green)
-            stream.writeFloat(color.blue)
-            stream.writeFloat(color.alpha)
+            stream.writeInt(color.toArgb())
         }
     }
 }
