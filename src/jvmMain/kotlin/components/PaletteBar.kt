@@ -119,7 +119,7 @@ fun PaletteCanvas(pal: Palette) {
     Canvas(Modifier.height(48.dp).fillMaxWidth().onPointerEvent(PointerEventType.Release) { onMouseClicked(it) }) {
         height = size.height
         width = size.width
-        val roy = trigger  // Don't remove, tricks app into recomposing
+        trigger  // Don't remove, tricks app into recomposing
 
         stripeWidth = (width / palette.size * palette.colorRange).toInt()
 

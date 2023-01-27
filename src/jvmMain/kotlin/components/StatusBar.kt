@@ -3,6 +3,7 @@ package components
 import EventBus
 import Palette
 import action.FractalEvent
+import action.PaletteEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.LocalTextStyle
@@ -20,6 +21,7 @@ import state.FractalParameters
 @Composable
 fun StatusBar(pal: Palette) {
     val palette = remember { pal }
+
     var maxIterations by remember { mutableStateOf(0L) }
     var usedIterations by remember { mutableStateOf(0L) }
     var centerX by remember { mutableStateOf(0.0) }
@@ -31,22 +33,22 @@ fun StatusBar(pal: Palette) {
     var size = remember { palette.size }
 
     EventBus.listen(FractalEvent::class.java).subscribe {
-        maxIterations = it.data.maxIterations
-        usedIterations = it.data.iterations
+        if (it.data.iterations > usedIterations) usedIterations = it.data.iterations
     }
 
     EventBus.listen(FractalParameters::class.java).subscribe {
+        maxIterations = it.maxIterations
         centerX = it.centerX
         centerY = it.centerY
         magnify = it.magnify
         width = it.width.toInt()
         height = it.height.toInt()
     }
-//
-//    EventBus.listen(NewPaletteEvent::class.java).subscribe {
-//        colorRange = it.palette.colorRange
-//        size = it.palette.size
-//    }
+
+    EventBus.listen(PaletteEvent::class.java).subscribe {
+        colorRange = palette.colorRange
+        size = palette.size
+    }
 
     Column(Modifier.fillMaxWidth().padding(2.dp)) {
         Divider()

@@ -15,7 +15,7 @@ import java.lang.Float.max
 import java.lang.Float.min
 import kotlin.math.abs
 
-data class HSV(var hue:Float = 0f, var saturation:Float = 0f, var value:Float = 0f)
+data class HSV(var hue: Float = 0f, var saturation: Float = 0f, var value: Float = 0f)
 
 fun rgbToHsv(color: Color): HSV {
     val red = color.red // 255
@@ -28,7 +28,7 @@ fun rgbToHsv(color: Color): HSV {
 
     result.value = colorMax
     result.saturation = if (delta == 0f) 0f else delta / colorMax
-    result.hue = when (colorMax){
+    result.hue = if (delta == 0f) 0f else when (colorMax) {
         red -> (green - blue) / delta % 6f
         green -> (blue - red) / delta + 2f
         blue -> (red - green) / delta + 4f

@@ -1,10 +1,9 @@
 import action.FractalEvent
 import action.FractalIterationEvent
 import action.FractalPointData
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import state.FractalBounds
 import state.FractalParameters
 import java.io.ObjectInputStream
@@ -167,14 +166,14 @@ abstract class Fractal : Serializable {
         fireIterationUpdate()
     }
 
-    private fun fireCalcUpdate(row: Int, column: Int) {
+    private suspend fun fireCalcUpdate(row: Int, column: Int) = coroutineScope {
         val isEndOfRow = column == iterations[0].size - 1
 
-        EventBus.publish(FractalEvent(row, column, fractalData(row, column), isEndOfRow))
-        if (isEndOfRow) fireIterationUpdate()
+            EventBus.publish(FractalEvent(row, column, fractalData(row, column), isEndOfRow))
+//            if (isEndOfRow) fireIterationUpdate()
     }
 
-    private fun fireIterationUpdate() {
+    private suspend fun fireIterationUpdate() = coroutineScope{
         EventBus.publish(FractalIterationEvent(params.maxIterations, maxIterationsActual))
     }
 

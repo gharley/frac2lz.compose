@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.window.Window
 import components.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
@@ -21,6 +23,7 @@ import javax.json.JsonReader
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
@@ -36,8 +39,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
-    fun startCalc() = runBlocking {
-        launch { fractal.value.calcAll() }
+    fun startCalc() {
+        GlobalScope.launch { fractal.value.calcAll() }
     }
 
     fun baseCalc() = runBlocking {
@@ -45,12 +48,12 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         startCalc()
     }
 
-    fun refineImage() = runBlocking {
-        launch { fractal.value.refineSet() }
+    fun refineImage() {
+        GlobalScope.launch { fractal.value.refineSet() }
     }
 
-    fun refreshImage() = runBlocking {
-        launch { fractal.value.refresh() }
+    fun refreshImage() {
+        GlobalScope.launch { fractal.value.refresh() }
     }
 
     EventBus.listen(CalculateEvent::class.java).subscribe {
@@ -187,8 +190,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
             palette.value.writeObject(stream)
             stream.close()
-
-            refreshImage()
         }
     }
 
