@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import state.FractalParameters
@@ -29,8 +30,8 @@ fun StatusBar(pal: Palette) {
     var magnify by remember { mutableStateOf(0.0) }
     var width by remember { mutableStateOf(0) }
     var height by remember { mutableStateOf(0) }
-    var colorRange = remember { palette.colorRange }
-    var size = remember { palette.size }
+    var colorRange by remember { mutableStateOf(palette.colorRange) }
+    var size by remember { mutableStateOf(palette.size) }
 
     EventBus.listen(FractalEvent::class.java).subscribe {
         if (it.data.iterations > usedIterations) usedIterations = it.data.iterations
@@ -67,7 +68,7 @@ fun StatusBar(pal: Palette) {
 }
 
 @Composable
-fun ClipText(text: String, modifier: Modifier, maxLines: Int = 1) {
+fun ClipText(text: String, modifier: Modifier, maxLines: Int = 1, fontWeight: FontWeight = FontWeight.Normal) {
     Text(
         text,
         maxLines = maxLines,
@@ -75,6 +76,7 @@ fun ClipText(text: String, modifier: Modifier, maxLines: Int = 1) {
         style = LocalTextStyle.current.copy(
             fontSize = LocalTextStyle.current.fontSize * .85
         ),
+        fontWeight = fontWeight,
         modifier = modifier
     )
 
@@ -84,7 +86,7 @@ fun ClipText(text: String, modifier: Modifier, maxLines: Int = 1) {
 fun addTextField(labelText: String, boundProperty: String, addBorder: Boolean = true) {
     Surface {
         Row {
-            ClipText(labelText, Modifier.padding(horizontal = 5.dp, vertical = 10.dp))
+            ClipText(labelText, Modifier.padding(horizontal = 5.dp, vertical = 10.dp), fontWeight = FontWeight.Bold)
             ClipText(
                 boundProperty,
                 Modifier

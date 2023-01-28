@@ -21,6 +21,8 @@ class Palette(initSize: Int = 64) {
         this.refineRange = palette.refineRange
     }
 
+    var disableSideEffects = false
+
     private class Delegate<T>(private var value: T) {
         operator fun getValue(palette: Palette, property: KProperty<*>): T {
             return value
@@ -30,7 +32,7 @@ class Palette(initSize: Int = 64) {
             if (value == t) return
             value = t
 
-            if (property.name == "size" || property.name == "colorRange") {
+            if (!palette.disableSideEffects && (property.name == "size" || property.name == "colorRange")) {
                 when (palette.paletteType) {
                     PaletteType.GRAY_SCALE -> palette.buildPalette(palette.grayScaleColor)
                     PaletteType.RANDOM -> palette.buildPalette(palette.randomColor)
@@ -48,7 +50,7 @@ class Palette(initSize: Int = 64) {
     var paletteType = PaletteType.GRAY_SCALE
         private set
 
-    var colors = Array(initSize) { Color(0) }
+    var colors: Array<Color> = Array(initSize) { Color(0) }
 
     var size: Int by Delegate(initSize)
     var getColorFromFractal: Boolean by Delegate(false)
@@ -216,15 +218,20 @@ class Palette(initSize: Int = 64) {
 
     fun readObject(stream: ObjectInputStream) {
         try {
+            disableSideEffects = true
+
             size = stream.readInt()
             colorRange = stream.readInt()
             colors = Array(size) { _ ->
                 Color(stream.readInt())
             }
 
+            disableSideEffects = false
             fireUpdate()
         } catch (ex: Exception) {
             ex.message
+        }finally {
+            disableSideEffects = false
         }
     }
 
