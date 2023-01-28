@@ -6,7 +6,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowState
 import components.*
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -207,7 +210,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     Window(
         onCloseRequest = { closeFunction() },
         title = appTitle.value,
-        icon = painterResource("frac2lz128.png")
+        icon = painterResource("frac2lz128.png"),
+        state = WindowState(size = DpSize(1200.dp, 800.dp))
     ) {
         MaterialTheme {
             MainMenu()
