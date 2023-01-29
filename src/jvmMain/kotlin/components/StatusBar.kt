@@ -59,25 +59,23 @@ fun StatusBar(pal: Palette) {
             .padding(2.dp)
     ) {
         Divider()
-        Row(Modifier
-            .fillMaxWidth()
-            .onGloballyPositioned {
-                val parentWidth = it.parentCoordinates?.size?.width
+        BoxWithConstraints(Modifier.wrapContentWidth()) {
+            val parentWidth = constraints.maxWidth.toFloat()
+            scale = maxWidth.value / parentWidth
 
-                if (parentWidth != null) {
-                    scale = (it.size.width / parentWidth).toFloat()
-                }
-            }, horizontalArrangement = Arrangement.Start
-        ) {
-            addTextField("Iterations -> Allowed: ", maxIterations.toString(), scale = scale)
-            addTextField("Used: ", usedIterations.toString(), scale = scale)
-            addTextField("RE Center: ", centerX.toString(), scale = scale)
-            addTextField("IM Center: ", centerY.toString(), scale = scale)
-            addTextField("Zoom: ", magnify.toString(), scale = scale)
-            addTextField("Width: ", width.toString(), scale = scale)
-            addTextField("Height: ", height.toString(), scale = scale)
-            addTextField("Color Range: ", colorRange.toString(), scale = scale)
-            addTextField("Palette Size: ", size.toString(), false, scale = scale)
+            Row(
+                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+            ) {
+                addTextField("Iterations -> Allowed: ", maxIterations.toString(), scale = scale)
+                addTextField("Used: ", usedIterations.toString(), scale = scale)
+                addTextField("RE Center: ", centerX.toString(), scale = scale)
+                addTextField("IM Center: ", centerY.toString(), scale = scale)
+                addTextField("Zoom: ", magnify.toString(), scale = scale)
+                addTextField("Width: ", width.toString(), scale = scale)
+                addTextField("Height: ", height.toString(), scale = scale)
+                addTextField("Color Range: ", colorRange.toString(), scale = scale)
+                addTextField("Palette Size: ", size.toString(), false, scale = scale)
+            }
         }
     }
 }
