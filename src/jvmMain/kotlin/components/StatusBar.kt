@@ -7,14 +7,13 @@ import action.PaletteEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.LocalTextStyle
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -52,45 +51,64 @@ fun StatusBar(pal: Palette) {
         size = palette.size
     }
 
-    val scale = 1f
-    Column(Modifier.fillMaxWidth().padding(2.dp).scale(scale)) {
+    var scale = 1f
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(2.dp)
+    ) {
         Divider()
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            addTextField("Iterations -> Allowed: ", maxIterations.toString())
-            addTextField("Used: ", usedIterations.toString())
-            addTextField("RE Center: ", centerX.toString())
-            addTextField("IM Center: ", centerY.toString())
-            addTextField("Zoom: ", magnify.toString())
-            addTextField("Width: ", width.toString())
-            addTextField("Height: ", height.toString())
-            addTextField("Color Range: ", colorRange.toString())
-            addTextField("Palette Size: ", size.toString(), false)
+        Row(Modifier
+            .fillMaxWidth()
+            .onGloballyPositioned {
+                val parentWidth = it.parentCoordinates?.size?.width
+
+                if (parentWidth != null) {
+                    scale = (it.size.width / parentWidth).toFloat()
+                }
+            }, horizontalArrangement = Arrangement.Start
+        ) {
+            addTextField("Iterations -> Allowed: ", maxIterations.toString(), scale = scale)
+            addTextField("Used: ", usedIterations.toString(), scale = scale)
+            addTextField("RE Center: ", centerX.toString(), scale = scale)
+            addTextField("IM Center: ", centerY.toString(), scale = scale)
+            addTextField("Zoom: ", magnify.toString(), scale = scale)
+            addTextField("Width: ", width.toString(), scale = scale)
+            addTextField("Height: ", height.toString(), scale = scale)
+            addTextField("Color Range: ", colorRange.toString(), scale = scale)
+            addTextField("Palette Size: ", size.toString(), false, scale = scale)
         }
     }
 }
 
 @Composable
-fun ClipText(text: String, modifier: Modifier, maxLines: Int = 1, fontWeight: FontWeight = FontWeight.Normal) {
+fun ClipText(text: String, modifier: Modifier, scale: Float, fontWeight: FontWeight = FontWeight.Normal) {
     Text(
         text,
-        maxLines = maxLines,
+        maxLines = 1,
         overflow = TextOverflow.Clip,
         style = LocalTextStyle.current.copy(
-            fontSize = LocalTextStyle.current.fontSize * .85
+            fontSize = LocalTextStyle.current.fontSize * scale
         ),
         fontWeight = fontWeight,
-        modifier = modifier
+        modifier = modifier.wrapContentWidth(unbounded = true),
     )
 
 }
 
 @Composable
-fun addTextField(labelText: String, boundProperty: String, addBorder: Boolean = true) {
-    Surface {
-        Row {
-            ClipText(labelText, Modifier.padding(horizontal = 5.dp, vertical = 10.dp), fontWeight = FontWeight.Bold)
+fun addTextField(labelText: String, valueText: String, addBorder: Boolean = true, scale: Float = 1f) {
+    Column {
+        Row(Modifier.wrapContentWidth()) {
             ClipText(
-                boundProperty,
+                labelText,
+                Modifier.padding(horizontal = 5.dp, vertical = 10.dp),
+                scale,
+                fontWeight = FontWeight.Bold
+            )
+            ClipText(
+                valueText,
                 Modifier
                     .padding(end = 5.dp, top = 10.dp, bottom = 10.dp)
                     .drawBehind {
@@ -104,7 +122,8 @@ fun addTextField(labelText: String, boundProperty: String, addBorder: Boolean = 
                             )
                         } catch (_: Exception) {
                         }
-                    }
+                    },
+                scale
             )
         }
     }

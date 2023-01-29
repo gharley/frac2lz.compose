@@ -121,7 +121,7 @@ fun PaletteCanvas(pal: Palette) {
         width = size.width
         trigger  // Don't remove, tricks app into recomposing
 
-        stripeWidth = (width / palette.size * palette.colorRange).toInt()
+        stripeWidth = (width / palette.size).toInt()
 
         for (colorIndex in 0 until palette.size) {
             val color = palette.colors[colorIndex]

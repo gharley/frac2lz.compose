@@ -170,7 +170,7 @@ abstract class Fractal : Serializable {
         val isEndOfRow = column == iterations[0].size - 1
 
             EventBus.publish(FractalEvent(row, column, fractalData(row, column), isEndOfRow))
-//            if (isEndOfRow) fireIterationUpdate()
+            if (isEndOfRow) fireIterationUpdate()
     }
 
     private suspend fun fireIterationUpdate() = coroutineScope{
