@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -51,7 +52,8 @@ fun StatusBar(pal: Palette) {
         size = palette.size
     }
 
-    Column(Modifier.fillMaxWidth().padding(2.dp)) {
+    val scale = 1f
+    Column(Modifier.fillMaxWidth().padding(2.dp).scale(scale)) {
         Divider()
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             addTextField("Iterations -> Allowed: ", maxIterations.toString())

@@ -136,6 +136,9 @@ class Palette(initSize: Int = 64) {
 
     private fun buildDefaultPalette() {
         paletteType = PaletteType.GRAY_SCALE
+        disableSideEffects = true
+        colorRange = 1
+        disableSideEffects = false
         buildPalette(grayScaleColor)
     }
 
@@ -191,7 +194,7 @@ class Palette(initSize: Int = 64) {
         return Color(r, g, b)
     }
 
-    private fun fireChanged(){
+    private fun fireChanged() {
         EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
     }
 
@@ -223,6 +226,12 @@ class Palette(initSize: Int = 64) {
             size = stream.readInt()
             colorRange = stream.readInt()
             colors = Array(size) { _ ->
+//                val color = stream.readInt()
+//                val red = ((color ushr 16) and 0xff) / 255f
+//                val green = ((color ushr 8) and 0xff) / 255f
+//                val blue = (color and 0xff) / 255f
+//
+//                Color(red, green, blue)
                 Color(stream.readInt())
             }
 
@@ -230,13 +239,15 @@ class Palette(initSize: Int = 64) {
             fireUpdate()
         } catch (ex: Exception) {
             ex.message
-        }finally {
+        } finally {
             disableSideEffects = false
         }
     }
 
 //    fun readObject(stream: ObjectInputStream) {
 //        try {
+//            disableSideEffects = true
+//
 //            size = stream.readInt()
 //            colorRange = stream.readInt()
 //            colors = Array(size) { _ ->
@@ -250,11 +261,13 @@ class Palette(initSize: Int = 64) {
 ////                while (blue > 1.0f) blue /= 10f
 ////                while (alpha > 1.0f) alpha /= 10f
 //
-//                Color(red.toInt(), green.toInt(), blue.toInt())
+//                Color(red.toFloat(), green.toFloat(), blue.toFloat())
 //            }
 //
+//            disableSideEffects = false
 //            fireUpdate()
 //        } catch (_: Exception) {
+//            disableSideEffects = false
 //        }
 //    }
 
@@ -262,6 +275,10 @@ class Palette(initSize: Int = 64) {
         stream.writeInt(size)
         stream.writeInt(colorRange)
         colors.forEach { color ->
+            val test = 0xff000000.toInt() or
+                    ((color.red * 255).toInt() * 0x10000) or
+                    ((color.green * 255).toInt() * 0x100) or
+                    (color.blue * 255).toInt()
             stream.writeInt(color.toArgb())
         }
     }
