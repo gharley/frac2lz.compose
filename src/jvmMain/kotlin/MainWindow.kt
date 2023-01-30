@@ -1,7 +1,9 @@
 import action.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -218,6 +220,14 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             Column {
                 Row(Modifier.weight(1f)) { FractalImage(fractal.value.params, palette) }
                 PaletteCanvas(palette)
+                Row(Modifier.fillMaxWidth()) {
+                    Column { Text("Color Range:") }
+                    Column(Modifier.weight(1f)) {
+                        PaletteSlider(1f, 100f, palette.colorRange.toFloat()){
+                            palette.colorRange = it.toInt()
+                        }
+                    }
+                }
                 PaletteBar()
                 StatusBar(palette)
             }

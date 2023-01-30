@@ -60,8 +60,8 @@ fun StatusBar(pal: Palette) {
     ) {
         Divider()
         BoxWithConstraints(Modifier.wrapContentWidth()) {
-            val parentWidth = constraints.maxWidth.toFloat()
-            scale = maxWidth.value / parentWidth
+//            val parentWidth = constraints.maxWidth.toFloat()
+//            scale = maxWidth.value / parentWidth
 
             Row(
                 Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
