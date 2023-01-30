@@ -3,6 +3,7 @@ package components
 import EventBus
 import Palette
 import action.FractalEvent
+import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
@@ -46,9 +47,13 @@ fun StatusBar(pal: Palette) {
         height = it.height.toInt()
     }
 
-    EventBus.listen(PaletteEvent::class.java).subscribe {
+    fun updatePalette() {
         colorRange = palette.colorRange
         size = palette.size
+    }
+
+    EventBus.listen(PaletteEvent::class.java).subscribe {
+        if (it.action == PaletteAction.CHANGED) updatePalette()
     }
 
     var scale = 1f

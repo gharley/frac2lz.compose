@@ -33,7 +33,7 @@ import rgbToHsv
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun PaletteCanvas(pal: Palette) {
-    val palette = remember { pal }
+    val palette by remember { mutableStateOf(pal) }
     val markerMap = mutableMapOf<Int, PaletteMarker>()
     var trigger by remember { mutableStateOf(0) }
     var index: Int

@@ -32,7 +32,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
-    var palette by remember { mutableStateOf(Palette()) }
+    var palette by rememberSaveable { mutableStateOf(Palette()) }
     val fractal = rememberSaveable { mutableStateOf(Mandelbrot()) }
     val appName = "Frac2lz"
     val appTitle = remember { mutableStateOf(appName) }
@@ -221,10 +221,13 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 Row(Modifier.weight(1f)) { FractalImage(fractal.value.params, palette) }
                 PaletteCanvas(palette)
                 Row(Modifier.fillMaxWidth()) {
+//                    var colorRange by remember { mutableStateOf(palette.colorRange) }
+
                     Column { Text("Color Range:") }
                     Column(Modifier.weight(1f)) {
-                        PaletteSlider(1f, 100f, palette.colorRange.toFloat()){
+                        PaletteSlider(1f, 100f, palette.colorRange.toFloat(), palette){
                             palette.colorRange = it.toInt()
+//                            colorRange = it.toInt()
                         }
                     }
                 }

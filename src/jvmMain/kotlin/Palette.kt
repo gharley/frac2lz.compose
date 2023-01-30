@@ -1,8 +1,6 @@
 import action.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.resmass.frac2lz.Color32
-import java.awt.color.ColorSpace
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import kotlin.math.abs
@@ -10,18 +8,31 @@ import kotlin.math.ln
 import kotlin.math.sin
 import kotlin.reflect.KProperty
 
-class Palette(initSize: Int = 64) {
-    constructor(palette: Palette) : this() {
-        this.paletteType = palette.paletteType
-        this.colors = palette.colors
-        this.size = palette.size
-        this.getColorFromFractal = palette.getColorFromFractal
-        this.useSecondarySmoothing = palette.useSecondarySmoothing
-        this.colorRange = palette.colorRange
-        this.refineRange = palette.refineRange
+class Palette {
+    constructor() {
+        disableSideEffects = true
+
+        size = 64
+        buildDefaultPalette()
+
+        disableSideEffects = false
     }
 
-    var disableSideEffects = false
+    constructor(palette: Palette) {
+        disableSideEffects = true
+
+        paletteType = palette.paletteType
+        colors = palette.colors
+        size = palette.size
+        getColorFromFractal = palette.getColorFromFractal
+        useSecondarySmoothing = palette.useSecondarySmoothing
+        colorRange = palette.colorRange
+        refineRange = palette.refineRange
+
+        disableSideEffects = false
+    }
+
+    private var disableSideEffects = false
 
     private class Delegate<T>(private var value: T) {
         operator fun getValue(palette: Palette, property: KProperty<*>): T {
@@ -32,7 +43,7 @@ class Palette(initSize: Int = 64) {
             if (value == t) return
             value = t
 
-            if (!palette.disableSideEffects && (property.name == "size" || property.name == "colorRange")) {
+            if (property.name == "size" || property.name == "colorRange") {
                 when (palette.paletteType) {
                     PaletteType.GRAY_SCALE -> palette.buildPalette(palette.grayScaleColor)
                     PaletteType.RANDOM -> palette.buildPalette(palette.randomColor)
@@ -50,9 +61,9 @@ class Palette(initSize: Int = 64) {
     var paletteType = PaletteType.GRAY_SCALE
         private set
 
-    var colors: Array<Color> = Array(initSize) { Color(0) }
+    var colors: Array<Color> = Array(1) { Color(0) }
 
-    var size: Int by Delegate(initSize)
+    var size: Int by Delegate(1)
     var getColorFromFractal: Boolean by Delegate(false)
     var useSecondarySmoothing: Boolean by Delegate(false)
     var colorRange: Int by Delegate(1)
@@ -90,9 +101,6 @@ class Palette(initSize: Int = 64) {
                 }
             }
         }
-
-        size = initSize
-        buildDefaultPalette()
     }
 
 //    class RotationTimer : AnimationTimer() {
@@ -131,7 +139,7 @@ class Palette(initSize: Int = 64) {
             colorFunc(idx)
         }
 
-        fireChanged()
+        fireUpdate()
     }
 
     private fun buildDefaultPalette() {
@@ -199,7 +207,9 @@ class Palette(initSize: Int = 64) {
     }
 
     private fun fireUpdate() {
-        EventBus.publish(NewPaletteEvent(this))
+        if (!disableSideEffects) {
+            EventBus.publish(NewPaletteEvent(this))
+        }
 //        fireChanged()
     }
 

@@ -5,6 +5,7 @@ import Palette
 import action.FileAction
 import action.FileEvent
 import action.FractalEvent
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import state.FractalParameters
 import java.awt.Graphics
