@@ -144,24 +144,26 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 //        }
         }
     }
-//
-//    fun onOpenPalette() {
-//        val initPath: String = getInitPath("palPath")
-//        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
-//
-//        val file = getFile(initPath, extFilter)
-//
-//        if (file != null) {
-//            properties["palPath"] = file.parent ?: "./"
-//
-//            val stream = ObjectInputStream(file.inputStream())
-//
-//            palette.readObject(stream)
-//            stream.close()
-//
-//            refreshImage()
-//        }
-//    }
+
+    var palette by remember { mutableStateOf(Palette()) }
+
+    fun onOpenPalette() {
+        val initPath: String = getInitPath("palPath")
+        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
+
+        val file = getFile(initPath, extFilter)
+
+        if (file != null) {
+            properties["palPath"] = file.parent ?: "./"
+
+            val stream = ObjectInputStream(file.inputStream())
+
+            palette.readObject(stream)
+            stream.close()
+
+            refreshImage()
+        }
+    }
 
     fun onSaveImage() {
         val initPath: String = getInitPath("imgPath")
@@ -177,28 +179,28 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
-//    fun onSavePalette() {
-//        val initPath: String = getInitPath("palPath")
-//        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
-//
-//        val file = getFile(initPath, extFilter, true)
-//
-//        if (file != null) {
-//            properties["palPath"] = file.parent ?: "./"
-//
-//            val stream = ObjectOutputStream(file.outputStream())
-//
-//            palette.writeObject(stream)
-//            stream.close()
-//        }
-//    }
+    fun onSavePalette() {
+        val initPath: String = getInitPath("palPath")
+        val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
+
+        val file = getFile(initPath, extFilter, true)
+
+        if (file != null) {
+            properties["palPath"] = file.parent ?: "./"
+
+            val stream = ObjectOutputStream(file.outputStream())
+
+            palette.writeObject(stream)
+            stream.close()
+        }
+    }
 
     EventBus.listen(FileEvent::class.java).subscribe {
         when (it.action) {
             FileAction.OPEN_FRACTAL -> onOpen()
             FileAction.OPEN_JSON -> onOpenJson()
-//            FileAction.OPEN_PALETTE -> onOpenPalette()
-//            FileAction.SAVE_PALETTE -> onSavePalette()
+            FileAction.OPEN_PALETTE -> onOpenPalette()
+            FileAction.SAVE_PALETTE -> onSavePalette()
             FileAction.SAVE_IMAGE -> onSaveImage()
             else -> {}
         }
@@ -210,8 +212,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         icon = painterResource("frac2lz128.png"),
         state = WindowState(size = DpSize(1200.dp, 800.dp))
     ) {
-        var palette by remember { mutableStateOf(Palette()) }
-
         EventBus.listen(NewPaletteEvent::class.java).subscribe {
             palette = Palette(it.palette)
         }
