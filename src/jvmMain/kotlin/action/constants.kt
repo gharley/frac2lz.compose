@@ -11,6 +11,10 @@ enum class PaletteAction {
     ANIMATE, CHANGED, DEFAULT, RANDOM, SMOOTH, INTERPOLATE
 }
 
+enum class PaletteSliderType{
+    SIZE, COLOR_RANGE
+}
+
 enum class UIAction {
     INIT, CHANGE
 }

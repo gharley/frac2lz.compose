@@ -15,13 +15,13 @@ import javax.swing.BoxLayout
 
 @Composable
 fun FractalImage(params: FractalParameters, pal: Palette) {
-    val parameters = remember { params }
-    val palette by remember { mutableStateOf(pal) }
-    val fractalHeight = parameters.height
-    val fractalWidth = parameters.width
-
     Surface(Modifier.fillMaxSize(), elevation = 5.dp) {
-        val swingImage = remember { SwingImage(params, palette) }
+        val parameters = remember { params }
+        val palette by remember { mutableStateOf(pal) }
+        val fractalHeight = parameters.height
+        val fractalWidth = parameters.width
+
+        val swingImage by remember { mutableStateOf(SwingImage(params, palette)) }
 
         SwingPanel(modifier = Modifier
             .size(width = fractalWidth.dp, height = fractalHeight.dp)
@@ -32,7 +32,7 @@ fun FractalImage(params: FractalParameters, pal: Palette) {
                 }
             },
             update = {
-                swingImage.update()
+                swingImage.palette = palette
             }
         )
     }

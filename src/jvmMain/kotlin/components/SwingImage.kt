@@ -19,7 +19,7 @@ import javax.imageio.ImageIO
 import javax.swing.JPanel
 
 
-class SwingImage(private val params: FractalParameters, palette: Palette) :
+class SwingImage(private val params: FractalParameters, var palette: Palette) :
     JPanel() {
     private val height = params.height.toInt()
     private val width = params.width.toInt()
