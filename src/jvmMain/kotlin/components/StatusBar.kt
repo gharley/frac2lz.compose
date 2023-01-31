@@ -31,8 +31,6 @@ fun StatusBar(pal: Palette) {
     var magnify by remember { mutableStateOf(0.0) }
     var width by remember { mutableStateOf(0) }
     var height by remember { mutableStateOf(0) }
-//    var colorRange = remember { palette.colorRange }
-//    var size by remember { mutableStateOf(palette.size) }
 
     EventBus.listen(FractalEvent::class.java).subscribe {
         if (it.data.iterations > usedIterations) usedIterations = it.data.iterations
@@ -46,17 +44,8 @@ fun StatusBar(pal: Palette) {
         width = it.width.toInt()
         height = it.height.toInt()
     }
-//
-//    fun updatePalette() {
-//        colorRange = palette.colorRange
-//        size = palette.size
-//    }
 
-//    EventBus.listen(PaletteEvent::class.java).subscribe {
-//        if (it.action == PaletteAction.CHANGED) updatePalette()
-//    }
-
-    var scale = 1f
+    val scale = .75f
 
     Column(
         Modifier
@@ -64,23 +53,18 @@ fun StatusBar(pal: Palette) {
             .padding(2.dp)
     ) {
         Divider()
-        BoxWithConstraints(Modifier.wrapContentWidth()) {
-//            val parentWidth = constraints.maxWidth.toFloat()
-//            scale = maxWidth.value / parentWidth
-
-            Row(
-                Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
-            ) {
-                addTextField("Iterations -> Allowed: ", maxIterations.toString(), scale = scale)
-                addTextField("Used: ", usedIterations.toString(), scale = scale)
-                addTextField("RE Center: ", centerX.toString(), scale = scale)
-                addTextField("IM Center: ", centerY.toString(), scale = scale)
-                addTextField("Zoom: ", magnify.toString(), scale = scale)
-                addTextField("Width: ", width.toString(), scale = scale)
-                addTextField("Height: ", height.toString(), scale = scale)
-                addTextField("Color Range: ", palette.colorRange.toString(), scale = scale)
-                addTextField("Palette Size: ", palette.size.toString(), false, scale = scale)
-            }
+        Row(
+            Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
+        ) {
+            addTextField("Iterations -> Allowed: ", maxIterations.toString(), scale = scale)
+            addTextField("Used: ", usedIterations.toString(), scale = scale)
+            addTextField("RE Center: ", centerX.toString(), scale = scale)
+            addTextField("IM Center: ", centerY.toString(), scale = scale)
+            addTextField("Zoom: ", magnify.toString(), scale = scale)
+            addTextField("Width: ", width.toString(), scale = scale)
+            addTextField("Height: ", height.toString(), scale = scale)
+            addTextField("Color Range: ", palette.colorRange.toString(), scale = scale)
+            addTextField("Palette Size: ", palette.size.toString(), false, scale = scale)
         }
     }
 }
