@@ -5,9 +5,7 @@ import Palette
 import action.FileAction
 import action.FileEvent
 import action.FractalEvent
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
-import state.FractalParameters
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.geom.AffineTransform
@@ -17,19 +15,44 @@ import java.io.File
 import java.lang.Double.min
 import javax.imageio.ImageIO
 import javax.swing.JPanel
+import kotlin.reflect.KProperty
 
-
-class SwingImage(private val params: FractalParameters, var palette: Palette) :
+open class SwingImageClass() :
     JPanel() {
-    private val height = params.height.toInt()
-    private val width = params.width.toInt()
-    private var pixels = IntArray(width * height)
-    private var source = MemoryImageSource(width, height, pixels, 0, width)
+    fun createSwingImage() {
+        if (imgHeight != 0 && imgWidth != 0) {
+            pixels = IntArray(imgWidth * imgHeight)
+            source = MemoryImageSource(imgWidth, imgHeight, pixels, 0, imgWidth)
+            image = createImage(source)
+            source.setAnimated(true)
+        }
+    }
+
+    private class Delegate<T>(private var value: T) {
+        operator fun getValue(swingImageClass: SwingImageClass, property: KProperty<*>): T {
+            return value
+        }
+
+        operator fun setValue(swingImageClass: SwingImageClass, property: KProperty<*>, t: T) {
+            if (value == t) return
+            value = t
+
+            if (property.name == "imgHeight" || property.name == "imgWidth") {
+                swingImageClass.createSwingImage()
+            }
+        }
+    }
+
+    var palette = Palette()
+    var imgHeight: Int by Delegate(1)
+    var imgWidth: Int by Delegate(1)
+
+    private var pixels = IntArray(imgWidth * imgHeight)
+    private var source = MemoryImageSource(imgWidth, imgHeight, pixels, 0, imgWidth)
     private var image = createImage(source)
     private val imageTransform = AffineTransform()
 
     init {
-        source.setAnimated(true)
 //        add(ZoomBox(this))
 
         EventBus.listen(FractalEvent::class.java).subscribe {
@@ -39,16 +62,16 @@ class SwingImage(private val params: FractalParameters, var palette: Palette) :
                 prepareForCalc()
             }
 
-            pixels[it.row * width + it.column] = color
+            pixels[it.row * imgWidth + it.column] = color
 
             if (it.endOfRow) {
-                source.newPixels(0, it.row, width, 1)
-                if (it.row % 10 == 0 || it.row == height - 1) update(graphics)
+                source.newPixels(0, it.row, imgWidth, 1)
+                if (it.row % 10 == 0 || it.row == imgHeight - 1) update(graphics)
             }
         }
 
-        EventBus.listen(FileEvent::class.java).subscribe{
-            if (it.action == FileAction.WRITE_IMAGE){
+        EventBus.listen(FileEvent::class.java).subscribe {
+            if (it.action == FileAction.WRITE_IMAGE) {
                 saveToImageFile(it.data)
             }
         }
@@ -63,10 +86,6 @@ class SwingImage(private val params: FractalParameters, var palette: Palette) :
         graphics.drawImage(image, imageTransform, null)
     }
 
-    fun update() {
-        if (graphics != null) update(graphics)
-    }
-
     private fun prepareForCalc(clear: Boolean = true) {
 //        pixels = IntArray(width * height)
 //        source = MemoryImageSource(width, height, pixels, 0, width)
@@ -75,7 +94,7 @@ class SwingImage(private val params: FractalParameters, var palette: Palette) :
         if (clear) {
             pixels.fill(0xffefefef.toInt())
             prepareImage(image, null)
-            source.newPixels(0, 0, width, height)
+            source.newPixels(0, 0, imgWidth, imgHeight)
         }
 
         scale()
@@ -83,8 +102,8 @@ class SwingImage(private val params: FractalParameters, var palette: Palette) :
 
     private fun scale() {
         val bounds = getBounds(null)
-        val height = params.height
-        val width = params.width
+        val height = imgHeight.toDouble()
+        val width = imgWidth.toDouble()
 
         imageTransform.setToIdentity()
         val scale: Double =
@@ -111,7 +130,7 @@ class SwingImage(private val params: FractalParameters, var palette: Palette) :
 
     private fun saveToImageFile(filename: String) {
         try {
-            val imageOut = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+            val imageOut = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
             val g2d = imageOut.createGraphics()
 
             g2d.drawImage(image, 0, 0, null)
@@ -123,3 +142,5 @@ class SwingImage(private val params: FractalParameters, var palette: Palette) :
         }
     }
 }
+
+object SwingImage : SwingImageClass() {}
