@@ -206,16 +206,16 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
+    EventBus.listen(NewPaletteEvent::class.java).subscribe {
+        palette = Palette(it.palette)
+    }
+
     Window(
         onCloseRequest = { closeFunction() },
         title = appTitle.value,
         icon = painterResource("frac2lz128.png"),
         state = WindowState(size = DpSize(1200.dp, 800.dp))
     ) {
-        EventBus.listen(NewPaletteEvent::class.java).subscribe {
-            palette = Palette(it.palette)
-        }
-
         MaterialTheme {
             MainMenu()
             Column {

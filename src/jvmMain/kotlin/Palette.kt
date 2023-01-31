@@ -21,9 +21,9 @@ class Palette {
     constructor(palette: Palette) {
         disableSideEffects = true
 
+        size = palette.size  // Must be set before paletteType to avoid side effects
         paletteType = palette.paletteType
         colors = palette.colors
-        size = palette.size
         getColorFromFractal = palette.getColorFromFractal
         useSecondarySmoothing = palette.useSecondarySmoothing
         colorRange = palette.colorRange
@@ -48,13 +48,12 @@ class Palette {
                     PaletteType.GRAY_SCALE -> palette.buildPalette(palette.grayScaleColor)
                     PaletteType.RANDOM -> palette.buildPalette(palette.randomColor)
                     PaletteType.SMOOTH -> palette.buildPalette(palette.smoothColor)
+                    PaletteType.CUSTOM -> if (property.name == "size") palette.buildDefaultPalette() else {
+                        palette.fireUpdate()
+                    }
                 }
             }
         }
-    }
-
-    enum class PaletteType {
-        GRAY_SCALE, RANDOM, SMOOTH
     }
 
     //    private val rotationTimer: RotationTimer = RotationTimer()
@@ -234,6 +233,7 @@ class Palette {
             disableSideEffects = true
 
             size = stream.readInt()
+            paletteType = PaletteType.CUSTOM  // Must be set after size
             colorRange = stream.readInt()
             colors = Array(size) { _ ->
                 Color(stream.readInt())

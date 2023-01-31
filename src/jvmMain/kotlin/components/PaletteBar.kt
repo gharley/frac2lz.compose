@@ -48,13 +48,13 @@ fun PaletteCanvas(pal: Palette) {
     fun removeMarker(index: Int) {
         if (markerMap.containsKey(index)) {
             markerMap.remove(index)
-            trigger += 1
+            trigger++
         }
     }
 
     fun removeMarkers() {
         markerMap.clear()
-        trigger += 1
+        trigger++
     }
 
     fun setMarker(index: Int) {
@@ -65,7 +65,7 @@ fun PaletteCanvas(pal: Palette) {
             val marker = PaletteMarker(index, height / 2, fillColor)
 
             markerMap[index] = marker
-            trigger += 1
+            trigger++
         }
     }
 

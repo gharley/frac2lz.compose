@@ -22,7 +22,7 @@ import state.FractalParameters
 
 @Composable
 fun StatusBar(pal: Palette) {
-    val palette = remember { pal }
+    val palette by remember { mutableStateOf(pal) }
 
     var maxIterations by remember { mutableStateOf(0L) }
     var usedIterations by remember { mutableStateOf(0L) }
@@ -31,8 +31,8 @@ fun StatusBar(pal: Palette) {
     var magnify by remember { mutableStateOf(0.0) }
     var width by remember { mutableStateOf(0) }
     var height by remember { mutableStateOf(0) }
-    var colorRange by remember { mutableStateOf(palette.colorRange) }
-    var size by remember { mutableStateOf(palette.size) }
+//    var colorRange = remember { palette.colorRange }
+//    var size by remember { mutableStateOf(palette.size) }
 
     EventBus.listen(FractalEvent::class.java).subscribe {
         if (it.data.iterations > usedIterations) usedIterations = it.data.iterations
@@ -46,15 +46,15 @@ fun StatusBar(pal: Palette) {
         width = it.width.toInt()
         height = it.height.toInt()
     }
+//
+//    fun updatePalette() {
+//        colorRange = palette.colorRange
+//        size = palette.size
+//    }
 
-    fun updatePalette() {
-        colorRange = palette.colorRange
-        size = palette.size
-    }
-
-    EventBus.listen(PaletteEvent::class.java).subscribe {
-        if (it.action == PaletteAction.CHANGED) updatePalette()
-    }
+//    EventBus.listen(PaletteEvent::class.java).subscribe {
+//        if (it.action == PaletteAction.CHANGED) updatePalette()
+//    }
 
     var scale = 1f
 
@@ -78,8 +78,8 @@ fun StatusBar(pal: Palette) {
                 addTextField("Zoom: ", magnify.toString(), scale = scale)
                 addTextField("Width: ", width.toString(), scale = scale)
                 addTextField("Height: ", height.toString(), scale = scale)
-                addTextField("Color Range: ", colorRange.toString(), scale = scale)
-                addTextField("Palette Size: ", size.toString(), false, scale = scale)
+                addTextField("Color Range: ", palette.colorRange.toString(), scale = scale)
+                addTextField("Palette Size: ", palette.size.toString(), false, scale = scale)
             }
         }
     }
