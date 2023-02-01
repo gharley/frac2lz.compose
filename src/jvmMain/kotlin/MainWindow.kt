@@ -48,22 +48,23 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         state = WindowState(size = DpSize(1200.dp, 800.dp))
     ) {
         val properties = remember { props }
-        val fractal = rememberSaveable { mutableStateOf(Mandelbrot()) }
+        val fractal = remember { Mandelbrot() }
+
         fun startCalc() {
-            GlobalScope.launch { fractal.value.calcAll() }
+            GlobalScope.launch { fractal.calcAll() }
         }
 
         fun baseCalc() = runBlocking {
-            fractal.value.setDefaultParameters()
+            fractal.setDefaultParameters()
             startCalc()
         }
 
         fun refineImage() {
-            GlobalScope.launch { fractal.value.refineSet() }
+            GlobalScope.launch { fractal.refineSet() }
         }
 
         fun refreshImage() {
-            GlobalScope.launch { fractal.value.refresh() }
+            GlobalScope.launch { fractal.refresh() }
         }
 
         EventBus.listen(CalculateEvent::class.java).subscribe {
@@ -116,7 +117,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                 val stream = ObjectInputStream(file.inputStream())
 
-                fractal.value.readObject(stream)
+                fractal.readObject(stream)
                 stream.close()
 
                 EventBus.publish(AppTitle(file.name))
@@ -140,7 +141,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                 EventBus.publish(AppTitle(file.name))
 
-                fractal.value.fromJson(data)
+                fractal.fromJson(data)
                 EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
 //            val calcAlert = Alert(Alert.AlertType.CONFIRMATION, "Calculate Now?")
 //
@@ -219,7 +220,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         MaterialTheme {
             MainMenu()
             Column {
-                Row(Modifier.weight(1f)) { FractalImage(fractal.value.params, palette) }
+                Row(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
                 PaletteCanvas(palette)
                 Row(Modifier.fillMaxWidth()) {
                     Column { Text("Color Range:") }

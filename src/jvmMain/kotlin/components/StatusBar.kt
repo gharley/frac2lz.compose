@@ -3,8 +3,7 @@ package components
 import EventBus
 import Palette
 import action.FractalEvent
-import action.PaletteAction
-import action.PaletteEvent
+import action.NewPaletteEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.LocalTextStyle
@@ -14,16 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import state.FractalParameters
 
 @Composable
-fun StatusBar(pal: Palette) {
-    val palette by remember { mutableStateOf(pal) }
-
+fun StatusBar(palette: Palette) {
     var maxIterations by remember { mutableStateOf(0L) }
     var usedIterations by remember { mutableStateOf(0L) }
     var centerX by remember { mutableStateOf(0.0) }
@@ -31,6 +27,8 @@ fun StatusBar(pal: Palette) {
     var magnify by remember { mutableStateOf(0.0) }
     var width by remember { mutableStateOf(0) }
     var height by remember { mutableStateOf(0) }
+    var colorRange by remember { mutableStateOf(palette.colorRange) }
+    var size by remember { mutableStateOf(palette.size) }
 
     EventBus.listen(FractalEvent::class.java).subscribe {
         if (it.data.iterations > usedIterations) usedIterations = it.data.iterations
@@ -43,6 +41,11 @@ fun StatusBar(pal: Palette) {
         magnify = it.magnify
         width = it.width.toInt()
         height = it.height.toInt()
+    }
+
+    EventBus.listen(NewPaletteEvent::class.java).subscribe{
+        colorRange = it.palette.colorRange
+        size = it.palette.size
     }
 
     val scale = .75f
@@ -63,8 +66,8 @@ fun StatusBar(pal: Palette) {
             addTextField("Zoom: ", magnify.toString(), scale = scale)
             addTextField("Width: ", width.toString(), scale = scale)
             addTextField("Height: ", height.toString(), scale = scale)
-            addTextField("Color Range: ", palette.colorRange.toString(), scale = scale)
-            addTextField("Palette Size: ", palette.size.toString(), false, scale = scale)
+            addTextField("Color Range: ", colorRange.toString(), scale = scale)
+            addTextField("Palette Size: ", size.toString(), false, scale = scale)
         }
     }
 }
