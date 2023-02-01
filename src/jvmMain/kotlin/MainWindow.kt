@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
@@ -13,10 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
 import components.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.io.InputStream
 import java.io.ObjectInputStream
@@ -28,7 +23,6 @@ import javax.json.JsonReader
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
-@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
@@ -48,34 +42,34 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         state = WindowState(size = DpSize(1200.dp, 800.dp))
     ) {
         val properties = remember { props }
-        val fractal = remember { Mandelbrot() }
-
-        fun startCalc() {
-            GlobalScope.launch { fractal.calcAll() }
-        }
-
-        fun baseCalc() = runBlocking {
-            fractal.setDefaultParameters()
-            startCalc()
-        }
-
-        fun refineImage() {
-            GlobalScope.launch { fractal.refineSet() }
-        }
-
-        fun refreshImage() {
-            GlobalScope.launch { fractal.refresh() }
-        }
-
-        EventBus.listen(CalculateEvent::class.java).subscribe {
-            when (it.action) {
-                CalculateAction.CALCULATE_BASE -> baseCalc()
-                CalculateAction.RECALCULATE -> startCalc()
-                CalculateAction.REFINE -> refineImage()
-                CalculateAction.REFRESH -> refreshImage()
-                else -> {}
-            }
-        }
+        val fractal = Mandelbrot()
+//
+//        fun startCalc() {
+//            GlobalScope.launch { fractal.calcAll() }
+//        }
+//
+//        fun baseCalc() = runBlocking {
+//            fractal.setDefaultParameters()
+//            startCalc()
+//        }
+//
+//        fun refineImage() {
+//            GlobalScope.launch { fractal.refineSet() }
+//        }
+//
+//        fun refreshImage() {
+//            GlobalScope.launch { fractal.refresh() }
+//        }
+//
+//        EventBus.listen(CalculateEvent::class.java).subscribe {
+//            when (it.action) {
+//                CalculateAction.CALCULATE_BASE -> baseCalc()
+//                CalculateAction.RECALCULATE -> startCalc()
+//                CalculateAction.REFINE -> refineImage()
+//                CalculateAction.REFRESH -> refreshImage()
+//                else -> {}
+//            }
+//        }
 
         fun getInitPath(key: String): String {
             return if (properties.containsKey(key)) properties[key] as String
@@ -122,7 +116,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                 EventBus.publish(AppTitle(file.name))
 
-                refreshImage()
+                fractal.refreshImage()
             }
         }
 
@@ -168,7 +162,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 palette.readObject(stream)
                 stream.close()
 
-                refreshImage()
+                fractal.refreshImage()
             }
         }
 

@@ -1,9 +1,5 @@
-import action.FractalEvent
-import action.FractalIterationEvent
-import action.FractalPointData
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import action.*
+import kotlinx.coroutines.*
 import state.FractalBounds
 import state.FractalParameters
 import java.io.ObjectInputStream
@@ -63,6 +59,39 @@ abstract class Fractal : Serializable {
     private var reals = array2dOfDouble(100, 100)
     private var imaginarys = array2dOfDouble(100, 100)
 
+    @OptIn(DelicateCoroutinesApi::class)
+    fun startCalc() {
+        GlobalScope.launch { calcAll() }
+    }
+
+    private fun baseCalc() = runBlocking {
+        setDefaultParameters()
+        startCalc()
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun refineImage() {
+        GlobalScope.launch { refineSet() }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun refreshImage() {
+        GlobalScope.launch { refresh() }
+    }
+
+    init {
+        EventBus.listen(CalculateEvent::class.java).subscribe {
+            when (it.action) {
+                CalculateAction.CALCULATE_BASE -> baseCalc()
+                CalculateAction.RECALCULATE -> startCalc()
+                CalculateAction.REFINE -> refineImage()
+                CalculateAction.REFRESH -> refreshImage()
+                else -> {}
+            }
+        }
+
+    }
+
     open suspend fun calcAll() {
         setup()
 
@@ -94,10 +123,10 @@ abstract class Fractal : Serializable {
 
         fireIterationUpdate()
     }
-
-    fun cancelCalculation() {
-        cancelCalc = true
-    }
+//
+//    fun cancelCalculation() {
+//        cancelCalc = true
+//    }
 
     open fun fractalData(row: Int, column: Int): FractalPointData {
         return FractalPointData(
