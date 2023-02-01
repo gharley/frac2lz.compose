@@ -224,6 +224,14 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                         }
                     }
                 }
+                Row(Modifier.fillMaxWidth()) {
+                    Column { Text("Palette Size:") }
+                    Column(Modifier.weight(1f)) {
+                        PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
+                            palette.size = it
+                        }
+                    }
+                }
                 PaletteBar()
                 StatusBar(palette)
             }

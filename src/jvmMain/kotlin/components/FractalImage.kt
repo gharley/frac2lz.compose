@@ -17,7 +17,6 @@ import javax.swing.BoxLayout
 fun FractalImage(params: FractalParameters, palette: Palette) {
     Surface(Modifier.fillMaxSize(), elevation = 5.dp) {
         val parameters = remember { params }
-//        val palette by remember { mutableStateOf(pal) }
         val fractalHeight = parameters.height
         val fractalWidth = parameters.width
 

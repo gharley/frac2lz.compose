@@ -2,6 +2,7 @@ package components
 
 import EventBus
 import Palette
+import action.NewPaletteEvent
 import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.Canvas
@@ -33,7 +34,7 @@ import rgbToHsv
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun PaletteCanvas(pal: Palette) {
-    val palette by remember { mutableStateOf(pal) }
+    var palette by remember { mutableStateOf(pal) }
     val markerMap = mutableMapOf<Int, PaletteMarker>()
     var trigger by remember { mutableStateOf(0) }
     var index: Int
@@ -100,6 +101,10 @@ fun PaletteCanvas(pal: Palette) {
         }
 
         EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
+    }
+
+    EventBus.listen(NewPaletteEvent::class.java).subscribe{
+        palette = it.palette
     }
 
     EventBus.listen(PaletteEvent::class.java).subscribe {
