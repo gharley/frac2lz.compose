@@ -103,7 +103,7 @@ fun PaletteCanvas(pal: Palette) {
         EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
     }
 
-    EventBus.listen(NewPaletteEvent::class.java).subscribe{
+    EventBus.listen(NewPaletteEvent::class.java).subscribe {
         palette = it.palette
     }
 
@@ -170,23 +170,23 @@ fun PaletteBar() {
             Column {
                 IconButton(
                     onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
-                    Modifier.scale(iconScale)
                 ) {
                     Icon(
                         painterResource("random32.png"),
                         "Random Palette",
-                        tint = Color.Unspecified
+                        Modifier.scale(iconScale),
+                        tint = Color.Unspecified,
                     )
                 }
             }
             Column {
                 IconButton(
                     onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
-                    Modifier.scale(iconScale)
                 ) {
                     Icon(
                         painterResource("smooth32.png"),
                         "Smooth Palette",
+                        Modifier.scale(iconScale),
                         tint = Color.Unspecified
                     )
                 }
@@ -194,26 +194,27 @@ fun PaletteBar() {
             Column {
                 IconButton(
                     onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
-                    Modifier.scale(iconScale)
                 ) {
                     Icon(
                         painterResource("default32.png"),
                         "Default Palette",
+                        Modifier.scale(iconScale),
                         tint = Color.Unspecified
                     )
                 }
             }
             Column {
-                IconButton(onClick = {}, Modifier.scale(iconScale)) {
+                IconButton(onClick = {}) {
                     Icon(
                         painterResource("animate32.png"),
                         "Animate Palette",
+                        Modifier.scale(iconScale),
                         tint = Color.Unspecified
                     )
                 }
             }
             Column {
-                Button(onClick = {EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE))}){
+                Button(onClick = { EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE)) }) {
                     Text("Interpolate between markers")
                 }
             }
