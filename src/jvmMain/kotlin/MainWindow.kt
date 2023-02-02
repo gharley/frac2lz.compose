@@ -2,8 +2,8 @@ import action.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -43,33 +43,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     ) {
         val properties = remember { props }
         val fractal = Mandelbrot()
-//
-//        fun startCalc() {
-//            GlobalScope.launch { fractal.calcAll() }
-//        }
-//
-//        fun baseCalc() = runBlocking {
-//            fractal.setDefaultParameters()
-//            startCalc()
-//        }
-//
-//        fun refineImage() {
-//            GlobalScope.launch { fractal.refineSet() }
-//        }
-//
-//        fun refreshImage() {
-//            GlobalScope.launch { fractal.refresh() }
-//        }
-//
-//        EventBus.listen(CalculateEvent::class.java).subscribe {
-//            when (it.action) {
-//                CalculateAction.CALCULATE_BASE -> baseCalc()
-//                CalculateAction.RECALCULATE -> startCalc()
-//                CalculateAction.REFINE -> refineImage()
-//                CalculateAction.REFRESH -> refreshImage()
-//                else -> {}
-//            }
-//        }
 
         fun getInitPath(key: String): String {
             return if (properties.containsKey(key)) properties[key] as String

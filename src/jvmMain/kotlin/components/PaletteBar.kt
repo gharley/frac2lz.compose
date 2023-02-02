@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -165,7 +165,7 @@ fun PaletteCanvas(pal: Palette) {
 fun PaletteBar() {
     val iconScale = 3.0f
 
-    Surface(modifier = Modifier.fillMaxWidth(), elevation = 5.dp) {
+    Surface(modifier = Modifier.fillMaxWidth(), shadowElevation = 5.dp) {
         Row(Modifier.height(48.dp)) {
             Column {
                 IconButton(

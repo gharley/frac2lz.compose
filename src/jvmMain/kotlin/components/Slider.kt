@@ -4,7 +4,7 @@ import EventBus
 import Palette
 import action.NewPaletteEvent
 import action.PaletteSliderType
-import androidx.compose.material.Slider
+import androidx.compose.material3.Slider
 import androidx.compose.runtime.*
 
 @Composable
@@ -21,6 +21,6 @@ fun PaletteSlider(min: Float, max: Float, type: PaletteSliderType, palette: Pale
         valueRange = (min..max),
         steps = (max - min).toInt(),
         onValueChange = { currentValue = it },
-        onValueChangeFinished = { onChangeComplete(currentValue.toInt()) }
+        onValueChangeFinished = { onChangeComplete(currentValue.toInt()) },
     )
 }
