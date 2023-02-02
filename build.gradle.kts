@@ -22,7 +22,7 @@ kotlin {
         withJava()
     }
     sourceSets {
-        val material3_version = "1.2.2"
+        val material3Version = "1.2.2"
         val rxVersion = "3.1.3"
         val jvmMain by getting {
             dependencies {
@@ -30,7 +30,7 @@ kotlin {
                 implementation("io.reactivex.rxjava3:rxjava:$rxVersion")
                 implementation("org.glassfish:javax.json:1.1.4")
                 implementation("javax.json:javax.json-api:1.1.4")
-                implementation("org.jetbrains.compose.material3:material3-desktop:$material3_version")
+                implementation("org.jetbrains.compose.material3:material3-desktop:$material3Version")
             }
             val jvmTest by getting
         }

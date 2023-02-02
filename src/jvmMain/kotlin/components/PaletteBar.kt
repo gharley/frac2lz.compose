@@ -7,6 +7,7 @@ import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -121,7 +122,11 @@ fun PaletteCanvas(pal: Palette) {
         setMarker(index)
     }
 
-    Canvas(Modifier.height(48.dp).fillMaxWidth().onPointerEvent(PointerEventType.Release) { onMouseClicked(it) }) {
+    Canvas(Modifier
+        .height(48.dp)
+        .fillMaxWidth()
+        .background(Color.Black)
+        .onPointerEvent(PointerEventType.Release) { onMouseClicked(it) }) {
         height = size.height
         width = size.width
         trigger  // Don't remove, tricks app into recomposing
