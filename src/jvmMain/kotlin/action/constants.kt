@@ -20,5 +20,5 @@ enum class PaletteSliderType{
 }
 
 enum class UIAction {
-    INIT, CHANGE
+    INIT, CHANGE, SETTINGS
 }

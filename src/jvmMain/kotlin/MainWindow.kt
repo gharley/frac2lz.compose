@@ -27,6 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
     val appTitle = remember { mutableStateOf(appName) }
+    val properties = remember { props }
 
     EventBus.listen(AppTitle::class.java).subscribe {
         appTitle.value = appName
@@ -41,7 +42,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         icon = painterResource("frac2lz128.png"),
         state = WindowState(size = DpSize(1200.dp, 800.dp))
     ) {
-        val properties = remember { props }
         val fractal = Mandelbrot()
 
         fun getInitPath(key: String): String {
@@ -187,9 +187,9 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         MaterialTheme {
             MainMenu()
             Column {
-                Row() {
-                    FractalImage(fractal.params, palette)
-                    SettingsPanel()
+                Row(Modifier.fillMaxWidth().weight(1f)) {
+                    Column(Modifier.weight(1f)){ FractalImage(fractal.params, palette) }
+                    Column{ SettingsPanel() }
                 }
                 PaletteCanvas(palette)
                 Row(Modifier.fillMaxWidth()) {
