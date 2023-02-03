@@ -2,9 +2,7 @@ package components
 
 import EventBus
 import Palette
-import action.FileAction
-import action.FileEvent
-import action.FractalEvent
+import action.*
 import androidx.compose.ui.graphics.toArgb
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -51,6 +49,7 @@ open class SwingImageClass() :
     private var source = MemoryImageSource(imgWidth, imgHeight, pixels, 0, imgWidth)
     private var image = createImage(source)
     private val imageTransform = AffineTransform()
+    private var refreshRate = UISettings().refreshRate
 
     init {
 //        add(ZoomBox(this))
@@ -66,7 +65,13 @@ open class SwingImageClass() :
 
             if (it.endOfRow) {
                 source.newPixels(0, it.row, imgWidth, 1)
-                if (it.row % 10 == 0 || it.row == imgHeight - 1) update(graphics)
+                if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) update(graphics)
+            }
+        }
+
+        EventBus.listen(UIEvent::class.java).subscribe{
+            if (it.action == UIAction.SETTINGS){
+                refreshRate = (it.data as UISettings).refreshRate
             }
         }
 

@@ -1,6 +1,7 @@
 import action.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import components.UISettings
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import kotlin.math.abs
@@ -63,10 +64,10 @@ class Palette {
     var colors: Array<Color> = Array(1) { Color(0) }
 
     var size: Int by Delegate(1)
-    var getColorFromFractal: Boolean by Delegate(false)
-    var useSecondarySmoothing: Boolean by Delegate(false)
+    private var getColorFromFractal: Boolean by Delegate(false)
+    private var useSecondarySmoothing: Boolean by Delegate(false)
     var colorRange: Int by Delegate(1)
-    var refineRange: Int by Delegate(0)
+    private var refineRange: Int by Delegate(0)
 
     private val grayScaleColor: (Int) -> Color = {
         val value = (it + 1) / size.toFloat()
@@ -98,6 +99,14 @@ class Palette {
                 PaletteAction.SMOOTH -> buildSmoothPalette()
                 else -> {
                 }
+            }
+        }
+
+        EventBus.listen(UIEvent::class.java).subscribe {
+            if (it.action == UIAction.SETTINGS) {
+                getColorFromFractal = (it.data as UISettings).colorFromFractal
+                useSecondarySmoothing = it.data.useSecondarySmoothing
+                refineRange = it.data.refineRange
             }
         }
     }

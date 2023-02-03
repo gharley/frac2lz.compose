@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
@@ -192,7 +193,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     Column{ SettingsPanel() }
                 }
                 PaletteCanvas(palette)
-                Row(Modifier.fillMaxWidth()) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Column { Text("Color Range:") }
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
@@ -200,7 +201,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                         }
                     }
                 }
-                Row(Modifier.fillMaxWidth()) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Column { Text("Palette Size:") }
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
