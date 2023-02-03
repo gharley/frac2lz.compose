@@ -187,7 +187,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         MaterialTheme {
             MainMenu()
             Column {
-                Row(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
+                Row() {
+                    FractalImage(fractal.params, palette)
+                    SettingsPanel()
+                }
                 PaletteCanvas(palette)
                 Row(Modifier.fillMaxWidth()) {
                     Column { Text("Color Range:") }

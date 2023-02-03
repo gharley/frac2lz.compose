@@ -4,6 +4,7 @@ import EventBus
 import Palette
 import action.NewPaletteEvent
 import action.PaletteSliderType
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,15 +23,18 @@ fun PaletteSlider(min: Float, max: Float, type: PaletteSliderType, palette: Pale
         currentValue = (if (type == PaletteSliderType.SIZE) it.palette.size else it.palette.colorRange).toFloat()
     }
 
-    Slider(
-        currentValue,
-        valueRange = (min..max),
-        steps = (max - min).toInt(),
-        onValueChange = { currentValue = it },
-        onValueChangeFinished = { onChangeComplete(currentValue.toInt()) },
-    )
-    Badge(Modifier.size(30.dp), MaterialTheme.colorScheme.primary) {
-        Text(currentValue.toInt().toString(), fontWeight = FontWeight.Bold, color = Color.White)
+    Row {
+        Badge(Modifier.size(30.dp), MaterialTheme.colorScheme.primary) {
+            Text(currentValue.toInt().toString(), fontWeight = FontWeight.Bold, color = Color.White)
+        }
+        Slider(
+            currentValue,
+            onValueChange = { currentValue = it },
+            Modifier.weight(1f),
+            valueRange = (min..max),
+            steps = (max - min).toInt(),
+            onValueChangeFinished = { onChangeComplete(currentValue.toInt()) },
+        )
     }
 }
 
