@@ -1,35 +1,75 @@
 package components
 
 import EventBus
-import java.awt.Canvas
-import java.awt.Rectangle
+import java.awt.*
+import java.awt.event.MouseEvent
 import java.awt.geom.Point2D
+import javax.swing.JPanel
 import kotlin.math.abs
 
 data class ZoomBoxEvent(val zoomBox: ZoomBox)
 data class ImageClickEvent(val x: Double, val y: Double)
 
-class ZoomBox(private val image: Canvas) : Rectangle() {
-    private val zoomXmin = 0.0
-    private val zoomXmax = 0.0
-    private val zoomYmin = 0.0
-    private val zoomYmax = 0.0
-    private val zoomWidth = 0.0
-    private val zoomHeight = 0.0
+class ZoomBox(private val image: JPanel) : Canvas() {
+    private var zoomXmin = 0
+    private var zoomXmax = 0
+    private var zoomYmin = 0
+    private var zoomYmax = 0
+    private var zoomWidth = 0
+    private var zoomHeight = 0
 
     private var dragStarted: Boolean = false
     private var moveStarted: Boolean = false
     private var moveOffset = Point2D.Double(0.0, 0.0)
 
     private var maintainAspect: Boolean = true
+    private val strokeWidth = 2.0f
+    private val strokeColor = Color.RED
+    private val stroke = BasicStroke(strokeWidth)
+
+    override fun paint(g: Graphics?) {
+        if (g == null) return
+
+        val graphics = g as Graphics2D
+        graphics.color = strokeColor
+        graphics.stroke = stroke
+        graphics.background = null
+
+        graphics.drawRect(zoomXmin, zoomYmin, zoomWidth, zoomHeight)
+    }
+
+    override fun processMouseEvent(e: MouseEvent?) {
+        super.processMouseEvent(e)
+
+        when (e!!.id) {
+            MouseEvent.MOUSE_PRESSED -> {
+                if (isVisible) {
+                    moveOffset = Point2D.Double((e.x - zoomXmin).toDouble(), (e.y - zoomYmin).toDouble())
+
+                    moveStarted = true
+                    e.consume()
+                }
+            }
+
+            MouseEvent.MOUSE_RELEASED -> {
+                moveStarted = false
+            }
+
+            MouseEvent.MOUSE_DRAGGED -> {
+                if (moveStarted) {
+                    zoomXmin = (e.x - moveOffset.x).toInt()
+                    zoomYmin = (e.y - moveOffset.y).toInt()
+                    e.consume()
+                }
+            }
+        }
+    }
 
     init {
+        enableEvents(MouseEvent.MOUSE_EVENT_MASK)
 //        isManaged = false
-//        isVisible = false
+        isVisible = false
 //        isMouseTransparent = true
-//        strokeWidth = 2.0
-//        stroke = Color.RED
-//        fill = Color.TRANSPARENT
 //
 //        xProperty().bindBidirectional(zoomXmin)
 //        yProperty().bindBidirectional(zoomYmin)
@@ -37,25 +77,15 @@ class ZoomBox(private val image: Canvas) : Rectangle() {
 //        heightProperty().bindBidirectional(zoomHeight)
 //
 //        setOnMousePressed {
-//            if (it.isPrimaryButtonDown && isVisible) {
-//                moveOffset = Point2D(it.x - zoomXmin.value, it.y - zoomYmin.value)
-//
-//                moveStarted = true
-//                it.consume()
-//            }
 //        }
 //
 //        setOnMouseReleased {
-//            moveStarted = false
 //        }
 //
 //        setOnMouseDragged {
-//            if (moveStarted) {
-//                zoomXmin.value = it.x - moveOffset.x
-//                zoomYmin.value = it.y - moveOffset.y
-//                it.consume()
-//            }
-        }
+//        }
+        image.addMouseListener()
+    }
 
 //        fun adjustPoint(it: MouseEvent): Point2D {
 //            return parent.screenToLocal(it.screenX, it.screenY)
@@ -116,9 +146,9 @@ class ZoomBox(private val image: Canvas) : Rectangle() {
 //                it.consume()
 //            }
 //        }
-    }
+}
 
-    private fun fixEndpoints(it: Point2D) {
+private fun fixEndpoints(it: Point2D) {
 //        if (it.x < zoomXmin.value) {
 //            zoomXmax.value = zoomXmin.value
 //            zoomXmin.value = it.x
