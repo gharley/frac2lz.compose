@@ -52,7 +52,7 @@ open class SwingImageClass() :
     private var refreshRate = UISettings().refreshRate
 
     init {
-//        add(ZoomBox(this))
+        add(ZoomBox(this))
 
         EventBus.listen(FractalEvent::class.java).subscribe {
             val color = palette.color(it.data).toArgb()

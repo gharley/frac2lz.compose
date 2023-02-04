@@ -1,8 +1,7 @@
 package components
 
-import EventBus
 import java.awt.*
-import java.awt.event.MouseEvent
+import java.awt.event.*
 import java.awt.geom.Point2D
 import javax.swing.JPanel
 import kotlin.math.abs
@@ -10,10 +9,10 @@ import kotlin.math.abs
 data class ZoomBoxEvent(val zoomBox: ZoomBox)
 data class ImageClickEvent(val x: Double, val y: Double)
 
-class ZoomBox(private val image: JPanel) : Canvas() {
-    private var zoomXmin = 0
+class ZoomBox(parent: JPanel) : Canvas() {
+    internal var zoomXmin = 0
     private var zoomXmax = 0
-    private var zoomYmin = 0
+    var zoomYmin = 0
     private var zoomYmax = 0
     private var zoomWidth = 0
     private var zoomHeight = 0
@@ -26,6 +25,89 @@ class ZoomBox(private val image: JPanel) : Canvas() {
     private val strokeWidth = 2.0f
     private val strokeColor = Color.RED
     private val stroke = BasicStroke(strokeWidth)
+
+    inner class ParentKeyListener() : KeyListener {
+        override fun keyTyped(e: KeyEvent?) {}
+
+        override fun keyPressed(e: KeyEvent?) {
+            if (e!!.keyChar.code == KeyEvent.VK_ESCAPE) {
+                isVisible = false
+            } else if (e.keyChar.code == KeyEvent.VK_ENTER) {
+                if (isVisible) {
+                    isVisible = false
+                    EventBus.publish(ZoomBoxEvent(this@ZoomBox))
+                }
+            }
+
+            e.consume()
+            this@ZoomBox.repaint()
+        }
+
+        override fun keyReleased(e: KeyEvent?) {}
+    }
+
+    inner class ParentMouseListener() : MouseListener {
+//        fun adjustPoint(it: MouseEvent): Point2D {
+//            return parent.screenToLocal(it.screenX, it.screenY)
+//        }
+
+        override fun mousePressed(e: MouseEvent?) {
+            if (e!!.button == MouseEvent.BUTTON1) {
+//                this@ZoomBox.isMouseTransparent = true
+
+//                val adjustedPoint = adjustPoint(e)
+
+                zoomXmin = e.x
+                zoomYmin = e.y
+
+                zoomWidth = 10
+                zoomHeight = 10
+                isVisible = true
+
+                e.consume()
+            }
+        }
+
+        override fun mouseReleased(e: MouseEvent?) {
+            if (dragStarted) {
+                dragStarted = false
+//                this@ZoomBox.isMouseTransparent = false
+            } else {
+                isVisible = false
+
+                val localPoint = e!! // adjustPoint(it)
+                EventBus.publish(ImageClickEvent(localPoint.x.toDouble(), localPoint.y.toDouble()))
+            }
+
+            e!!.consume()
+            this@ZoomBox.repaint()
+        }
+
+        override fun mouseClicked(e: MouseEvent?) {}
+        override fun mouseEntered(e: MouseEvent?) {}
+        override fun mouseExited(e: MouseEvent?) {}
+    }
+
+    inner class ParentMouseMoveListener() : MouseMotionListener {
+        override fun mouseDragged(e: MouseEvent?) {
+            if (dragStarted) {
+                fixEndpoints(Point2D.Double(e!!.x.toDouble(), e.y.toDouble()))
+//                fixEndpoints(adjustPoint(it))
+            } else {
+                dragStarted = true
+                isVisible = true
+            }
+
+            e!!.consume()
+            this@ZoomBox.repaint()
+        }
+
+        override fun mouseMoved(e: MouseEvent?) {}
+    }
+
+    override fun update(g: Graphics?) {
+        super.update(g)
+    }
 
     override fun paint(g: Graphics?) {
         if (g == null) return
@@ -84,84 +166,39 @@ class ZoomBox(private val image: JPanel) : Canvas() {
 //
 //        setOnMouseDragged {
 //        }
-        image.addMouseListener()
+        parent.addMouseListener(ParentMouseListener())
+        parent.addMouseMotionListener(ParentMouseMoveListener())
+        parent.addKeyListener(ParentKeyListener())
     }
 
-//        fun adjustPoint(it: MouseEvent): Point2D {
-//            return parent.screenToLocal(it.screenX, it.screenY)
-//        }
-
 //        image.setOnMousePressed {
-//            if (it.isPrimaryButtonDown) {
-//                this@ZoomBox.isMouseTransparent = true
-//
-//                val adjustedPoint = adjustPoint(it)
-//
-//                zoomXmin.value = adjustedPoint.x
-//                zoomYmin.value = adjustedPoint.y
-//
-//                zoomWidth.value = 10.0
-//                zoomHeight.value = 10.0
-//
-//                it.consume()
-//            }
 //        }
 //
 //        image.setOnMouseDragged {
-//            if (dragStarted) {
-//                fixEndpoints(adjustPoint(it))
-//            } else {
-//                dragStarted = true
-//                this@ZoomBox.isVisible = true
-//            }
-//
-//            it.consume()
 //        }
 
 //        image.setOnMouseReleased {
-//            if (dragStarted) {
-//                dragStarted = false
-//                this@ZoomBox.isMouseTransparent = false
-//            } else {
-//                this@ZoomBox.isVisible = false
-//
-//                val localPoint = adjustPoint(it)
-//                EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y))
-//            }
-//
-//            it.consume()
 //        }
 //
 //        Platform.runLater {
 //            stage.scene.addEventFilter(KeyEvent.KEY_PRESSED) {
-//                if (it.code == KeyCode.ESCAPE) {
-//                    this@ZoomBox.isVisible = false
-//                } else if (it.code == KeyCode.ENTER) {
-//                    if (this@ZoomBox.isVisible) {
-//                        this@ZoomBox.isVisible = false
-//                        EventBus.publish(ZoomBoxEvent(this))
-//                    }
-//                }
-//
-//                it.consume()
 //            }
 //        }
-}
 
-private fun fixEndpoints(it: Point2D) {
-//        if (it.x < zoomXmin.value) {
-//            zoomXmax.value = zoomXmin.value
-//            zoomXmin.value = it.x
-//        } else zoomXmax.value = it.x
-//
-//        if (it.y < zoomYmin.value) {
-//            zoomYmax.value = zoomYmin.value
-//            zoomYmin.value = it.y
-//        } else zoomYmax.value = it.y
-//
-//        zoomWidth.value = abs(zoomXmax.value - zoomXmin.value)
-//
-//        if (maintainAspect) zoomHeight.value = zoomWidth.value * (image.height / image.width)
-//        else zoomHeight.value = abs(zoomYmax.value - zoomYmin.value)
-//    }
+    private fun fixEndpoints(it: Point2D) {
+        if (it.x.toInt() < zoomXmin) {
+            zoomXmax = zoomXmin
+            zoomXmin = it.x.toInt()
+        } else zoomXmax = it.x.toInt()
+
+        if (it.y < zoomYmin) {
+            zoomYmax = zoomYmin
+            zoomYmin = it.y.toInt()
+        } else zoomYmax = it.y.toInt()
+
+        zoomWidth = abs(zoomXmax - zoomXmin)
+
+        if (maintainAspect) zoomHeight = zoomWidth * (parent.height / parent.width)
+        else zoomHeight = abs(zoomYmax - zoomYmin)
+    }
 }
