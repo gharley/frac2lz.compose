@@ -8,10 +8,7 @@ import action.PaletteEvent
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -43,6 +40,10 @@ fun PaletteCanvas(pal: Palette) {
     var height = 0f
     var width: Float
 
+    fun publishChanges() {
+        EventBus.publish(PaletteEvent(PaletteAction.MARKERS_CHANGED, markerMap.count()))
+    }
+
     fun paletteIndex(x: Int): Int {
         return x / stripeWidth
     }
@@ -51,12 +52,14 @@ fun PaletteCanvas(pal: Palette) {
         if (markerMap.containsKey(index)) {
             markerMap.remove(index)
             trigger++
+            publishChanges()
         }
     }
 
     fun removeMarkers() {
         markerMap.clear()
         trigger++
+        publishChanges()
     }
 
     fun setMarker(index: Int) {
@@ -68,6 +71,7 @@ fun PaletteCanvas(pal: Palette) {
 
             markerMap[index] = marker
             trigger++
+            publishChanges()
         }
     }
 
@@ -219,7 +223,20 @@ fun PaletteBar() {
                 }
             }
             Column {
-                Button(onClick = { EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE)) }) {
+                var enableButton by remember { mutableStateOf(false) }
+
+                EventBus.listen(PaletteEvent::class.java).subscribe {
+                    if (it.action == PaletteAction.MARKERS_CHANGED) {
+                        val enable = (it.data as Int > 1)
+
+                        if (enableButton != enable) enableButton = enable
+                    }
+                }
+
+                Button(
+                    onClick = { EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE)) },
+                    enabled = enableButton
+                ) {
                     Text("Interpolate between markers")
                 }
             }

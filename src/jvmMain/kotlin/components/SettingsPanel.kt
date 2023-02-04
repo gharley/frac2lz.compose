@@ -26,7 +26,7 @@ data class UISettings(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPanel() {
-    Surface(Modifier.background(Color.Cyan).padding(20.dp).width(400.dp)) {
+    Surface(Modifier.background(Color.LightGray).padding(20.dp).width(400.dp)) {
         val settings: UISettings = remember { UISettings() }
         var trigger by remember { mutableStateOf(0) }
 
@@ -35,7 +35,7 @@ fun SettingsPanel() {
             trigger++
         }
 
-        Column(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().padding(3.dp)) {
             trigger  // Causes recompose
 
             Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
@@ -70,7 +70,7 @@ fun SettingsPanel() {
                 Column {
                     Slider(
                         settings.refreshRate.toFloat(),
-                        onValueChange = { settings.refreshRate = it.toInt() },
+                        onValueChange = { settings.refreshRate = it.toInt(); trigger++ },
                         valueRange = (1f..100f),
                         steps = 100,
                         onValueChangeFinished = { broadcastSettings() },

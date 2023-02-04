@@ -2,6 +2,7 @@ import action.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -27,19 +28,11 @@ import javax.swing.filechooser.FileNameExtensionFilter
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
-    val appTitle = remember { mutableStateOf(appName) }
     val properties = remember { props }
-
-    EventBus.listen(AppTitle::class.java).subscribe {
-        appTitle.value = appName
-        if (it.title.isNotEmpty()) {
-            appTitle.value += " - " + it.title
-        }
-    }
 
     Window(
         onCloseRequest = { closeFunction() },
-        title = appTitle.value,
+        title = appName,
         icon = painterResource("frac2lz128.png"),
         state = WindowState(size = DpSize(1200.dp, 800.dp))
     ) {
@@ -170,6 +163,16 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             }
         }
 
+        EventBus.listen(AppTitle::class.java).subscribe {
+            var appTitle = appName
+
+            if (it.title.isNotEmpty()) {
+                appTitle += " - " + it.title
+            }
+
+            this.window.title = appTitle
+        }
+
         EventBus.listen(FileEvent::class.java).subscribe {
             when (it.action) {
                 FileAction.OPEN_FRACTAL -> onOpen()
@@ -193,7 +196,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     Column{ SettingsPanel() }
                 }
                 PaletteCanvas(palette)
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column { Text("Color Range:") }
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
@@ -201,7 +204,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                         }
                     }
                 }
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column { Text("Palette Size:") }
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
