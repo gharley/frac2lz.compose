@@ -1,5 +1,6 @@
 package components
 
+import EventBus
 import action.ImageClickEvent
 import action.ZoomBoxEvent
 import java.awt.*
@@ -8,6 +9,7 @@ import java.awt.geom.Point2D
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 import kotlin.math.abs
+
 
 class ZoomBox(parent: JPanel) : JPanel() {
     private var minX = 0.0
@@ -22,9 +24,6 @@ class ZoomBox(parent: JPanel) : JPanel() {
     private var moveOffset = Point2D.Double(0.0, 0.0)
 
     private var maintainAspect: Boolean = true
-    private val strokeWidth = 2.0f
-    private val strokeColor = Color.RED
-    private val stroke = BasicStroke(strokeWidth)
 
     inner class ParentKeyListener : KeyListener {
         override fun keyTyped(e: KeyEvent?) {
@@ -119,32 +118,25 @@ class ZoomBox(parent: JPanel) : JPanel() {
 
     fun setBounds() {
         maximumSize = Dimension(zoomWidth.toInt(), zoomHeight.toInt())
-        bounds=Rectangle(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
-        invalidate()
-//        parent.invalidate()
+        bounds = Rectangle(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
         repaint()
     }
 
     override fun paintComponent(g: Graphics?) {
-        super.paintComponent(g)
-
         if (g == null) return
 
         val graphics = g as Graphics2D
-//        graphics.color = Color(0)
-//        graphics.stroke = stroke
-//        graphics.background = Color(0)
 
-        graphics.drawRect(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
+        graphics.fillRect(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
     }
 
     override fun processMouseEvent(e: MouseEvent?) {
-//        super.processMouseEvent(e)
+        super.processMouseEvent(e)
 
         when (e!!.id) {
             MouseEvent.MOUSE_PRESSED -> {
                 if (isVisible) {
-                    moveOffset = Point2D.Double((e.x - minX), (e.y - minY))
+                    moveOffset = Point2D.Double((e.x.toDouble() - minX), (e.y.toDouble() - minY))
 
                     moveStarted = true
                 }
@@ -152,15 +144,6 @@ class ZoomBox(parent: JPanel) : JPanel() {
 
             MouseEvent.MOUSE_RELEASED -> {
                 moveStarted = false
-            }
-
-            MouseEvent.MOUSE_DRAGGED -> {
-                if (moveStarted) {
-                    minX = (e.x - moveOffset.x)
-                    minY = (e.y - moveOffset.y)
-                    setBounds()
-
-                }
             }
         }
 
@@ -170,6 +153,17 @@ class ZoomBox(parent: JPanel) : JPanel() {
     init {
         isVisible = false
         border = BorderFactory.createLineBorder(Color.RED)
+        isOpaque = true
+
+        addMouseMotionListener(object : MouseAdapter() {
+            override fun mouseDragged(e: MouseEvent?) {
+                if (moveStarted) {
+                    minX = (e!!.x - moveOffset.x)
+                    minY = (e.y - moveOffset.y)
+                    setBounds()
+                }
+            }
+        })
 
         enableEvents(MouseEvent.MOUSE_EVENT_MASK)
         parent.addMouseListener(ParentMouseListener())
