@@ -17,6 +17,8 @@ import kotlin.reflect.KProperty
 
 open class SwingImageClass() :
     JPanel() {
+    var scale = 0.0
+
     fun createSwingImage() {
         if (imgHeight != 0 && imgWidth != 0) {
             pixels = IntArray(imgWidth * imgHeight)
@@ -87,7 +89,7 @@ open class SwingImageClass() :
 
         val graphics = g as Graphics2D
 
-        scale()
+        scaleImage()
         graphics.drawImage(image, imageTransform, null)
     }
 
@@ -102,16 +104,16 @@ open class SwingImageClass() :
             source.newPixels(0, 0, imgWidth, imgHeight)
         }
 
-        scale()
+        scaleImage()
     }
 
-    private fun scale() {
+    private fun scaleImage() {
         val bounds = getBounds(null)
         val height = imgHeight.toDouble()
         val width = imgWidth.toDouble()
 
         imageTransform.setToIdentity()
-        val scale: Double =
+        scale =
             when {
                 width > height -> when {
                     bounds.width > bounds.height -> min(

@@ -2,6 +2,7 @@ package action
 
 import Complex
 import Palette
+import components.ZoomBox
 
 interface ActionEvent {
     val action: Any
@@ -28,3 +29,7 @@ data class FractalPointData(
     val z: Complex = Complex(0.0, 0.0),
     val zStart: Complex = Complex(0.0, 0.0)
 )
+
+data class ZoomBoxEvent(val zoomBox: ZoomBox)
+
+data class ImageClickEvent(val x: Double, val y: Double)

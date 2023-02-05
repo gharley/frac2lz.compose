@@ -1,13 +1,17 @@
 import action.*
+import components.SwingImage
 import kotlinx.coroutines.*
 import state.FractalBounds
 import state.FractalParameters
+import java.awt.geom.Point2D
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import javax.json.Json
 import javax.json.JsonBuilderFactory
 import javax.json.JsonObject
+import javax.swing.JPanel
+import kotlin.math.abs
 import kotlin.math.max
 
 const val zInit = -10.0
@@ -90,6 +94,10 @@ abstract class Fractal : Serializable {
             }
         }
 
+        EventBus.listen(ZoomBoxEvent::class.java).subscribe{
+            zoomTo(it.zoomBox)
+            EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
+        }
     }
 
     open suspend fun calcAll() {
@@ -288,24 +296,26 @@ abstract class Fractal : Serializable {
             .build()
     }
 
-//    open fun zoomTo(zoomBox: Rectangle, image: Canvas) {
-//        val zoomTopLeft = image.parentToLocal(zoomBox.x, zoomBox.y)
-//        val zoomWidth = zoomBox.width / image.scaleX
-//        val zoomHeight = zoomBox.height / image.scaleY
-//
-//        // The following values allow for asymmetrical bounds e.g. the Mandelbrot x-axis is usually -2.0 to 1.0
-//        val fractalWidth = abs(params.bounds.right - params.bounds.left)
-//        val fractalHeight = abs(params.bounds.bottom - params.bounds.top)
-//        val centerX = minX + (zoomTopLeft.x + zoomWidth / fractalWidth * abs(params.bounds.left)) * incX
-//        // Screen y-axis is the opposite of Cartesian y-axis
-//        val centerY = maxY - (zoomTopLeft.y + zoomHeight / fractalHeight * abs(params.bounds.bottom)) * incY
-//
-//        val magnify = zoomWidth * incX / fractalWidth
-//
-//        params.centerX = centerX
-//        params.centerY = centerY
-//        params.magnify = magnify
-//    }
+    open fun zoomTo(zoomBox: JPanel) {
+        val image = zoomBox.parent as SwingImage
+        val scale = image.scale
+        val zoomTopLeft = Point2D.Double(zoomBox.x.toDouble() / scale, zoomBox.y.toDouble() / scale)
+        val zoomWidth = zoomBox.width / scale
+        val zoomHeight = zoomBox.height / scale
+
+        // The following values allow for asymmetrical bounds e.g. the Mandelbrot x-axis is usually -2.0 to 1.0
+        val fractalWidth = abs(params.bounds.right - params.bounds.left)
+        val fractalHeight = abs(params.bounds.bottom - params.bounds.top)
+        val centerX = minX + (zoomTopLeft.x + zoomWidth / fractalWidth * abs(params.bounds.left)) * incX
+        // Screen y-axis is the opposite of Cartesian y-axis
+        val centerY = maxY - (zoomTopLeft.y + zoomHeight / fractalHeight * abs(params.bounds.bottom)) * incY
+
+        val magnify = zoomWidth * incX / fractalWidth
+
+        params.centerX = centerX
+        params.centerY = centerY
+        params.magnify = magnify
+    }
 
     open fun readObject(stream: ObjectInputStream) {
         name = stream.readUTF()

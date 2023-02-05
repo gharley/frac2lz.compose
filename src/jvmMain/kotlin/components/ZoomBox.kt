@@ -1,14 +1,13 @@
 package components
 
+import action.ImageClickEvent
+import action.ZoomBoxEvent
 import java.awt.*
 import java.awt.event.*
 import java.awt.geom.Point2D
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 import kotlin.math.abs
-
-data class ZoomBoxEvent(val zoomBox: ZoomBox)
-data class ImageClickEvent(val x: Double, val y: Double)
 
 class ZoomBox(parent: JPanel) : JPanel() {
     private var minX = 0.0
@@ -76,6 +75,7 @@ class ZoomBox(parent: JPanel) : JPanel() {
         override fun mouseReleased(e: MouseEvent?) {
             if (dragStarted) {
                 dragStarted = false
+                this@ZoomBox.parent.requestFocus()
             } else {
                 isVisible = false
 
@@ -131,11 +131,11 @@ class ZoomBox(parent: JPanel) : JPanel() {
         if (g == null) return
 
         val graphics = g as Graphics2D
-        graphics.color = strokeColor
-        graphics.stroke = stroke
-        graphics.background = Color.BLUE
+//        graphics.color = Color(0)
+//        graphics.stroke = stroke
+//        graphics.background = Color(0)
 
-        graphics.fillRect(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
+        graphics.drawRect(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
     }
 
     override fun processMouseEvent(e: MouseEvent?) {
@@ -169,7 +169,8 @@ class ZoomBox(parent: JPanel) : JPanel() {
 
     init {
         isVisible = false
-        border = BorderFactory.createLineBorder(Color.RED);
+        border = BorderFactory.createLineBorder(Color.RED)
+
         enableEvents(MouseEvent.MOUSE_EVENT_MASK)
         parent.addMouseListener(ParentMouseListener())
         parent.addMouseMotionListener(ParentMouseMoveListener())
@@ -189,7 +190,7 @@ class ZoomBox(parent: JPanel) : JPanel() {
 
         zoomWidth = abs(maxX - minX)
 
-        zoomHeight = if (maintainAspect) zoomWidth * (parent.height / parent.width)
+        zoomHeight = if (maintainAspect) zoomWidth * (parent.height.toDouble() / parent.width.toDouble())
         else abs(maxY - minY)
 
         setBounds()
