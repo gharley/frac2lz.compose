@@ -3,17 +3,18 @@ package components
 import java.awt.*
 import java.awt.event.*
 import java.awt.geom.Point2D
+import javax.swing.BorderFactory
 import javax.swing.JPanel
 import kotlin.math.abs
 
 data class ZoomBoxEvent(val zoomBox: ZoomBox)
 data class ImageClickEvent(val x: Double, val y: Double)
 
-class ZoomBox(parent: JPanel) : Component() {
-    internal var zoomXmin = 0.0
-    private var zoomXmax = 0.0
-    var zoomYmin = 0.0
-    private var zoomYmax = 0.0
+class ZoomBox(parent: JPanel) : JPanel() {
+    private var minX = 0.0
+    private var maxX = 0.0
+    private var minY = 0.0
+    private var maxY = 0.0
     private var zoomWidth = 0.0
     private var zoomHeight = 0.0
 
@@ -26,8 +27,10 @@ class ZoomBox(parent: JPanel) : Component() {
     private val strokeColor = Color.RED
     private val stroke = BasicStroke(strokeWidth)
 
-    inner class ParentKeyListener() : KeyListener {
-        override fun keyTyped(e: KeyEvent?) {e!!.consume()}
+    inner class ParentKeyListener : KeyListener {
+        override fun keyTyped(e: KeyEvent?) {
+            e!!.consume()
+        }
 
         override fun keyPressed(e: KeyEvent?) {
             if (e!!.keyChar.code == KeyEvent.VK_ESCAPE) {
@@ -43,7 +46,9 @@ class ZoomBox(parent: JPanel) : Component() {
             this@ZoomBox.setBounds()
         }
 
-        override fun keyReleased(e: KeyEvent?) {e!!.consume()}
+        override fun keyReleased(e: KeyEvent?) {
+            e!!.consume()
+        }
     }
 
     fun adjustPoint(it: MouseEvent): Point2D {
@@ -51,13 +56,13 @@ class ZoomBox(parent: JPanel) : Component() {
 //            return parent.screenToLocal(it.screenX, it.screenY)
     }
 
-    inner class ParentMouseListener() : MouseListener {
+    inner class ParentMouseListener : MouseListener {
         override fun mousePressed(e: MouseEvent?) {
             if (e!!.button == MouseEvent.BUTTON1) {
                 val adjustedPoint = adjustPoint(e)
 
-                zoomXmin = adjustedPoint.x
-                zoomYmin = adjustedPoint.y
+                minX = adjustedPoint.x
+                minY = adjustedPoint.y
 
                 zoomWidth = 10.0
                 zoomHeight = 10.0
@@ -82,12 +87,20 @@ class ZoomBox(parent: JPanel) : Component() {
             this@ZoomBox.setBounds()
         }
 
-        override fun mouseClicked(e: MouseEvent?) {e!!.consume()}
-        override fun mouseEntered(e: MouseEvent?) {e!!.consume()}
-        override fun mouseExited(e: MouseEvent?) {e!!.consume()}
+        override fun mouseClicked(e: MouseEvent?) {
+            e!!.consume()
+        }
+
+        override fun mouseEntered(e: MouseEvent?) {
+            e!!.consume()
+        }
+
+        override fun mouseExited(e: MouseEvent?) {
+            e!!.consume()
+        }
     }
 
-    inner class ParentMouseMoveListener() : MouseMotionListener {
+    inner class ParentMouseMoveListener : MouseMotionListener {
         override fun mouseDragged(e: MouseEvent?) {
             if (dragStarted) {
                 fixEndpoints(adjustPoint(e!!))
@@ -99,29 +112,30 @@ class ZoomBox(parent: JPanel) : Component() {
             e!!.consume()
         }
 
-        override fun mouseMoved(e: MouseEvent?) {e!!.consume()}
+        override fun mouseMoved(e: MouseEvent?) {
+            e!!.consume()
+        }
     }
 
-    fun setBounds(){
-        setBounds(zoomXmin.toInt(), zoomYmin.toInt(),zoomWidth.toInt(),zoomHeight.toInt())
-//        invalidate()
+    fun setBounds() {
+        maximumSize = Dimension(zoomWidth.toInt(), zoomHeight.toInt())
+        bounds=Rectangle(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
+        invalidate()
 //        parent.invalidate()
-        paint(graphics)
+        repaint()
     }
 
-    override fun update(g: Graphics?) {
-        super.update(g)
-    }
+    override fun paintComponent(g: Graphics?) {
+        super.paintComponent(g)
 
-    override fun paint(g: Graphics?) {
         if (g == null) return
 
         val graphics = g as Graphics2D
         graphics.color = strokeColor
         graphics.stroke = stroke
-        graphics.background = null
+        graphics.background = Color.BLUE
 
-        graphics.fillRect(zoomXmin.toInt(), zoomYmin.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
+        graphics.fillRect(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
     }
 
     override fun processMouseEvent(e: MouseEvent?) {
@@ -130,7 +144,7 @@ class ZoomBox(parent: JPanel) : Component() {
         when (e!!.id) {
             MouseEvent.MOUSE_PRESSED -> {
                 if (isVisible) {
-                    moveOffset = Point2D.Double((e.x - zoomXmin), (e.y - zoomYmin))
+                    moveOffset = Point2D.Double((e.x - minX), (e.y - minY))
 
                     moveStarted = true
                 }
@@ -142,8 +156,8 @@ class ZoomBox(parent: JPanel) : Component() {
 
             MouseEvent.MOUSE_DRAGGED -> {
                 if (moveStarted) {
-                    zoomXmin = (e.x - moveOffset.x)
-                    zoomYmin = (e.y - moveOffset.y)
+                    minX = (e.x - moveOffset.x)
+                    minY = (e.y - moveOffset.y)
                     setBounds()
 
                 }
@@ -155,7 +169,7 @@ class ZoomBox(parent: JPanel) : Component() {
 
     init {
         isVisible = false
-
+        border = BorderFactory.createLineBorder(Color.RED);
         enableEvents(MouseEvent.MOUSE_EVENT_MASK)
         parent.addMouseListener(ParentMouseListener())
         parent.addMouseMotionListener(ParentMouseMoveListener())
@@ -163,20 +177,20 @@ class ZoomBox(parent: JPanel) : Component() {
     }
 
     private fun fixEndpoints(it: Point2D) {
-        if (it.x < zoomXmin) {
-            zoomXmax = zoomXmin
-            zoomXmin = it.x
-        } else zoomXmax = it.x
+        if (it.x < minX) {
+            maxX = minX
+            minX = it.x
+        } else maxX = it.x
 
-        if (it.y < zoomYmin) {
-            zoomYmax = zoomYmin
-            zoomYmin = it.y
-        } else zoomYmax = it.y
+        if (it.y < minY) {
+            maxY = minY
+            minY = it.y
+        } else maxY = it.y
 
-        zoomWidth = abs(zoomXmax - zoomXmin)
+        zoomWidth = abs(maxX - minX)
 
         zoomHeight = if (maintainAspect) zoomWidth * (parent.height / parent.width)
-        else abs(zoomYmax - zoomYmin)
+        else abs(maxY - minY)
 
         setBounds()
     }
