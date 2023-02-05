@@ -27,7 +27,7 @@ class ZoomBox(parent: JPanel) : Component() {
     private val stroke = BasicStroke(strokeWidth)
 
     inner class ParentKeyListener() : KeyListener {
-        override fun keyTyped(e: KeyEvent?) {}
+        override fun keyTyped(e: KeyEvent?) {e!!.consume()}
 
         override fun keyPressed(e: KeyEvent?) {
             if (e!!.keyChar.code == KeyEvent.VK_ESCAPE) {
@@ -40,10 +40,10 @@ class ZoomBox(parent: JPanel) : Component() {
             }
 
             e.consume()
-            this@ZoomBox.invalidate()
+            this@ZoomBox.setBounds()
         }
 
-        override fun keyReleased(e: KeyEvent?) {}
+        override fun keyReleased(e: KeyEvent?) {e!!.consume()}
     }
 
     fun adjustPoint(it: MouseEvent): Point2D {
@@ -79,12 +79,12 @@ class ZoomBox(parent: JPanel) : Component() {
             }
 
             e!!.consume()
-            this@ZoomBox.invalidate()
+            this@ZoomBox.setBounds()
         }
 
-        override fun mouseClicked(e: MouseEvent?) {}
-        override fun mouseEntered(e: MouseEvent?) {}
-        override fun mouseExited(e: MouseEvent?) {}
+        override fun mouseClicked(e: MouseEvent?) {e!!.consume()}
+        override fun mouseEntered(e: MouseEvent?) {e!!.consume()}
+        override fun mouseExited(e: MouseEvent?) {e!!.consume()}
     }
 
     inner class ParentMouseMoveListener() : MouseMotionListener {
@@ -99,12 +99,14 @@ class ZoomBox(parent: JPanel) : Component() {
             e!!.consume()
         }
 
-        override fun mouseMoved(e: MouseEvent?) {}
+        override fun mouseMoved(e: MouseEvent?) {e!!.consume()}
     }
 
     fun setBounds(){
         setBounds(zoomXmin.toInt(), zoomYmin.toInt(),zoomWidth.toInt(),zoomHeight.toInt())
-        invalidate()
+//        invalidate()
+//        parent.invalidate()
+        paint(graphics)
     }
 
     override fun update(g: Graphics?) {
@@ -119,7 +121,7 @@ class ZoomBox(parent: JPanel) : Component() {
         graphics.stroke = stroke
         graphics.background = null
 
-        graphics.drawRect(zoomXmin.toInt(), zoomYmin.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
+        graphics.fillRect(zoomXmin.toInt(), zoomYmin.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
     }
 
     override fun processMouseEvent(e: MouseEvent?) {
@@ -131,13 +133,11 @@ class ZoomBox(parent: JPanel) : Component() {
                     moveOffset = Point2D.Double((e.x - zoomXmin), (e.y - zoomYmin))
 
                     moveStarted = true
-                    e.consume()
                 }
             }
 
             MouseEvent.MOUSE_RELEASED -> {
                 moveStarted = false
-                e.consume()
             }
 
             MouseEvent.MOUSE_DRAGGED -> {
@@ -146,10 +146,11 @@ class ZoomBox(parent: JPanel) : Component() {
                     zoomYmin = (e.y - moveOffset.y)
                     setBounds()
 
-                    e.consume()
                 }
             }
         }
+
+        e.consume()
     }
 
     init {
