@@ -137,8 +137,6 @@ class ZoomBox(parent: JPanel) : JPanel() {
             MouseEvent.MOUSE_PRESSED -> {
                 if (isVisible) {
                     moveOffset = Point2D.Double(e.x.toDouble(), e.y.toDouble())
-//                    moveOffset = Point2D.Double((e.x.toDouble() - minX), (e.y.toDouble() - minY))
-
                     moveStarted = true
                 }
             }
@@ -152,8 +150,10 @@ class ZoomBox(parent: JPanel) : JPanel() {
     }
 
     init {
+        val borderWidth = 3
+
+        border = BorderFactory.createMatteBorder(borderWidth, borderWidth, borderWidth, borderWidth, Color.RED)
         isVisible = false
-        border = BorderFactory.createLineBorder(Color.RED)
         isOpaque = true
         isDoubleBuffered = true
 

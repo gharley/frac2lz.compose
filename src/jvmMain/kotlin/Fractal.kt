@@ -94,7 +94,7 @@ abstract class Fractal : Serializable {
             }
         }
 
-        EventBus.listen(ZoomBoxEvent::class.java).subscribe{
+        EventBus.listen(ZoomBoxEvent::class.java).subscribe {
             zoomTo(it.zoomBox)
             EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
         }
@@ -206,11 +206,11 @@ abstract class Fractal : Serializable {
     private suspend fun fireCalcUpdate(row: Int, column: Int) = coroutineScope {
         val isEndOfRow = column == iterations[0].size - 1
 
-            EventBus.publish(FractalEvent(row, column, fractalData(row, column), isEndOfRow))
-            if (isEndOfRow) fireIterationUpdate()
+        EventBus.publish(FractalEvent(row, column, fractalData(row, column), isEndOfRow))
+        if (isEndOfRow) fireIterationUpdate()
     }
 
-    private suspend fun fireIterationUpdate() = coroutineScope{
+    private suspend fun fireIterationUpdate() = coroutineScope {
         EventBus.publish(FractalIterationEvent(params.maxIterations, maxIterationsActual))
     }
 
@@ -268,7 +268,7 @@ abstract class Fractal : Serializable {
             else -> {}
         }
 
-        runBlocking{ launch{ fireParameterUpdate() } }
+        runBlocking { launch { fireParameterUpdate() } }
     }
 
     open fun toJson(): JsonObject {
@@ -299,7 +299,7 @@ abstract class Fractal : Serializable {
     open fun zoomTo(zoomBox: JPanel) {
         val image = zoomBox.parent as SwingImage
         val scale = image.scale
-        val zoomTopLeft = Point2D.Double(zoomBox.x.toDouble() / scale, zoomBox.y.toDouble() / scale)
+        val zoomTopLeft = Point2D.Double(zoomBox.bounds.x.toDouble() / scale, zoomBox.bounds.y.toDouble() / scale)
         val zoomWidth = zoomBox.width / scale
         val zoomHeight = zoomBox.height / scale
 
@@ -310,7 +310,7 @@ abstract class Fractal : Serializable {
         // Screen y-axis is the opposite of Cartesian y-axis
         val centerY = maxY - (zoomTopLeft.y + zoomHeight / fractalHeight * abs(params.bounds.bottom)) * incY
 
-        val magnify = zoomWidth * incX / fractalWidth
+        val magnify = zoomWidth * incX / fractalWidth * scale
 
         params.centerX = centerX
         params.centerY = centerY
@@ -337,7 +337,7 @@ abstract class Fractal : Serializable {
             iterations[0].size
         )
 
-        runBlocking{ launch{ fireParameterUpdate() } }
+        runBlocking { launch { fireParameterUpdate() } }
     }
 
     open fun writeObject(stream: ObjectOutputStream) {

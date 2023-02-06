@@ -6,10 +6,14 @@ import action.CalculateEvent
 import action.FileAction
 import action.FileEvent
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
 import kotlin.system.exitProcess
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FrameWindowScope.MainMenu() {
     MenuBar {
@@ -34,7 +38,8 @@ fun FrameWindowScope.MainMenu() {
             Item("Recalculate", onClick = { EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE)) })
             Item("Refine", onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFINE)) })
             Separator()
-            Item("Refresh Image", onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFRESH)) })
+            Item("Refresh Image", onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFRESH)) },
+                shortcut = KeyShortcut(Key.F5))
             Separator()
             Item("Show Histogram", onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_HISTOGRAM)) })
         }
