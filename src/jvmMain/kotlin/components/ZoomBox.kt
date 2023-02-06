@@ -162,7 +162,6 @@ class ZoomBox(parent: JPanel) : JPanel() {
                 if (moveStarted) {
                     minX += (e!!.x - moveOffset.x)
                     minY += (e.y - moveOffset.y)
-                    setLocation(minX.toInt(), minY.toInt())
                     setBounds()
                 }
             }
