@@ -136,7 +136,8 @@ class ZoomBox(parent: JPanel) : JPanel() {
         when (e!!.id) {
             MouseEvent.MOUSE_PRESSED -> {
                 if (isVisible) {
-                    moveOffset = Point2D.Double((e.x.toDouble() - minX), (e.y.toDouble() - minY))
+                    moveOffset = Point2D.Double(e.x.toDouble(), e.y.toDouble())
+//                    moveOffset = Point2D.Double((e.x.toDouble() - minX), (e.y.toDouble() - minY))
 
                     moveStarted = true
                 }
@@ -158,8 +159,8 @@ class ZoomBox(parent: JPanel) : JPanel() {
         addMouseMotionListener(object : MouseAdapter() {
             override fun mouseDragged(e: MouseEvent?) {
                 if (moveStarted) {
-                    minX = (e!!.x - moveOffset.x)
-                    minY = (e.y - moveOffset.y)
+                    minX += (e!!.x - moveOffset.x)
+                    minY += (e.y - moveOffset.y)
                     setBounds()
                 }
             }
