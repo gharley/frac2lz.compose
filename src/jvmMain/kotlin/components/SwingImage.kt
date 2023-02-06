@@ -55,6 +55,7 @@ open class SwingImageClass() :
 
     init {
         add(ZoomBox(this))
+        isDoubleBuffered = true
 
         EventBus.listen(FractalEvent::class.java).subscribe {
             val color = palette.color(it.data).toArgb()

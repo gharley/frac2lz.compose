@@ -155,12 +155,14 @@ class ZoomBox(parent: JPanel) : JPanel() {
         isVisible = false
         border = BorderFactory.createLineBorder(Color.RED)
         isOpaque = true
+        isDoubleBuffered = true
 
         addMouseMotionListener(object : MouseAdapter() {
             override fun mouseDragged(e: MouseEvent?) {
                 if (moveStarted) {
                     minX += (e!!.x - moveOffset.x)
                     minY += (e.y - moveOffset.y)
+                    setLocation(minX.toInt(), minY.toInt())
                     setBounds()
                 }
             }
