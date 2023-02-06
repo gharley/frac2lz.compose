@@ -33,13 +33,18 @@ fun FrameWindowScope.MainMenu() {
             Item("Exit", onClick = { exitProcess(0) })
         }
         Menu("Fractal") {
-            Item("Calculate Base Fractal", onClick = { EventBus.publish(CalculateEvent(CalculateAction.CALCULATE_BASE)) })
+            Item("Calculate Base Fractal",
+                onClick = { EventBus.publish(CalculateEvent(CalculateAction.CALCULATE_BASE)) },
+                shortcut = KeyShortcut(Key.F5, true)
+            )
             Separator()
             Item("Recalculate", onClick = { EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE)) })
             Item("Refine", onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFINE)) })
             Separator()
-            Item("Refresh Image", onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFRESH)) },
-                shortcut = KeyShortcut(Key.F5))
+            Item("Refresh Image",
+                onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFRESH)) },
+                shortcut = KeyShortcut(Key.F5)
+            )
             Separator()
             Item("Show Histogram", onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_HISTOGRAM)) })
         }

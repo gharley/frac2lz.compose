@@ -160,8 +160,13 @@ class ZoomBox(parent: JPanel) : JPanel() {
         addMouseMotionListener(object : MouseAdapter() {
             override fun mouseDragged(e: MouseEvent?) {
                 if (moveStarted) {
-                    minX += (e!!.x - moveOffset.x)
-                    minY += (e.y - moveOffset.y)
+                    e!!.consume()
+
+                    if (abs(e.x.toDouble() - moveOffset.x) >= 5 || abs(e.y.toDouble() - moveOffset.y) >= 5) {
+                        minX += (e.x - moveOffset.x)
+                        minY += (e.y - moveOffset.y)
+                    }
+
                     setBounds()
                 }
             }
