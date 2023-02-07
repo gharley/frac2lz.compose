@@ -1,10 +1,11 @@
 import action.*
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,7 +13,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import components.*
 import java.io.*
@@ -23,10 +23,12 @@ import javax.json.JsonReader
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
     val properties = remember { props }
+    var jsonLoaded by remember { mutableStateOf(false) }
 
     Window(
         onCloseRequest = { closeFunction() },
@@ -101,7 +103,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 EventBus.publish(AppTitle(file.name))
 
                 fractal.fromJson(data)
-                EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
+                jsonLoaded = true
+//                EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
 
 //            val calcAlert = AlertDialog(Alert.AlertType.CONFIRMATION, "Calculate Now?")
 //
@@ -206,33 +209,67 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             palette = Palette(it.palette)
         }
 
-        MaterialTheme {
-            MainMenu()
-            Column {
-                Row(Modifier.fillMaxWidth().weight(1f)) {
-                    Column(Modifier.weight(1f)){ FractalImage(fractal.params, palette) }
-                    Column{ SettingsPanel() }
-                }
-                PaletteCanvas(palette)
-                Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column { Text("Color Range:") }
-                    Column(Modifier.weight(1f)) {
-                        PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
-                            palette.colorRange = it
+        @Composable
+        fun JsonAlert(){
+            Surface(Modifier.wrapContentSize(), shadowElevation = 10.dp){
+                AlertDialog(
+                    modifier = Modifier.padding(5.dp),
+                    onDismissRequest = { jsonLoaded = false },
+                    title = { Text("JSON Loaded", maxLines = 1) },
+                    text = { Text("Recalculate now?", maxLines = 1) },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                jsonLoaded = false
+                                EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
+                            }
+                        ) {
+                            Text("Yes")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                jsonLoaded = false
+                            }
+                        ) {
+                            Text("No")
                         }
                     }
-                }
-                Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column { Text("Palette Size:") }
-                    Column(Modifier.weight(1f)) {
-                        PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
-                            palette.size = it
-                        }
-                    }
-                }
-                PaletteBar()
-                StatusBar(palette)
+                )
             }
         }
+
+        MaterialTheme {
+            MainMenu()
+            if (jsonLoaded) {
+                JsonAlert()
+            }else {
+                Column {
+                    Row(Modifier.fillMaxWidth().weight(1f)) {
+                        Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
+                        Column { SettingsPanel() }
+                    }
+                    PaletteCanvas(palette)
+                    Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Column { Text("Color Range:") }
+                        Column(Modifier.weight(1f)) {
+                            PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
+                                palette.colorRange = it
+                            }
+                        }
+                    }
+                    Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Column { Text("Palette Size:") }
+                        Column(Modifier.weight(1f)) {
+                            PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
+                                palette.size = it
+                            }
+                        }
+                    }
+                    PaletteBar()
+                    StatusBar(palette)
+                }
+            }        }
     }
 }
