@@ -41,7 +41,7 @@ fun SettingsPanel() {
             Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
 
                 Column {
-                    Text("Color from Fractal:")
+                    Text("Color from Fractal Data:")
                 }
                 Column {
                     Checkbox(
@@ -53,7 +53,7 @@ fun SettingsPanel() {
             Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
 
                 Column {
-                    Text("Limit Color Repetition:")
+                    Text("Apply additional smoothing:")
                 }
                 Column {
                     Checkbox(

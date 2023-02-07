@@ -41,10 +41,17 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
+            val version = "1.0.0"
+
             modules("java.instrument", "jdk.unsupported")
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb)
+            windows {
+                console = true
+                msiPackageVersion = version
+                exePackageVersion = version
+            }
             packageName = "Frac2lz_compose"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.1"
         }
     }
 }

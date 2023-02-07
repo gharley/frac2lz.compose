@@ -12,13 +12,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import components.*
-import java.io.File
-import java.io.InputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.io.OutputStream
+import java.io.*
 import java.util.*
 import javax.json.Json
 import javax.json.JsonObject
@@ -35,7 +32,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         onCloseRequest = { closeFunction() },
         title = appName,
         icon = painterResource("frac2lz128.png"),
-        state = WindowState(size = DpSize(1200.dp, 800.dp))
+        state = WindowState(size = DpSize(1920.dp, 1080.dp))
     ) {
         val fractal = Mandelbrot()
 
@@ -105,12 +102,12 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                 fractal.fromJson(data)
                 EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
-//            val calcAlert = Alert(Alert.AlertType.CONFIRMATION, "Calculate Now?")
+
+//            val calcAlert = AlertDialog(Alert.AlertType.CONFIRMATION, "Calculate Now?")
 //
 //            calcAlert.showAndWait()
 //                .filter { response -> response === ButtonType.OK }
 //                .ifPresent { EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE)) }
-//        }
             }
         }
 

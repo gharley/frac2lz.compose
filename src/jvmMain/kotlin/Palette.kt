@@ -210,15 +210,10 @@ class Palette {
         return Color(r, g, b)
     }
 
-    private fun fireChanged() {
-        EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
-    }
-
     private fun fireUpdate() {
         if (!disableSideEffects) {
             EventBus.publish(NewPaletteEvent(this))
         }
-//        fireChanged()
     }
 
 //    private var animating: Boolean = false
