@@ -31,6 +31,7 @@ kotlin {
                 implementation("org.glassfish:javax.json:1.1.4")
                 implementation("javax.json:javax.json-api:1.1.4")
                 implementation("org.jetbrains.compose.material3:material3-desktop:$material3Version")
+                implementation("commons-io:commons-io:2.11.0")
             }
             val jvmTest by getting
         }
@@ -41,7 +42,7 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            val version = "1.0.0"
+            val version = "1.0.5"
 
             modules("java.instrument", "jdk.unsupported")
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb)
@@ -49,9 +50,11 @@ compose.desktop {
                 console = true
                 msiPackageVersion = version
                 exePackageVersion = version
+                upgradeUuid = "e1b4694e-cab1-4208-8987-f2e361662b47"
+                menuGroup = "Frac2lz"
             }
-            packageName = "Frac2lz_compose"
-            packageVersion = "1.0.1"
+            packageName = "Frac2lz"
+            packageVersion = version
         }
     }
 }

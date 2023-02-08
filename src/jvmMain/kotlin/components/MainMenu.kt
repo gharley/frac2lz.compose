@@ -1,17 +1,13 @@
 package components
 
 import EventBus
-import action.CalculateAction
-import action.CalculateEvent
-import action.FileAction
-import action.FileEvent
+import action.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyShortcut
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
-import kotlin.system.exitProcess
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -30,7 +26,7 @@ fun FrameWindowScope.MainMenu() {
             Separator()
             Item("Export to image file", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_IMAGE)) })
             Separator()
-            Item("Exit", onClick = { exitProcess(0) })
+            Item("Exit", onClick = { EventBus.publish(UIEvent(UIAction.EXIT)) })
         }
         Menu("Fractal") {
             Item("Calculate Base Fractal",
