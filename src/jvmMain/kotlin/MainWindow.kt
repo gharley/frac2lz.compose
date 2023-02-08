@@ -214,7 +214,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         MaterialTheme {
             MainMenu()
             if (jsonLoaded) {
-                YesNoAlert(title = "JSON File Loaded", text = "Do you want to recalculate now?", dismiss = { jsonLoaded = false }) {
+                YesNoAlert(
+                    title = "JSON File Loaded",
+                    text = "Do you want to recalculate now?",
+                    dismiss = { jsonLoaded = false }) {
                     EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
                 }
             } else {
@@ -240,7 +243,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                             }
                         }
                     }
-                    PaletteBar()
+                    Row { PaletteBar() }
                     StatusBar(palette)
                 }
             }

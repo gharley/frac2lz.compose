@@ -174,8 +174,8 @@ fun PaletteCanvas(pal: Palette) {
 fun PaletteBar() {
     val iconScale = 3.0f
 
-    Surface(modifier = Modifier.fillMaxWidth(), shadowElevation = 5.dp) {
-        Row(Modifier.height(48.dp)) {
+    Surface(modifier = Modifier.fillMaxWidth().padding(10.dp), shadowElevation = 5.dp) {
+        Row(Modifier.height(48.dp).padding(horizontal = 5.dp)) {
             Column {
                 IconButton(
                     onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
