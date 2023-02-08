@@ -1,17 +1,15 @@
 import action.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -25,7 +23,6 @@ import javax.json.JsonReader
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
@@ -211,7 +208,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             palette = Palette(it.palette)
         }
 
-        MaterialTheme {
+        MaterialTheme(darkColorScheme()) {
             MainMenu()
             if (jsonLoaded) {
                 YesNoAlert(

@@ -51,7 +51,7 @@ class Palette {
                     PaletteType.SMOOTH -> palette.buildPalette(palette.smoothColor)
                     PaletteType.CUSTOM -> palette.buildDefaultPalette()
                 }
-            }
+            }else if (property.name == "colorRange") palette.fireUpdate()
         }
     }
 
@@ -206,6 +206,10 @@ class Palette {
         val b = ((colors[clr1].blue * t1 + colors[clr2].blue * t2)).toFloat()
 
         return Color(r, g, b)
+    }
+
+    private fun fireChanged() {
+        EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
     }
 
     private fun fireUpdate() {
