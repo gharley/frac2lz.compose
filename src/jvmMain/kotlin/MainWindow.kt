@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -209,42 +211,13 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             palette = Palette(it.palette)
         }
 
-        @Composable
-        fun JsonAlert(){
-            Surface(Modifier.wrapContentSize(), shadowElevation = 10.dp){
-                AlertDialog(
-                    modifier = Modifier.padding(5.dp),
-                    onDismissRequest = { jsonLoaded = false },
-                    title = { Text("JSON Loaded", maxLines = 1) },
-                    text = { Text("Recalculate now?", maxLines = 1) },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                jsonLoaded = false
-                                EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
-                            }
-                        ) {
-                            Text("Yes")
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = {
-                                jsonLoaded = false
-                            }
-                        ) {
-                            Text("No")
-                        }
-                    }
-                )
-            }
-        }
-
         MaterialTheme {
             MainMenu()
             if (jsonLoaded) {
-                JsonAlert()
-            }else {
+                YesNoAlert(title = "JSON File Loaded", text = "Do you want to recalculate now?", dismiss = { jsonLoaded = false }) {
+                    EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
+                }
+            } else {
                 Column {
                     Row(Modifier.fillMaxWidth().weight(1f)) {
                         Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
@@ -270,6 +243,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     PaletteBar()
                     StatusBar(palette)
                 }
-            }        }
+            }
+        }
     }
 }

@@ -44,3 +44,4 @@ bin/
 ### Frac2lz ###
 frac2lz.properties
 samples/*.png
+*.stl

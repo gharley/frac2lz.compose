@@ -44,14 +44,12 @@ class Palette {
             if (value == t) return
             value = t
 
-            if (property.name == "size" || property.name == "colorRange") {
+            if (property.name == "size") {
                 when (palette.paletteType) {
                     PaletteType.GRAY_SCALE -> palette.buildPalette(palette.grayScaleColor)
                     PaletteType.RANDOM -> palette.buildPalette(palette.randomColor)
                     PaletteType.SMOOTH -> palette.buildPalette(palette.smoothColor)
-                    PaletteType.CUSTOM -> if (property.name == "size") palette.buildDefaultPalette() else {
-                        palette.fireUpdate()
-                    }
+                    PaletteType.CUSTOM -> palette.buildDefaultPalette()
                 }
             }
         }
