@@ -24,6 +24,7 @@ data class FractalEvent(
 )
 
 data class FractalIterationEvent(val allowed: Long, val used: Long)
+
 data class FractalPointData(
     val iterations: Long = 0,
     val maxIterations: Long = 0,

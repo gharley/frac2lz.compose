@@ -63,9 +63,16 @@ abstract class Fractal : Serializable {
     private var reals = array2dOfDouble(100, 100)
     private var imaginarys = array2dOfDouble(100, 100)
 
+    private fun fireComplete(){
+        EventBus.publish(CalculateEvent(CalculateAction.COMPLETE))
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
     fun startCalc() {
-        GlobalScope.launch { calcAll() }
+        GlobalScope.launch {
+            calcAll()
+            fireComplete()
+        }
     }
 
     private fun baseCalc() = runBlocking {
@@ -75,12 +82,18 @@ abstract class Fractal : Serializable {
 
     @OptIn(DelicateCoroutinesApi::class)
     private fun refineImage() {
-        GlobalScope.launch { refineSet() }
+        GlobalScope.launch {
+            refineSet()
+            fireComplete()
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
     fun refreshImage() {
-        GlobalScope.launch { refresh() }
+        GlobalScope.launch {
+            refresh()
+            fireComplete()
+        }
     }
 
     init {

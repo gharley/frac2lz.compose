@@ -78,10 +78,12 @@ open class SwingImageClass :
             if (it.endOfRow) {
                 source.newPixels(0, it.row, imgWidth, 1)
                 if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) update(graphics)
-
-                if (!zoomBox!!.isEnabled)
-                    zoomBox!!.isEnabled = true
             }
+        }
+
+        EventBus.listen(CalculateEvent::class.java).subscribe {
+            if (it.action == CalculateAction.COMPLETE)
+                zoomBox!!.isEnabled = true
         }
 
         EventBus.listen(UIEvent::class.java).subscribe {
