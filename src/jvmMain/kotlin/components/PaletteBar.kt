@@ -28,12 +28,14 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PaintMode
 import rgbToHsv
+import java.util.TreeMap
+import kotlin.math.sign
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun PaletteCanvas(pal: Palette) {
     var palette by remember { mutableStateOf(pal) }
-    val markerMap = mutableMapOf<Int, PaletteMarker>()
+    val markerMap = TreeMap<Int, PaletteMarker>()
     var trigger by remember { mutableStateOf(0) }
     var index: Int
     var stripeWidth = 0
@@ -85,7 +87,7 @@ fun PaletteCanvas(pal: Palette) {
             else {
                 val startColor = palette.colors[startMarker!!.index]
                 val endColor = palette.colors[marker.index]
-                val range = marker.index - startMarker!!.index + 1
+                val range = marker.index - startMarker!!.index
                 val startHSV = rgbToHsv(startColor)
                 val endHSV = rgbToHsv(endColor)
                 val hueInc = (endHSV.hue - startHSV.hue) / range.toFloat()
@@ -94,7 +96,7 @@ fun PaletteCanvas(pal: Palette) {
 
                 for (idx in 0 until range) {
                     val colorIndex = startMarker!!.index + idx
-                    val hue = (startHSV.hue + hueInc * idx)// % 360.0
+                    val hue = (startHSV.hue + hueInc * idx)
                     val saturation = (startHSV.saturation + saturationInc * idx)
                     val value = (startHSV.value + valueInc * idx)
 

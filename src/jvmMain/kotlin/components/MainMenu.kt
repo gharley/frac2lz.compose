@@ -26,7 +26,10 @@ fun FrameWindowScope.MainMenu() {
             Separator()
             Item("Export to image file", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_IMAGE)) })
             Separator()
-            Item("Exit", onClick = { EventBus.publish(UIEvent(UIAction.EXIT)) })
+            Item("Exit",
+                onClick = { EventBus.publish(UIEvent(UIAction.EXIT)) },
+                shortcut = KeyShortcut(Key.X, true)
+            )
         }
         Menu("Fractal") {
             Item("Calculate Base Fractal",

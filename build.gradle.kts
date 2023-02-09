@@ -42,7 +42,7 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            val version = "1.0.5"
+            val version = "1.0.6"
 
             modules("java.instrument", "jdk.unsupported")
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb)
