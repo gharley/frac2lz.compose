@@ -1,7 +1,9 @@
 package components
 
 import EventBus
+import Fractal
 import Palette
+import action.ImageClickEvent
 import action.NewPaletteEvent
 import action.PaletteAction
 import action.PaletteEvent
@@ -28,12 +30,11 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PaintMode
 import rgbToHsv
-import java.util.TreeMap
-import kotlin.math.sign
+import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun PaletteCanvas(pal: Palette) {
+fun PaletteCanvas(pal: Palette, fractal: Fractal) {
     var palette by remember { mutableStateOf(pal) }
     val markerMap = TreeMap<Int, PaletteMarker>()
     var trigger by remember { mutableStateOf(0) }
@@ -77,6 +78,11 @@ fun PaletteCanvas(pal: Palette) {
         }
     }
 
+    fun setMarkerFromIterations(iterations: Long) {
+        if (iterations == -1L) return
+        setMarker(palette.indexFromIterations(iterations))
+    }
+
     fun interpolate() {
         if (markerMap.count() < 2) return
 
@@ -94,9 +100,9 @@ fun PaletteCanvas(pal: Palette) {
                 val saturationInc = (endHSV.saturation - startHSV.saturation) / range.toFloat()
                 val valueInc = (endHSV.value - startHSV.value) / range.toFloat()
 
-                for (idx in 0 until range) {
+                for (idx in 1 until range) {
                     val colorIndex = startMarker!!.index + idx
-                    val hue = (startHSV.hue + hueInc * idx)
+                    val hue = (startHSV.hue + hueInc * idx) % 360f
                     val saturation = (startHSV.saturation + saturationInc * idx)
                     val value = (startHSV.value + valueInc * idx)
 
@@ -117,6 +123,14 @@ fun PaletteCanvas(pal: Palette) {
     EventBus.listen(PaletteEvent::class.java).subscribe {
         if (it.action == PaletteAction.CHANGED) removeMarkers()
         else if (it.action == PaletteAction.INTERPOLATE) interpolate()
+    }
+
+    EventBus.listen(ImageClickEvent::class.java).subscribe {
+        val scale = (it.image as SwingImage).scale
+        val x = (it.x / scale).toInt()
+        val y = (it.y / scale).toInt()
+        val iterations = fractal.iterations[y][x]
+        setMarkerFromIterations(iterations)
     }
 
     fun onMouseClicked(it: PointerEvent) {

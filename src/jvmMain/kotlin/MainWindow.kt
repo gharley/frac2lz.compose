@@ -223,7 +223,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                         Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
                         Column { SettingsPanel() }
                     }
-                    PaletteCanvas(palette)
+                    PaletteCanvas(palette, fractal)
                     Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
                         Column { Text("Color Range:") }
                         Column(Modifier.weight(1f)) {

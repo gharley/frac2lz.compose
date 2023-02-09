@@ -3,6 +3,7 @@ package action
 import Complex
 import Palette
 import components.ZoomBox
+import javax.swing.JPanel
 
 interface ActionEvent {
     val action: Any
@@ -32,4 +33,4 @@ data class FractalPointData(
 
 data class ZoomBoxEvent(val zoomBox: ZoomBox)
 
-data class ImageClickEvent(val x: Double, val y: Double)
+data class ImageClickEvent(val x: Double, val y: Double, val image: JPanel)

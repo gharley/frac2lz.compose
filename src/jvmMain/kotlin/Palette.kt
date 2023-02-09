@@ -176,7 +176,7 @@ class Palette {
         return colors[indexFromIterations(value.iterations)]
     }
 
-    private fun indexFromIterations(iterations: Long): Int {
+    fun indexFromIterations(iterations: Long): Int {
         return ((iterations / colorRange) % colors.size).toInt()
     }
 

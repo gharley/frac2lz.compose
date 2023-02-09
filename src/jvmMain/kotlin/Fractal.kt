@@ -59,7 +59,7 @@ abstract class Fractal : Serializable {
         { maxY - it * incY }  // Screen y-axis is the opposite of Cartesian y-axis
     private val startReal: (Int) -> Double = { minX + it * incX }
 
-    private var iterations: Array<LongArray> = array2dOfLong(100, 100)
+    var iterations: Array<LongArray> = array2dOfLong(100, 100)
     private var reals = array2dOfDouble(100, 100)
     private var imaginarys = array2dOfDouble(100, 100)
 
