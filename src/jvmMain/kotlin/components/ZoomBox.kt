@@ -25,6 +25,10 @@ class ZoomBox() : JPanel() {
 
     private var maintainAspect: Boolean = true
 
+    fun adjustPoint(it: MouseEvent): Point2D {
+        return Point2D.Double(it.x.toDouble(), it.y.toDouble())
+    }
+
     inner class ParentKeyListener : KeyListener {
         override fun keyTyped(e: KeyEvent?) {
             e!!.consume()
@@ -49,11 +53,6 @@ class ZoomBox() : JPanel() {
         }
     }
 
-    fun adjustPoint(it: MouseEvent): Point2D {
-        return Point2D.Double(it.x.toDouble(), it.y.toDouble())
-//            return parent.screenToLocal(it.screenX, it.screenY)
-    }
-
     inner class ParentMouseListener : MouseListener {
         override fun mousePressed(e: MouseEvent?) {
             if (e!!.button == MouseEvent.BUTTON1 && this@ZoomBox.isEnabled) {
@@ -72,20 +71,25 @@ class ZoomBox() : JPanel() {
         }
 
         override fun mouseReleased(e: MouseEvent?) {
-            if (this@ZoomBox.isEnabled){
+            e!!.consume()
+
+            if (e.button == MouseEvent.BUTTON1 && this@ZoomBox.isEnabled) {
                 if (dragStarted) {
                     dragStarted = false
+
                     this@ZoomBox.parent.requestFocus()
+                    this@ZoomBox.setBounds()
                 } else {
                     isVisible = false
 
-                    val localPoint = adjustPoint(e!!)
-                    EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y, parent as JPanel))
+                    try {
+                        val localPoint = adjustPoint(e)
+
+                        EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y, parent as JPanel))
+                    } catch (_: Exception) {
+                    }
                 }
             }
-
-            e!!.consume()
-            this@ZoomBox.setBounds()
         }
 
         override fun mouseClicked(e: MouseEvent?) {
@@ -103,16 +107,16 @@ class ZoomBox() : JPanel() {
 
     inner class ParentMouseMoveListener : MouseMotionListener {
         override fun mouseDragged(e: MouseEvent?) {
-            if (this@ZoomBox.isEnabled){
+            e!!.consume()
+
+            if (this@ZoomBox.isEnabled) {
                 if (dragStarted) {
-                    fixEndpoints(adjustPoint(e!!))
+                    fixEndpoints(adjustPoint(e))
                 } else {
                     dragStarted = true
                     isVisible = true
                 }
             }
-
-            e!!.consume()
         }
 
         override fun mouseMoved(e: MouseEvent?) {
@@ -162,11 +166,11 @@ class ZoomBox() : JPanel() {
     }
 
     init {
-        isEnabled = false
-
         val borderWidth = 3
 
         border = BorderFactory.createMatteBorder(borderWidth, borderWidth, borderWidth, borderWidth, Color.RED)
+
+        isEnabled = false
         isVisible = false
         isOpaque = true
         isDoubleBuffered = true

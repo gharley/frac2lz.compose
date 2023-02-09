@@ -20,7 +20,11 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
         val fractalHeight = parameters.height
         val fractalWidth = parameters.width
 
+        val zoomBox = remember { ZoomBox() }
         val swingImage = remember { SwingImage }
+
+        swingImage.zoomBox = zoomBox
+        swingImage.palette = palette
 
         SwingPanel(modifier = Modifier
             .size(width = fractalWidth.dp, height = fractalHeight.dp)
@@ -30,7 +34,6 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
                     layout = BoxLayout(this, BoxLayout.Y_AXIS)
                     imgHeight = fractalHeight.toInt()
                     imgWidth = fractalWidth.toInt()
-                    swingImage.palette = palette
                 }
             },
             update = {

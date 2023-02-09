@@ -44,7 +44,6 @@ open class SwingImageClass :
         }
     }
 
-    var palette = Palette()
     var imgHeight: Int by Delegate(1)
     var imgWidth: Int by Delegate(1)
 
@@ -53,20 +52,22 @@ open class SwingImageClass :
     private var image: Image? = null
     private val imageTransform = AffineTransform()
     private var refreshRate = UISettings().refreshRate
-    private val zoomBox = ZoomBox()
+
+    var palette: Palette? = null
+    var zoomBox: ZoomBox? = null
 
     override fun addNotify() {
         super.addNotify()
 
         image = createImage(source)
-        add(zoomBox)
+        add(zoomBox!!)
     }
 
     init {
         isDoubleBuffered = true
 
         EventBus.listen(FractalEvent::class.java).subscribe {
-            val color = palette.color(it.data).toArgb()
+            val color = palette!!.color(it.data).toArgb()
 
             if (it.row == 0 && it.column == 0) {
                 prepareForCalc()
@@ -78,7 +79,8 @@ open class SwingImageClass :
                 source.newPixels(0, it.row, imgWidth, 1)
                 if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) update(graphics)
 
-                zoomBox.isEnabled = true
+                if (!zoomBox!!.isEnabled)
+                    zoomBox!!.isEnabled = true
             }
         }
 
@@ -115,7 +117,7 @@ open class SwingImageClass :
             source.newPixels(0, 0, imgWidth, imgHeight)
         }
 
-        zoomBox.isEnabled = false
+        zoomBox!!.isEnabled = false
         scaleImage()
     }
 
