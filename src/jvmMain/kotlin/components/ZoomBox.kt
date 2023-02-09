@@ -11,7 +11,7 @@ import javax.swing.JPanel
 import kotlin.math.abs
 
 
-class ZoomBox(parent: JPanel) : JPanel() {
+class ZoomBox() : JPanel() {
     private var minX = 0.0
     private var maxX = 0.0
     private var minY = 0.0
@@ -56,7 +56,7 @@ class ZoomBox(parent: JPanel) : JPanel() {
 
     inner class ParentMouseListener : MouseListener {
         override fun mousePressed(e: MouseEvent?) {
-            if (e!!.button == MouseEvent.BUTTON1) {
+            if (e!!.button == MouseEvent.BUTTON1 && this@ZoomBox.isEnabled) {
                 val adjustedPoint = adjustPoint(e)
 
                 minX = adjustedPoint.x
@@ -72,14 +72,16 @@ class ZoomBox(parent: JPanel) : JPanel() {
         }
 
         override fun mouseReleased(e: MouseEvent?) {
-            if (dragStarted) {
-                dragStarted = false
-                this@ZoomBox.parent.requestFocus()
-            } else {
-                isVisible = false
+            if (this@ZoomBox.isEnabled){
+                if (dragStarted) {
+                    dragStarted = false
+                    this@ZoomBox.parent.requestFocus()
+                } else {
+                    isVisible = false
 
-                val localPoint = adjustPoint(e!!)
-                EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y, parent as JPanel))
+                    val localPoint = adjustPoint(e!!)
+                    EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y, parent as JPanel))
+                }
             }
 
             e!!.consume()
@@ -101,11 +103,13 @@ class ZoomBox(parent: JPanel) : JPanel() {
 
     inner class ParentMouseMoveListener : MouseMotionListener {
         override fun mouseDragged(e: MouseEvent?) {
-            if (dragStarted) {
-                fixEndpoints(adjustPoint(e!!))
-            } else {
-                dragStarted = true
-                isVisible = true
+            if (this@ZoomBox.isEnabled){
+                if (dragStarted) {
+                    fixEndpoints(adjustPoint(e!!))
+                } else {
+                    dragStarted = true
+                    isVisible = true
+                }
             }
 
             e!!.consume()
@@ -120,6 +124,14 @@ class ZoomBox(parent: JPanel) : JPanel() {
         maximumSize = Dimension(zoomWidth.toInt(), zoomHeight.toInt())
         bounds = Rectangle(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
         repaint()
+    }
+
+    override fun addNotify() {
+        super.addNotify()
+
+        parent.addMouseListener(ParentMouseListener())
+        parent.addMouseMotionListener(ParentMouseMoveListener())
+        parent.addKeyListener(ParentKeyListener())
     }
 
     override fun paintComponent(g: Graphics?) {
@@ -150,6 +162,8 @@ class ZoomBox(parent: JPanel) : JPanel() {
     }
 
     init {
+        isEnabled = false
+
         val borderWidth = 3
 
         border = BorderFactory.createMatteBorder(borderWidth, borderWidth, borderWidth, borderWidth, Color.RED)
@@ -173,9 +187,6 @@ class ZoomBox(parent: JPanel) : JPanel() {
         })
 
         enableEvents(MouseEvent.MOUSE_EVENT_MASK)
-        parent.addMouseListener(ParentMouseListener())
-        parent.addMouseMotionListener(ParentMouseMoveListener())
-        parent.addKeyListener(ParentKeyListener())
     }
 
     private fun fixEndpoints(it: Point2D) {

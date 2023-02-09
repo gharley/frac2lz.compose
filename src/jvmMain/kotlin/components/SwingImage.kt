@@ -6,6 +6,7 @@ import action.*
 import androidx.compose.ui.graphics.toArgb
 import java.awt.Graphics
 import java.awt.Graphics2D
+import java.awt.Image
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
 import java.awt.image.MemoryImageSource
@@ -15,7 +16,7 @@ import javax.imageio.ImageIO
 import javax.swing.JPanel
 import kotlin.reflect.KProperty
 
-open class SwingImageClass() :
+open class SwingImageClass :
     JPanel() {
     var scale = 0.0
 
@@ -49,12 +50,19 @@ open class SwingImageClass() :
 
     private var pixels = IntArray(imgWidth * imgHeight)
     private var source = MemoryImageSource(imgWidth, imgHeight, pixels, 0, imgWidth)
-    private var image = createImage(source)
+    private var image: Image? = null
     private val imageTransform = AffineTransform()
     private var refreshRate = UISettings().refreshRate
+    private val zoomBox = ZoomBox()
+
+    override fun addNotify() {
+        super.addNotify()
+
+        image = createImage(source)
+        add(zoomBox)
+    }
 
     init {
-        add(ZoomBox(this))
         isDoubleBuffered = true
 
         EventBus.listen(FractalEvent::class.java).subscribe {
@@ -69,11 +77,13 @@ open class SwingImageClass() :
             if (it.endOfRow) {
                 source.newPixels(0, it.row, imgWidth, 1)
                 if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) update(graphics)
+
+                zoomBox.isEnabled = true
             }
         }
 
-        EventBus.listen(UIEvent::class.java).subscribe{
-            if (it.action == UIAction.SETTINGS){
+        EventBus.listen(UIEvent::class.java).subscribe {
+            if (it.action == UIAction.SETTINGS) {
                 refreshRate = (it.data as UISettings).refreshRate
             }
         }
@@ -105,6 +115,7 @@ open class SwingImageClass() :
             source.newPixels(0, 0, imgWidth, imgHeight)
         }
 
+        zoomBox.isEnabled = false
         scaleImage()
     }
 
@@ -151,4 +162,4 @@ open class SwingImageClass() :
     }
 }
 
-object SwingImage : SwingImageClass() {}
+object SwingImage : SwingImageClass()
