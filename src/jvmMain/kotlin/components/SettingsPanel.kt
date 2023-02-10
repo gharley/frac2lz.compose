@@ -3,18 +3,12 @@ package components
 import EventBus
 import action.UIAction
 import action.UIEvent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.BaselineShift
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import java.util.Properties
 
 data class UISettings(
     var colorFromFractal: Boolean = false,
@@ -26,7 +20,7 @@ data class UISettings(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPanel() {
-    Surface(Modifier.background(Color.LightGray).padding(20.dp).width(400.dp)) {
+    Surface(Modifier.padding(20.dp).width(400.dp)) {
         val settings: UISettings = remember { UISettings() }
         var trigger by remember { mutableStateOf(0) }
 
@@ -39,9 +33,8 @@ fun SettingsPanel() {
             trigger  // Causes recompose
 
             Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
-
                 Column {
-                    Text("Color from Fractal Data:")
+                    Text("Color from Fractal Data:", color = MaterialTheme.colorScheme.primary)
                 }
                 Column {
                     Checkbox(
@@ -53,7 +46,7 @@ fun SettingsPanel() {
             Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
 
                 Column {
-                    Text("Apply additional smoothing:")
+                    Text("Apply additional smoothing:", color = MaterialTheme.colorScheme.primary)
                 }
                 Column {
                     Checkbox(
@@ -65,7 +58,7 @@ fun SettingsPanel() {
             }
             Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text("Refresh Rate:")
+                    Text("Refresh Rate:", color = MaterialTheme.colorScheme.primary)
                 }
                 Column {
                     Slider(
@@ -74,7 +67,6 @@ fun SettingsPanel() {
                         valueRange = (1f..100f),
                         steps = 100,
                         onValueChangeFinished = { broadcastSettings() },
-//                        modifier = Modifier.width(100.dp)
                     )
                 }
             }

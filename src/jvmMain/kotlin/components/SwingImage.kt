@@ -19,6 +19,7 @@ import kotlin.reflect.KProperty
 open class SwingImageClass :
     JPanel() {
     var scale = 0.0
+    var background = 0xfefefeff.toInt()
 
     fun createSwingImage() {
         if (imgHeight != 0 && imgWidth != 0) {
@@ -114,7 +115,7 @@ open class SwingImageClass :
 //        image = createImage(source)
 
         if (clear) {
-            pixels.fill(0xffefefef.toInt())
+            pixels.fill(background)
             prepareImage(image, null)
             source.newPixels(0, 0, imgWidth, imgHeight)
         }

@@ -25,7 +25,11 @@ fun PaletteSlider(min: Float, max: Float, type: PaletteSliderType, palette: Pale
 
     Row {
         Badge(Modifier.size(30.dp), MaterialTheme.colorScheme.primary) {
-            Text(currentValue.toInt().toString(), fontWeight = FontWeight.Bold, color = Color.White)
+            Text(
+                currentValue.toInt().toString(),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.background
+            )
         }
         Slider(
             currentValue,

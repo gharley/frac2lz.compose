@@ -4,18 +4,20 @@ import Palette
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import state.FractalParameters
 import javax.swing.BoxLayout
 
 @Composable
 fun FractalImage(params: FractalParameters, palette: Palette) {
-    Surface(shadowElevation = 5.dp) {
+    Surface(Modifier.background(MaterialTheme.colorScheme.background), shadowElevation = 5.dp) {
         val parameters = remember { params }
         val fractalHeight = parameters.height
         val fractalWidth = parameters.width
@@ -25,6 +27,7 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
 
         swingImage.zoomBox = zoomBox
         swingImage.palette = palette
+        swingImage.background = MaterialTheme.colorScheme.background.toArgb()
 
         SwingPanel(modifier = Modifier
             .size(width = fractalWidth.dp, height = fractalHeight.dp)

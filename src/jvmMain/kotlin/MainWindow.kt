@@ -1,4 +1,5 @@
 import action.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -210,39 +211,39 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
         MaterialTheme(darkColorScheme()) {
             MainMenu()
-            if (jsonLoaded) {
-                YesNoAlert(
-                    title = "JSON File Loaded",
-                    text = "Do you want to recalculate now?",
-                    dismiss = { jsonLoaded = false }) {
-                    EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
-                }
-            } else {
-                Column {
-                    Row(Modifier.fillMaxWidth().weight(1f)) {
+            Column(Modifier.background(MaterialTheme.colorScheme.background)) {
+                Row(Modifier.fillMaxWidth().weight(1f)) {
+                    if (jsonLoaded) {
+                        YesNoAlert(
+                            title = "JSON File Loaded",
+                            text = "Do you want to recalculate now?",
+                            dismiss = { jsonLoaded = false }) {
+                            EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
+                        }
+                    } else {
                         Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
                         Column { SettingsPanel() }
                     }
-                    PaletteCanvas(palette, fractal)
-                    Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Column { Text("Color Range:") }
-                        Column(Modifier.weight(1f)) {
-                            PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
-                                palette.colorRange = it
-                            }
-                        }
-                    }
-                    Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Column { Text("Palette Size:") }
-                        Column(Modifier.weight(1f)) {
-                            PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
-                                palette.size = it
-                            }
-                        }
-                    }
-                    Row { PaletteBar() }
-                    StatusBar(palette)
                 }
+                PaletteCanvas(palette, fractal)
+                Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column { Text("Color Range:", color = MaterialTheme.colorScheme.primary) }
+                    Column(Modifier.weight(1f)) {
+                        PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
+                            palette.colorRange = it
+                        }
+                    }
+                }
+                Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column { Text("Palette Size:", color = MaterialTheme.colorScheme.primary) }
+                    Column(Modifier.weight(1f)) {
+                        PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
+                            palette.size = it
+                        }
+                    }
+                }
+                Row { PaletteBar() }
+                StatusBar(palette)
             }
         }
     }
