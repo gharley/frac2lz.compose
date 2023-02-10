@@ -3,6 +3,7 @@ package components
 import EventBus
 import Palette
 import action.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -19,7 +20,7 @@ import kotlin.reflect.KProperty
 open class SwingImageClass :
     JPanel() {
     var scale = 0.0
-    var background = 0xfefefeff.toInt()
+    var background = Color.Black
 
     fun createSwingImage() {
         if (imgHeight != 0 && imgWidth != 0) {
@@ -115,7 +116,7 @@ open class SwingImageClass :
 //        image = createImage(source)
 
         if (clear) {
-            pixels.fill(background)
+            pixels.fill(background.toArgb())
             prepareImage(image, null)
             source.newPixels(0, 0, imgWidth, imgHeight)
         }

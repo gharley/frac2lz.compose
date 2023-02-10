@@ -82,12 +82,9 @@ class ZoomBox() : JPanel() {
                 } else {
                     isVisible = false
 
-                    try {
-                        val localPoint = adjustPoint(e)
+                    val localPoint = adjustPoint(e)
 
-                        EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y, parent as JPanel))
-                    } catch (_: Exception) {
-                    }
+                    EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y, parent as JPanel))
                 }
             }
         }

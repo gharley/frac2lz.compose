@@ -75,7 +75,7 @@ abstract class Fractal : Serializable {
         }
     }
 
-    private fun baseCalc() = runBlocking {
+    private fun baseCalc() {
         setDefaultParameters()
         startCalc()
     }

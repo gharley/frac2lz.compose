@@ -30,189 +30,182 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
     var jsonLoaded by remember { mutableStateOf(false) }
 
-    Window(
-        onCloseRequest = { closeFunction() },
-        title = appName,
-        icon = painterResource("frac2lz128.png"),
-        state = WindowState(size = DpSize(1920.dp, 1080.dp))
-    ) {
-        val fractal = Mandelbrot()
+    MaterialTheme(darkColorScheme()) {
+        Window(
+            onCloseRequest = { closeFunction() },
+            title = appName,
+            icon = painterResource("frac2lz128.png"),
+            state = WindowState(size = DpSize(1920.dp, 1080.dp))
+        ) {
+            val fractal = Mandelbrot()
 
-        fun getInitPath(key: String): String {
-            return if (properties.containsKey(key)) properties[key] as String
-            else "./"
-        }
+            fun getInitPath(key: String): String {
+                return if (properties.containsKey(key)) properties[key] as String
+                else "./"
+            }
 
-        fun getFile(initPath: String, extFilter: FileNameExtensionFilter, save: Boolean = false): File? {
-            val dlg = JFileChooser()
+            fun getFile(initPath: String, extFilter: FileNameExtensionFilter, save: Boolean = false): File? {
+                val dlg = JFileChooser()
 
-            dlg.fileFilter = extFilter
-            dlg.currentDirectory = File(initPath)
+                dlg.fileFilter = extFilter
+                dlg.currentDirectory = File(initPath)
 
-            var file: File? = null
+                var file: File? = null
 
-            val result = if (save) dlg.showSaveDialog(null) else dlg.showOpenDialog(null)
-            if (result == JFileChooser.APPROVE_OPTION) {
-                var filename = dlg.selectedFile.absolutePath
-                val ext = extFilter.extensions[0]
+                val result = if (save) dlg.showSaveDialog(null) else dlg.showOpenDialog(null)
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    var filename = dlg.selectedFile.absolutePath
+                    val ext = extFilter.extensions[0]
 
-                if (save) {
-                    if (!filename.endsWith(ext, true)) {
-                        filename += ".$ext"
+                    if (save) {
+                        if (!filename.endsWith(ext, true)) {
+                            filename += ".$ext"
+                        }
                     }
+                    file = File(filename)
                 }
-                file = File(filename)
+
+                return file
             }
 
-            return file
-        }
+            fun onOpen() {
+                val initPath: String = getInitPath("2lzPath")
+                val extFilter = FileNameExtensionFilter("Frac2lz image", "2lz")
 
-        fun onOpen() {
-            val initPath: String = getInitPath("2lzPath")
-            val extFilter = FileNameExtensionFilter("Frac2lz image", "2lz")
+                val file = getFile(initPath, extFilter)
 
-            val file = getFile(initPath, extFilter)
+                if (file != null) {
+                    properties["2lzPath"] = file.parent ?: "./"
 
-            if (file != null) {
-                properties["2lzPath"] = file.parent ?: "./"
+                    val stream = ObjectInputStream(file.inputStream())
 
-                val stream = ObjectInputStream(file.inputStream())
+                    fractal.readObject(stream)
+                    stream.close()
 
-                fractal.readObject(stream)
-                stream.close()
+                    EventBus.publish(AppTitle(file.name))
 
-                EventBus.publish(AppTitle(file.name))
-
-                fractal.refreshImage()
-            }
-        }
-
-        fun onOpenJson() {
-            val initPath: String = getInitPath("jsonPath")
-            val extFilter = FileNameExtensionFilter("JSON Fractal Spec", "json")
-
-            val file = getFile(initPath, extFilter)
-
-            if (file != null) {
-                properties["jsonPath"] = file.parent ?: "./"
-
-                val stream: InputStream = file.inputStream()
-                val reader: JsonReader = Json.createReader(stream)
-                val data: JsonObject = reader.readObject()
-
-                EventBus.publish(AppTitle(file.name))
-
-                fractal.fromJson(data)
-                jsonLoaded = true
-//                EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
-
-//            val calcAlert = AlertDialog(Alert.AlertType.CONFIRMATION, "Calculate Now?")
-//
-//            calcAlert.showAndWait()
-//                .filter { response -> response === ButtonType.OK }
-//                .ifPresent { EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE)) }
-            }
-        }
-
-        var palette by remember { mutableStateOf(Palette()) }
-
-        fun onOpenPalette() {
-            val initPath: String = getInitPath("palPath")
-            val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
-
-            val file = getFile(initPath, extFilter)
-
-            if (file != null) {
-                properties["palPath"] = file.parent ?: "./"
-
-                val stream = ObjectInputStream(file.inputStream())
-
-                palette.readObject(stream)
-                stream.close()
-
-                fractal.refreshImage()
-            }
-        }
-
-        fun onSaveJson() {
-            val initPath: String = getInitPath("jsonPath")
-            val extFilter = FileNameExtensionFilter("JSON Fractal Spec", "json")
-
-            val file = getFile(initPath, extFilter, true)
-
-            if (file != null) {
-                properties["jsonPath"] = file.parent ?: "./"
-
-                EventBus.publish(AppTitle(file.name))
-
-                val stream: OutputStream = file.outputStream()
-                val writer = Json.createWriter(stream)
-                val data = fractal.toJson()
-
-                writer.writeObject(data)
-            }
-        }
-
-        fun onSaveImage() {
-            val initPath: String = getInitPath("imgPath")
-            val extFilter = FileNameExtensionFilter("Save to PNG", "png")
-
-            val file = getFile(initPath, extFilter, true)
-
-            if (file != null) {
-                properties["imgPath"] = file.parent ?: "./"
-                val filename = file.absolutePath
-
-                EventBus.publish(FileEvent(FileAction.WRITE_IMAGE, filename))
-            }
-        }
-
-        fun onSavePalette() {
-            val initPath: String = getInitPath("palPath")
-            val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
-
-            val file = getFile(initPath, extFilter, true)
-
-            if (file != null) {
-                properties["palPath"] = file.parent ?: "./"
-
-                val stream = ObjectOutputStream(file.outputStream())
-
-                palette.writeObject(stream)
-                stream.close()
-            }
-        }
-
-        EventBus.listen(AppTitle::class.java).subscribe {
-            var appTitle = appName
-
-            if (it.title.isNotEmpty()) {
-                appTitle += " - " + it.title
+                    fractal.refreshImage()
+                }
             }
 
-            this.window.title = appTitle
-        }
+            fun onOpenJson() {
+                val initPath: String = getInitPath("jsonPath")
+                val extFilter = FileNameExtensionFilter("JSON Fractal Spec", "json")
 
-        EventBus.listen(FileEvent::class.java).subscribe {
-            when (it.action) {
-                FileAction.OPEN_FRACTAL -> onOpen()
-                FileAction.OPEN_JSON -> onOpenJson()
-                FileAction.OPEN_PALETTE -> onOpenPalette()
-                FileAction.SAVE_JSON -> onSaveJson()
-                FileAction.SAVE_PALETTE -> onSavePalette()
-                FileAction.SAVE_IMAGE -> onSaveImage()
-                else -> {}
+                val file = getFile(initPath, extFilter)
+
+                if (file != null) {
+                    properties["jsonPath"] = file.parent ?: "./"
+
+                    val stream: InputStream = file.inputStream()
+                    val reader: JsonReader = Json.createReader(stream)
+                    val data: JsonObject = reader.readObject()
+
+                    EventBus.publish(AppTitle(file.name))
+
+                    fractal.fromJson(data)
+                    jsonLoaded = true
+                }
             }
-        }
 
-        EventBus.listen(NewPaletteEvent::class.java).subscribe {
-            palette = Palette(it.palette)
-        }
+            var palette by remember { mutableStateOf(Palette()) }
 
-        MaterialTheme(darkColorScheme()) {
+            fun onOpenPalette() {
+                val initPath: String = getInitPath("palPath")
+                val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
+
+                val file = getFile(initPath, extFilter)
+
+                if (file != null) {
+                    properties["palPath"] = file.parent ?: "./"
+
+                    val stream = ObjectInputStream(file.inputStream())
+
+                    palette.readObject(stream)
+                    stream.close()
+
+                    fractal.refreshImage()
+                }
+            }
+
+            fun onSaveJson() {
+                val initPath: String = getInitPath("jsonPath")
+                val extFilter = FileNameExtensionFilter("JSON Fractal Spec", "json")
+
+                val file = getFile(initPath, extFilter, true)
+
+                if (file != null) {
+                    properties["jsonPath"] = file.parent ?: "./"
+
+                    EventBus.publish(AppTitle(file.name))
+
+                    val stream: OutputStream = file.outputStream()
+                    val writer = Json.createWriter(stream)
+                    val data = fractal.toJson()
+
+                    writer.writeObject(data)
+                }
+            }
+
+            fun onSaveImage() {
+                val initPath: String = getInitPath("imgPath")
+                val extFilter = FileNameExtensionFilter("Save to PNG", "png")
+
+                val file = getFile(initPath, extFilter, true)
+
+                if (file != null) {
+                    properties["imgPath"] = file.parent ?: "./"
+                    val filename = file.absolutePath
+
+                    EventBus.publish(FileEvent(FileAction.WRITE_IMAGE, filename))
+                }
+            }
+
+            fun onSavePalette() {
+                val initPath: String = getInitPath("palPath")
+                val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
+
+                val file = getFile(initPath, extFilter, true)
+
+                if (file != null) {
+                    properties["palPath"] = file.parent ?: "./"
+
+                    val stream = ObjectOutputStream(file.outputStream())
+
+                    palette.writeObject(stream)
+                    stream.close()
+                }
+            }
+
+            EventBus.listen(AppTitle::class.java).subscribe {
+                var appTitle = appName
+
+                if (it.title.isNotEmpty()) {
+                    appTitle += " - " + it.title
+                }
+
+                this.window.title = appTitle
+            }
+
+            EventBus.listen(FileEvent::class.java).subscribe {
+                when (it.action) {
+                    FileAction.OPEN_FRACTAL -> onOpen()
+                    FileAction.OPEN_JSON -> onOpenJson()
+                    FileAction.OPEN_PALETTE -> onOpenPalette()
+                    FileAction.SAVE_JSON -> onSaveJson()
+                    FileAction.SAVE_PALETTE -> onSavePalette()
+                    FileAction.SAVE_IMAGE -> onSaveImage()
+                    else -> {}
+                }
+            }
+
+            EventBus.listen(NewPaletteEvent::class.java).subscribe {
+                palette = Palette(it.palette)
+            }
+
             MainMenu()
             Column(Modifier.background(MaterialTheme.colorScheme.background)) {
-                Row(Modifier.fillMaxWidth().weight(1f)) {
+                Row(Modifier.fillMaxWidth().weight(1f).background(MaterialTheme.colorScheme.background)) {
                     if (jsonLoaded) {
                         YesNoAlert(
                             title = "JSON File Loaded",

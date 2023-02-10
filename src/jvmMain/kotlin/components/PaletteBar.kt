@@ -129,8 +129,11 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
         val scale = (it.image as SwingImage).scale
         val x = (it.x / scale).toInt()
         val y = (it.y / scale).toInt()
-        val iterations = fractal.iterations[y][x]
-        setMarkerFromIterations(iterations)
+
+        try {
+            val iterations = fractal.iterations[y][x]
+            setMarkerFromIterations(iterations)
+        }catch (_: Exception){}
     }
 
     fun onMouseClicked(it: PointerEvent) {
