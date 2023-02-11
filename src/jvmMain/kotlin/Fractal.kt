@@ -63,8 +63,23 @@ abstract class Fractal : Serializable {
     private var reals = array2dOfDouble(100, 100)
     private var imaginarys = array2dOfDouble(100, 100)
 
-    private fun fireComplete(){
+    private suspend fun fireComplete() = coroutineScope {
         EventBus.publish(CalculateEvent(CalculateAction.COMPLETE))
+    }
+
+    private suspend fun fireCalcUpdate(row: Int, column: Int) = coroutineScope {
+        val isEndOfRow = column == iterations[0].size - 1
+
+        EventBus.publish(FractalEvent(row, column, fractalData(row, column), isEndOfRow))
+        if (isEndOfRow) fireIterationUpdate()
+    }
+
+    private suspend fun fireIterationUpdate() = coroutineScope {
+        EventBus.publish(FractalIterationEvent(params.maxIterations, maxIterationsActual))
+    }
+
+    private fun fireParameterUpdate() {
+        EventBus.publish(params)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -75,7 +90,7 @@ abstract class Fractal : Serializable {
         }
     }
 
-    private fun baseCalc() {
+    private fun baseCalc() = runBlocking {
         setDefaultParameters()
         startCalc()
     }
@@ -214,21 +229,6 @@ abstract class Fractal : Serializable {
 //            MainController.showDefaultCursor()
 
         fireIterationUpdate()
-    }
-
-    private suspend fun fireCalcUpdate(row: Int, column: Int) = coroutineScope {
-        val isEndOfRow = column == iterations[0].size - 1
-
-        EventBus.publish(FractalEvent(row, column, fractalData(row, column), isEndOfRow))
-        if (isEndOfRow) fireIterationUpdate()
-    }
-
-    private suspend fun fireIterationUpdate() = coroutineScope {
-        EventBus.publish(FractalIterationEvent(params.maxIterations, maxIterationsActual))
-    }
-
-    private fun fireParameterUpdate() {
-        EventBus.publish(params)
     }
 
     open fun setDefaultParameters() {}

@@ -35,7 +35,9 @@ class ZoomBox() : JPanel() {
         }
 
         override fun keyPressed(e: KeyEvent?) {
-            if (e!!.keyChar.code == KeyEvent.VK_ESCAPE) {
+            e!!.consume()
+
+            if (e.keyChar.code == KeyEvent.VK_ESCAPE) {
                 isVisible = false
             } else if (e.keyChar.code == KeyEvent.VK_ENTER) {
                 if (isVisible) {
@@ -44,7 +46,6 @@ class ZoomBox() : JPanel() {
                 }
             }
 
-            e.consume()
             this@ZoomBox.setBounds()
         }
 
@@ -55,7 +56,9 @@ class ZoomBox() : JPanel() {
 
     inner class ParentMouseListener : MouseListener {
         override fun mousePressed(e: MouseEvent?) {
-            if (e!!.button == MouseEvent.BUTTON1 && this@ZoomBox.isEnabled) {
+            e!!.consume()
+
+            if (e.button == MouseEvent.BUTTON1 && this@ZoomBox.isEnabled) {
                 val adjustedPoint = adjustPoint(e)
 
                 minX = adjustedPoint.x
@@ -65,8 +68,6 @@ class ZoomBox() : JPanel() {
                 zoomHeight = 10.0
                 isVisible = true
                 this@ZoomBox.setBounds()
-
-                e.consume()
             }
         }
 
