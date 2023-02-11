@@ -37,7 +37,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             icon = painterResource("frac2lz128.png"),
             state = WindowState(size = DpSize(1920.dp, 1080.dp))
         ) {
-            val fractal = Mandelbrot()
+            val fractal = remember{ Mandelbrot() }
 
             fun getInitPath(key: String): String {
                 return if (properties.containsKey(key)) properties[key] as String
@@ -210,9 +210,11 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                         YesNoAlert(
                             title = "JSON File Loaded",
                             text = "Do you want to recalculate now?",
-                            dismiss = { jsonLoaded = false }) {
-                            EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
-                        }
+                            dismiss = { jsonLoaded = false },
+                            confirm = {
+                                EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
+                                jsonLoaded = false
+                            })
                     } else {
                         Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
                         Column { SettingsPanel() }

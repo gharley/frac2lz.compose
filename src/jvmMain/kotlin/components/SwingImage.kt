@@ -62,7 +62,11 @@ open class SwingImageClass :
         super.addNotify()
 
         image = createImage(source)
-        add(zoomBox!!)
+
+        if (zoomBox == null){
+            zoomBox = ZoomBox()
+            add(zoomBox)
+        }
     }
 
     init {

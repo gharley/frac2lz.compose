@@ -1,8 +1,6 @@
 package action
 
-import Complex
-import Palette
-import java.util.Properties
+import java.util.*
 
 class AppTitle(val title: String)
 class GetProperties

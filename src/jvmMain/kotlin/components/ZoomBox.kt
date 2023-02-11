@@ -11,7 +11,7 @@ import javax.swing.JPanel
 import kotlin.math.abs
 
 
-class ZoomBox() : JPanel() {
+class ZoomBox : JPanel() {
     private var minX = 0.0
     private var maxX = 0.0
     private var minY = 0.0
