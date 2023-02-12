@@ -1,4 +1,5 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import java.util.Properties
 
 plugins {
     kotlin("multiplatform")
@@ -42,7 +43,31 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
-            val version = "1.0.6"
+            val major: String
+            val minor: String
+            val buildVersion: String
+
+            var versionPropsFile = file("version.properties")
+
+            if (versionPropsFile.isFile) {
+                val versionProps = Properties()
+                val inStream = versionPropsFile.inputStream()
+
+                versionProps.load(inStream)
+                inStream.close()
+
+                major = versionProps["major"].toString()
+                minor = versionProps["minor"].toString()
+                buildVersion = (versionProps["build"].toString().toInt() + 1).toString()
+
+                val outStream = versionPropsFile.outputStream()
+                versionProps["build"] = buildVersion
+                versionProps.store(outStream, null)
+            } else {
+                throw GradleException("Could not read version.properties!")
+            }
+
+            val version = "$major.$minor.$buildVersion"
 
             modules("java.instrument", "jdk.unsupported")
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb)
