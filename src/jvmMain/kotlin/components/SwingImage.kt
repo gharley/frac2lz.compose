@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage
 import java.awt.image.MemoryImageSource
 import java.io.File
 import java.lang.Double.min
+import java.util.*
 import javax.imageio.ImageIO
 import javax.swing.JPanel
 import kotlin.reflect.KProperty
@@ -58,19 +59,19 @@ open class SwingImageClass :
     var palette: Palette? = null
     var zoomBox: ZoomBox? = null
 
-    override fun addNotify() {
-        super.addNotify()
-
-        image = createImage(source)
-
-        if (zoomBox == null){
-            zoomBox = ZoomBox()
-            add(zoomBox)
-        }
-    }
-
     init {
         isDoubleBuffered = true
+
+        Timer().schedule(object: TimerTask(){
+            override fun run() {
+                image = createImage(source)
+
+                if (zoomBox == null){
+                    zoomBox = ZoomBox()
+                    add(zoomBox)
+                }
+            }
+        }, 100)
 
         EventBus.listen(FractalEvent::class.java).subscribe {
             val color = palette!!.color(it.data).toArgb()

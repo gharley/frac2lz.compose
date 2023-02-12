@@ -14,12 +14,12 @@ import androidx.compose.ui.window.MenuBar
 fun FrameWindowScope.MainMenu() {
     MenuBar {
         Menu("File") {
-            Item("Open Fractal", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_FRACTAL)) })
+//            Item("Open Fractal", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_FRACTAL)) })
             Item("Open JSON file", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_JSON)) })
             Separator()
             Item("Open Palette", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_PALETTE)) })
             Separator()
-            Item("Save Fractal", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_FRACTAL)) })
+//            Item("Save Fractal", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_FRACTAL)) })
             Item("Save JSON file", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_JSON)) })
             Separator()
             Item("Save Palette", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_PALETTE)) })
@@ -44,8 +44,8 @@ fun FrameWindowScope.MainMenu() {
                 onClick = { EventBus.publish(CalculateEvent(CalculateAction.REFRESH)) },
                 shortcut = KeyShortcut(Key.F5)
             )
-            Separator()
-            Item("Show Histogram", onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_HISTOGRAM)) })
+//            Separator()
+//            Item("Show Histogram", onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_HISTOGRAM)) })
         }
     }
 }

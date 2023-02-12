@@ -231,16 +231,16 @@ fun PaletteBar() {
                     )
                 }
             }
-            Column {
-                IconButton(onClick = {}) {
-                    Icon(
-                        painterResource("animate32.png"),
-                        "Animate Palette",
-                        Modifier.scale(iconScale),
-                        tint = Color.Unspecified
-                    )
-                }
-            }
+//            Column {
+//                IconButton(onClick = {}) {
+//                    Icon(
+//                        painterResource("animate32.png"),
+//                        "Animate Palette",
+//                        Modifier.scale(iconScale),
+//                        tint = Color.Unspecified
+//                    )
+//                }
+//            }
             Column {
                 var enableButton by remember { mutableStateOf(false) }
 

@@ -6,6 +6,8 @@ import action.ZoomBoxEvent
 import java.awt.*
 import java.awt.event.*
 import java.awt.geom.Point2D
+import java.lang.Thread.sleep
+import java.util.*
 import javax.swing.BorderFactory
 import javax.swing.JPanel
 import kotlin.math.abs
@@ -128,14 +130,6 @@ class ZoomBox : JPanel() {
         repaint()
     }
 
-    override fun addNotify() {
-        super.addNotify()
-
-        parent.addMouseListener(ParentMouseListener())
-        parent.addMouseMotionListener(ParentMouseMoveListener())
-        parent.addKeyListener(ParentKeyListener())
-    }
-
     override fun paintComponent(g: Graphics?) {
         if (g == null) return
 
@@ -172,6 +166,15 @@ class ZoomBox : JPanel() {
         isVisible = false
         isOpaque = true
         isDoubleBuffered = true
+
+        Timer().schedule(object : TimerTask(){
+            override fun run() {
+                while (parent == null) sleep(5)
+                parent.addMouseListener(ParentMouseListener())
+                parent.addMouseMotionListener(ParentMouseMoveListener())
+                parent.addKeyListener(ParentKeyListener())
+            }
+        }, 100)
 
         addMouseMotionListener(object : MouseAdapter() {
             override fun mouseDragged(e: MouseEvent?) {
