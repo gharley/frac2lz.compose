@@ -67,8 +67,8 @@ fun StatusBar(palette: Palette) {
             addTextField("Zoom: ", magnify.toString(), scale = scale)
             addTextField("Width: ", width.toString(), scale = scale)
             addTextField("Height: ", height.toString(), scale = scale)
-            addTextField("Color Range: ", colorRange.toString(), scale = scale)
-            addTextField("Palette Size: ", size.toString(), false, scale = scale)
+//            addTextField("Color Range: ", colorRange.toString(), scale = scale)
+//            addTextField("Palette Size: ", size.toString(), false, scale = scale)
         }
     }
 }

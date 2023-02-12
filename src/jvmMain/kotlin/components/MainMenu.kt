@@ -15,16 +15,31 @@ fun FrameWindowScope.MainMenu() {
     MenuBar {
         Menu("File") {
 //            Item("Open Fractal", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_FRACTAL)) })
-            Item("Open JSON file", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_JSON)) })
+            Item("Open JSON file",
+                onClick = { EventBus.publish(FileEvent(FileAction.OPEN_JSON)) },
+                shortcut = KeyShortcut(Key.J, true)
+            )
             Separator()
-            Item("Open Palette", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_PALETTE)) })
+            Item("Open Palette",
+                onClick = { EventBus.publish(FileEvent(FileAction.OPEN_PALETTE)) },
+                shortcut = KeyShortcut(Key.P, true)
+                )
             Separator()
 //            Item("Save Fractal", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_FRACTAL)) })
-            Item("Save JSON file", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_JSON)) })
+            Item("Save JSON file",
+                onClick = { EventBus.publish(FileEvent(FileAction.SAVE_JSON)) },
+                shortcut = KeyShortcut(Key.J, true, shift = true)
+                )
             Separator()
-            Item("Save Palette", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_PALETTE)) })
+            Item("Save Palette",
+                onClick = { EventBus.publish(FileEvent(FileAction.SAVE_PALETTE)) },
+                shortcut = KeyShortcut(Key.P, true, shift = true)
+                )
             Separator()
-            Item("Export to image file", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_IMAGE)) })
+            Item("Export to image file",
+                onClick = { EventBus.publish(FileEvent(FileAction.SAVE_IMAGE)) },
+                shortcut = KeyShortcut(Key.I, true)
+                )
             Separator()
             Item("Exit",
                 onClick = { EventBus.publish(UIEvent(UIAction.EXIT)) },
