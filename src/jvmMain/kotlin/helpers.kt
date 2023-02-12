@@ -1,71 +1,86 @@
-import action.GetProperties
-import action.HaveProperties
-import androidx.compose.foundation.Image
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.IOException
 import java.lang.Float.max
 import java.lang.Float.min
-import kotlin.math.abs
 
-data class HSV(var hue: Float = 0f, var saturation: Float = 0f, var value: Float = 0f)
+data class HSL(var hue: Float = 0f, var saturation: Float = 0f, var luminance: Float = 0f)
 
-fun rgbToHsv(color: Color): HSV {
-    val red = color.red // 255
-    val green = color.green // 255
-    val blue = color.blue // 255
+// Thanks to camick.com for the conversion code
+fun toHSL(color: Color): HSL {
+    val red = color.red
+    val green = color.green
+    val blue = color.blue
     val colorMax = max((max(red, green)), blue)
-    val colorMin = min((max(red, green)), blue)
+    val colorMin = min((min(red, green)), blue)
     val delta = colorMax - colorMin
-    val result = HSV()
-
-    result.value = colorMax
-    result.saturation = if (delta == 0f) 0f else delta / colorMax
-    result.hue = if (delta == 0f) 0f else when (colorMax) {
-        red -> (green - blue) / delta % 6f
-        green -> (blue - red) / delta + 2f
-        blue -> (red - green) / delta + 4f
+    val hue = when (colorMax) {
+        colorMin -> 0f
+        red -> (60 * (green - blue) / (delta) + 360) % 360
+        green -> 60 * (blue - red) / (delta) + 120
+        blue -> 60 * (red - green) / (delta) + 240
         else -> 0f
-    } * 60f
-    result.hue = abs(result.hue) % 360
+    }
 
-    return result
+    //  Calculate the Luminance
+    val luminance = (colorMax + colorMin) / 2
+
+    //  Calculate the Saturation
+    val saturation = if (colorMax == colorMin) 0f
+    else if (luminance <= .5f) (delta) / (colorMax + colorMin)
+    else (delta) / (2 - delta)
+
+    return HSL(hue, saturation * 100, luminance * 100)
 }
 
-@Composable
-fun <T> AsyncImage(
-    load: suspend () -> T,
-    painterFor: @Composable (T) -> Painter,
-    contentDescription: String,
-    modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Fit,
-) {
-    val image: T? by produceState<T?>(null) {
-        value = withContext(Dispatchers.IO) {
-            try {
-                load()
-            } catch (e: IOException) {
-                // instead of printing to console, you can also write this to log,
-                // or show some error placeholder
-                e.printStackTrace()
-                null
-            }
-        }
+fun hueToRGB(p: Float, q: Float, h: Float): Float {
+    var hue = h
+
+    if (hue < 0) hue += 1
+    else if (hue > 1) hue -= 1
+
+    if (6 * hue < 1) {
+        return p + ((q - p) * 6 * h)
     }
 
-    if (image != null) {
-        Image(
-            painter = painterFor(image!!),
-            contentDescription = contentDescription,
-            contentScale = contentScale,
-            modifier = modifier
-        )
+    if (2 * hue < 1) {
+        return q
     }
+
+    if (3 * hue < 2) {
+        return p + ((q - p) * 6 * ((2.0f / 3.0f) - h))
+    }
+
+    return p
+}
+
+fun toRGB(h: Float, s: Float, l: Float): Color {
+    var hue = h
+    var saturation = s
+    var luminance = l
+
+    if (saturation < 0.0f || saturation > 100.0f) {
+        val message = "Color parameter outside of expected range - Saturation"
+        throw IllegalArgumentException(message)
+    }
+    if (luminance < 0.0f || luminance > 100.0f) {
+        val message = "Color parameter outside of expected range - Luminance"
+        throw IllegalArgumentException(message)
+    }
+
+    //  Formula needs all values between 0 - 1.
+    hue %= 360.0f
+    hue /= 360f
+    saturation /= 100f
+    luminance /= 100f
+
+    val q = if (luminance < 0.5) luminance * (1 + saturation) else luminance + saturation - saturation * luminance
+    val p = 2 * luminance - q
+    var red = max(0f, hueToRGB(p, q, hue + 1.0f / 3.0f))
+    var green = max(0f, hueToRGB(p, q, hue))
+    var blue = max(0f, hueToRGB(p, q, hue - 1.0f / 3.0f))
+
+    red = min(red, 1.0f)
+    green = min(green, 1.0f)
+    blue = min(blue, 1.0f)
+
+    return Color(red, green, blue)
 }
