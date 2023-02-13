@@ -30,9 +30,12 @@ fun SettingsPanel() {
         }
 
         Column(Modifier.fillMaxSize().padding(3.dp)) {
+            val rowModifier = Modifier.fillMaxWidth().wrapContentHeight()
+            val rowAlignment = Alignment.CenterVertically
+
             trigger  // Causes recompose
 
-            Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
                 Column {
                     Text("Color from Fractal Data:", color = MaterialTheme.colorScheme.primary)
                 }
@@ -43,7 +46,7 @@ fun SettingsPanel() {
                     )
                 }
             }
-            Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
 
                 Column {
                     Text("Apply additional smoothing:", color = MaterialTheme.colorScheme.primary)
@@ -56,7 +59,7 @@ fun SettingsPanel() {
                     )
                 }
             }
-            Row(modifier = Modifier.fillMaxWidth().wrapContentHeight(), verticalAlignment = Alignment.CenterVertically) {
+            Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
                 Column {
                     Text("Refresh Rate:", color = MaterialTheme.colorScheme.primary)
                 }
@@ -68,6 +71,26 @@ fun SettingsPanel() {
                         steps = 100,
                         onValueChangeFinished = { broadcastSettings() },
                     )
+                }
+            }
+            Row(rowModifier, verticalAlignment = rowAlignment) {
+                Column {
+                    Text("Width:", color = MaterialTheme.colorScheme.primary)
+                }
+                Column {
+                    var width by remember { mutableStateOf("") }
+
+                    TextField(width, { width = it })
+                }
+            }
+            Row(rowModifier, verticalAlignment = rowAlignment) {
+                Column {
+                    Text("Height:", color = MaterialTheme.colorScheme.primary)
+                }
+                Column {
+                    var height by remember { mutableStateOf("") }
+
+                    TextField(height, { height = it })
                 }
             }
         }
