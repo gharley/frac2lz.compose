@@ -1,6 +1,8 @@
 package components
 
 import EventBus
+import action.PaletteAction
+import action.PaletteEvent
 import action.UIAction
 import action.UIEvent
 import androidx.compose.foundation.layout.*
@@ -9,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import state.FractalParameters
 
 data class UISettings(
     var colorFromFractal: Boolean = false,
@@ -73,25 +76,53 @@ fun SettingsPanel() {
                     )
                 }
             }
-            Row(rowModifier, verticalAlignment = rowAlignment) {
+            Row(rowModifier, verticalAlignment = Alignment.Top) {
                 Column {
-                    Text("Width:", color = MaterialTheme.colorScheme.primary)
-                }
-                Column {
-                    var width by remember { mutableStateOf("") }
+                    var width by remember { mutableStateOf("0") }
+                    var height by remember { mutableStateOf("0") }
 
-                    TextField(width, { width = it })
+                    EventBus.listen(FractalParameters::class.java).subscribe {
+                        width = it.width.toInt().toString()
+                        height = it.height.toInt().toString()
+                    }
+
+                    fun checkSize(): Boolean {
+                        var result = false
+
+                        if (width.isNotEmpty() && height.isNotEmpty()) {
+                            if (width.toInt() > 0 && height.toInt() > 0) result = true
+                        }
+                        return result
+                    }
+
+                    TextField(
+                        width,
+                        { width = it },
+                        Modifier.fillMaxWidth(),
+                        label = { Text("Image Width:", color = MaterialTheme.colorScheme.primary) },
+                        singleLine = true,
+                        maxLines = 1
+                    )
+
+                    TextField(
+                        height,
+                        { height = it },
+                        Modifier.fillMaxWidth(),
+                        label = { Text("Image Height:", color = MaterialTheme.colorScheme.primary) },
+                        singleLine = true,
+                        maxLines = 1
+                    )
+
+                    Button(
+                        onClick = { EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE)) },
+                        Modifier.align(Alignment.CenterHorizontally),
+                        enabled = checkSize()
+                    ) {
+                        Text("Update image size")
+                    }
                 }
             }
-            Row(rowModifier, verticalAlignment = rowAlignment) {
-                Column {
-                    Text("Height:", color = MaterialTheme.colorScheme.primary)
-                }
-                Column {
-                    var height by remember { mutableStateOf("") }
-
-                    TextField(height, { height = it })
-                }
+            Row(rowModifier.weight(1f), verticalAlignment = rowAlignment) {
             }
         }
     }

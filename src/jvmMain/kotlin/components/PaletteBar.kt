@@ -8,7 +8,6 @@ import action.NewPaletteEvent
 import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -33,7 +32,7 @@ import toHSL
 import toRGB
 import java.util.*
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PaletteCanvas(pal: Palette, fractal: Fractal) {
     var palette by remember { mutableStateOf(pal) }
@@ -99,15 +98,15 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
                 val endHSV = toHSL(endColor)
                 val hueInc = (endHSV.hue - startHSV.hue) / range.toFloat()
                 val saturationInc = (endHSV.saturation - startHSV.saturation) / range.toFloat()
-                val valueInc = (endHSV.luminance - startHSV.luminance) / range.toFloat()
+                val luminanceInc = (endHSV.luminance - startHSV.luminance) / range.toFloat()
 
                 for (idx in 1 until range) {
                     val colorIndex = startMarker!!.index + idx
-                    val hue = (startHSV.hue + hueInc * idx) % 360f
+                    val hue = (startHSV.hue + hueInc * idx)// % 360f
                     val saturation = (startHSV.saturation + saturationInc * idx)
-                    val value = (startHSV.luminance + valueInc * idx)
+                    val luminance = (startHSV.luminance + luminanceInc * idx)
 
-                    palette.colors[colorIndex] = toRGB(hue, saturation, value)
+                    palette.colors[colorIndex] = toRGB(hue, saturation, luminance)
                 }
 
                 startMarker = marker
