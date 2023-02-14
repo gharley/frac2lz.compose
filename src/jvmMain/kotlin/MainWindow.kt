@@ -1,9 +1,6 @@
 import action.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
@@ -35,7 +32,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             onCloseRequest = { closeFunction() },
             title = appName,
             icon = painterResource("frac2lz128.png"),
-            state = WindowState(placement = WindowPlacement.Maximized)
+            state = WindowState(placement = WindowPlacement.Maximized),
         ) {
             val fractal = remember{ Mandelbrot() }
 
@@ -204,8 +201,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             }
 
             MainMenu()
-            Column(Modifier.background(MaterialTheme.colorScheme.background)) {
-                Row(Modifier.fillMaxWidth().weight(1f).background(MaterialTheme.colorScheme.background)) {
+            Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
+                Row(Modifier.weight(1f)) {
                     if (jsonLoaded) {
                         YesNoAlert(
                             title = "JSON File Loaded",

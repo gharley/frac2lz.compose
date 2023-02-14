@@ -15,13 +15,13 @@ import java.io.File
 import java.lang.Double.min
 import java.util.*
 import javax.imageio.ImageIO
+import javax.swing.BorderFactory
 import javax.swing.JPanel
 import kotlin.reflect.KProperty
 
 open class SwingImageClass :
     JPanel() {
     var scale = 0.0
-    var background = Color.Black
 
     fun createSwingImage() {
         if (imgHeight != 0 && imgWidth != 0) {
@@ -61,6 +61,7 @@ open class SwingImageClass :
 
     init {
         isDoubleBuffered = true
+        isOpaque = false
 
         Timer().schedule(object: TimerTask(){
             override fun run() {
@@ -116,12 +117,8 @@ open class SwingImageClass :
     }
 
     private fun prepareForCalc(clear: Boolean = true) {
-//        pixels = IntArray(width * height)
-//        source = MemoryImageSource(width, height, pixels, 0, width)
-//        image = createImage(source)
-
         if (clear) {
-            pixels.fill(background.toArgb())
+            pixels.fill(background.rgb)
             prepareImage(image, null)
             source.newPixels(0, 0, imgWidth, imgHeight)
         }
