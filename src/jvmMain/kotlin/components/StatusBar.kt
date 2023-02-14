@@ -1,6 +1,7 @@
 package components
 
 import EventBus
+import FractalParameters
 import Palette
 import action.FractalEvent
 import action.NewPaletteEvent
@@ -17,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import state.FractalParameters
 
 @Composable
 fun StatusBar(palette: Palette) {

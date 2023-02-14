@@ -1,5 +1,6 @@
 package components
 
+import FractalParameters
 import Palette
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
@@ -12,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import state.FractalParameters
 import javax.swing.BoxLayout
 
 @Composable

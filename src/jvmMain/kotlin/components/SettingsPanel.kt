@@ -1,17 +1,14 @@
 package components
 
 import EventBus
-import action.PaletteAction
-import action.PaletteEvent
-import action.UIAction
-import action.UIEvent
+import FractalParameters
+import action.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import state.FractalParameters
 
 data class UISettings(
     var colorFromFractal: Boolean = false,
@@ -92,6 +89,7 @@ fun SettingsPanel() {
                         if (width.isNotEmpty() && height.isNotEmpty()) {
                             if (width.toInt() > 0 && height.toInt() > 0) result = true
                         }
+
                         return result
                     }
 
@@ -114,7 +112,7 @@ fun SettingsPanel() {
                     )
 
                     Button(
-                        onClick = { EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE)) },
+                        onClick = { EventBus.publish(FractalSizeEvent(width.toDouble(), height.toDouble())) },
                         Modifier.align(Alignment.CenterHorizontally),
                         enabled = checkSize()
                     ) {

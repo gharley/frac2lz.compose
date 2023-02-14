@@ -1,12 +1,9 @@
 import action.*
 import components.SwingImage
 import kotlinx.coroutines.*
-import state.FractalBounds
-import state.FractalParameters
 import java.awt.geom.Point2D
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.io.Serializable
 import javax.json.Json
 import javax.json.JsonBuilderFactory
 import javax.json.JsonObject
@@ -16,15 +13,31 @@ import kotlin.math.max
 
 const val zInit = -10.0
 
+data class FractalBounds(
+    var top: Double = -2.1,
+    var right: Double = 1.0,
+    var bottom: Double = 2.1,
+    var left: Double = -1.0
+)
+
+data class FractalParameters(
+    var width: Double, var height: Double, var centerX: Double, var centerY: Double,
+    var maxIterations: Long, val bounds: FractalBounds = FractalBounds(),
+    var magnify: Double = 1.0
+)
+
 fun array2dOfDouble(sizeOuter: Int, sizeInner: Int): Array<DoubleArray> =
     Array(sizeOuter) { DoubleArray(sizeInner) { zInit } }
 
 fun array2dOfLong(sizeOuter: Int, sizeInner: Int): Array<LongArray> = Array(sizeOuter) { LongArray(sizeInner) { -1L } }
 
-abstract class Fractal : Serializable {
+abstract class Fractal {
     private var cancelCalc = false
 
-    abstract var params: FractalParameters
+    private var defaultParams =
+        FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L, FractalBounds(), 1.0)
+
+    open var params = defaultParams
 
     var name: String = ""
 
@@ -120,6 +133,10 @@ abstract class Fractal : Serializable {
                 CalculateAction.REFRESH -> refreshImage()
                 else -> {}
             }
+        }
+
+        EventBus.listen(FractalSizeEvent::class.java).subscribe {
+            setSize(it.width, it.height)
         }
 
         EventBus.listen(ZoomBoxEvent::class.java).subscribe {
@@ -231,7 +248,14 @@ abstract class Fractal : Serializable {
         fireIterationUpdate()
     }
 
-    open fun setDefaultParameters() {}
+    open fun setDefaultParameters() {
+        params = defaultParams.copy()
+    }
+
+    open fun setSize(width: Double, height: Double) {
+        defaultParams.width = width
+        defaultParams.height = height
+    }
 
     open fun setup() {
         cancelCalc = false
@@ -364,10 +388,7 @@ abstract class Fractal : Serializable {
     }
 }
 
-private val defaultParams =
-    FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L, FractalBounds(), 1.0)
-
-open class Mandelbrot(override var params: FractalParameters = defaultParams.copy()) : Fractal(), Serializable {
+open class Mandelbrot : Fractal() {
 
     init {
         name = "Mandelbrot"
@@ -389,10 +410,5 @@ open class Mandelbrot(override var params: FractalParameters = defaultParams.cop
         }
 
         return iterate(start, 0)
-    }
-
-    override fun setDefaultParameters() {
-        super.setDefaultParameters()
-        params = defaultParams.copy()
     }
 }
