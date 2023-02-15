@@ -255,6 +255,8 @@ abstract class Fractal {
     open fun setSize(width: Double, height: Double) {
         defaultParams.width = width
         defaultParams.height = height
+        params.width = width
+        params.height = height
     }
 
     open fun setup() {

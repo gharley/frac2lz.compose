@@ -19,7 +19,7 @@ data class UISettings(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsPanel() {
+fun SettingsPanel(params: FractalParameters) {
     Surface(Modifier.padding(20.dp).width(400.dp)) {
         val settings: UISettings = remember { UISettings() }
         var trigger by remember { mutableStateOf(0) }
@@ -75,8 +75,8 @@ fun SettingsPanel() {
             }
             Row(rowModifier, verticalAlignment = Alignment.Top) {
                 Column {
-                    var width by remember { mutableStateOf("0") }
-                    var height by remember { mutableStateOf("0") }
+                    var width by remember { mutableStateOf(params.width.toInt().toString()) }
+                    var height by remember { mutableStateOf(params.height.toInt().toString()) }
 
                     EventBus.listen(FractalParameters::class.java).subscribe {
                         width = it.width.toInt().toString()

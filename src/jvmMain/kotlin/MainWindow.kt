@@ -214,7 +214,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                             })
                     } else {
                         Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
-                        Column { SettingsPanel() }
+                        Column { SettingsPanel(fractal.params) }
                     }
                 }
                 PaletteCanvas(palette, fractal)
