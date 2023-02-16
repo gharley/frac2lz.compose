@@ -31,6 +31,7 @@ import org.jetbrains.skia.PaintMode
 import toHSL
 import toRGB
 import java.util.*
+import kotlin.math.abs
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -94,17 +95,18 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
                 val startColor = palette.colors[startMarker!!.index]
                 val endColor = palette.colors[marker.index]
                 val range = marker.index - startMarker!!.index
+                val divisor = (range + 1).toFloat()
                 val startHSV = toHSL(startColor)
                 val endHSV = toHSL(endColor)
-                val hueInc = (endHSV.hue - startHSV.hue) / range.toFloat()
-                val saturationInc = (endHSV.saturation - startHSV.saturation) / range.toFloat()
-                val luminanceInc = (endHSV.luminance - startHSV.luminance) / range.toFloat()
+                val hueInc = (endHSV.hue - startHSV.hue) / divisor
+                val saturationInc = (endHSV.saturation - startHSV.saturation) / divisor
+                val luminanceInc = (endHSV.luminance - startHSV.luminance) / divisor
 
                 for (idx in 1 until range) {
                     val colorIndex = startMarker!!.index + idx
-                    val hue = (startHSV.hue + hueInc * idx)// % 360f
-                    val saturation = (startHSV.saturation + saturationInc * idx)
-                    val luminance = (startHSV.luminance + luminanceInc * idx)
+                    val hue = abs(startHSV.hue + hueInc * idx) % 360f
+                    val saturation = abs(startHSV.saturation + saturationInc * idx)// % 100f
+                    val luminance = abs(startHSV.luminance + luminanceInc * idx)// % 100f
 
                     palette.colors[colorIndex] = toRGB(hue, saturation, luminance)
                 }
