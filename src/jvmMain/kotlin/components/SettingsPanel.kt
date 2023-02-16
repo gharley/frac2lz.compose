@@ -3,6 +3,7 @@ package components
 import EventBus
 import FractalParameters
 import action.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -70,11 +71,20 @@ fun SettingsPanel(params: FractalParameters) {
                         valueRange = (1f..100f),
                         steps = 100,
                         onValueChangeFinished = { broadcastSettings() },
+                        thumb = {
+                            SliderThumb(
+                                positions = SliderPositions(
+                                    settings.refreshRate.toFloat(),
+                                    floatArrayOf(0f)
+                                )
+                            )
+                        }
                     )
                 }
             }
             Row(rowModifier, verticalAlignment = Alignment.Top) {
                 Column {
+                    Spacer(Modifier.padding(1.dp, 10.dp).background(MaterialTheme.colorScheme.primary))
                     var width by remember { mutableStateOf(params.width.toInt().toString()) }
                     var height by remember { mutableStateOf(params.height.toInt().toString()) }
 
@@ -113,7 +123,7 @@ fun SettingsPanel(params: FractalParameters) {
 
                     Button(
                         onClick = { EventBus.publish(FractalSizeEvent(width.toDouble(), height.toDouble())) },
-                        Modifier.align(Alignment.CenterHorizontally),
+                        Modifier.align(Alignment.CenterHorizontally).absolutePadding(top = 10.dp),
                         enabled = checkSize()
                     ) {
                         Text("Update image size")

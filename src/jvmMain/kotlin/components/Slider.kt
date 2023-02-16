@@ -9,9 +9,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SliderThumb(positions: SliderPositions) {
+    Badge(Modifier.size(30.dp), MaterialTheme.colorScheme.primary) {
+        Text(positions.positionFraction.toInt().toString(),
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.background)
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,13 +33,6 @@ fun PaletteSlider(min: Float, max: Float, type: PaletteSliderType, palette: Pale
     }
 
     Row {
-        Badge(Modifier.size(30.dp), MaterialTheme.colorScheme.primary) {
-            Text(
-                currentValue.toInt().toString(),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.background
-            )
-        }
         Slider(
             currentValue,
             onValueChange = { currentValue = it },
@@ -38,14 +40,7 @@ fun PaletteSlider(min: Float, max: Float, type: PaletteSliderType, palette: Pale
             valueRange = (min..max),
             steps = (max - min).toInt(),
             onValueChangeFinished = { onChangeComplete(currentValue.toInt()) },
+            thumb = { SliderThumb(positions = SliderPositions(currentValue, floatArrayOf(0f))) }
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SliderThumb() {
-    Badge(Modifier.size(30.dp), MaterialTheme.colorScheme.primary) {
-        Text("256", fontWeight = FontWeight.Bold, color = Color.White)
     }
 }
