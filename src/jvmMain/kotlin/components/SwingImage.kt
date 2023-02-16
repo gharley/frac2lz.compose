@@ -3,7 +3,6 @@ package components
 import EventBus
 import Palette
 import action.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -15,7 +14,6 @@ import java.io.File
 import java.lang.Double.min
 import java.util.*
 import javax.imageio.ImageIO
-import javax.swing.BorderFactory
 import javax.swing.JPanel
 import kotlin.reflect.KProperty
 

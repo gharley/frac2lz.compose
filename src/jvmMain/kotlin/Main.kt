@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.application
 import org.apache.commons.io.FileUtils
-import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.util.*
 import kotlin.io.path.Path
 import kotlin.system.exitProcess
@@ -14,7 +12,7 @@ import kotlin.system.exitProcess
 @Composable
 @Preview
 fun App() {
-    var userHome = FileUtils.getUserDirectoryPath()
+    val userHome = FileUtils.getUserDirectoryPath()
     val propFile = "frac2lz.properties"
     val properties = remember { Properties() }
 

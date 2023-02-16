@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +27,9 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
     val properties = remember { props }
     var jsonLoaded by remember { mutableStateOf(false) }
+    val useDark = props["useDark"].toString().toBoolean()
 
-    MaterialTheme(darkColorScheme()) {
+    MaterialTheme(if (useDark) darkColorScheme() else lightColorScheme()) {
         Window(
             onCloseRequest = { closeFunction() },
             title = appName,
