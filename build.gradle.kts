@@ -23,7 +23,7 @@ kotlin {
         withJava()
     }
     sourceSets {
-        val material3Version = "1.2.2"
+        val material3Version = "1.3.0"
         val rxVersion = "3.1.3"
         val jvmMain by getting {
             dependencies {
