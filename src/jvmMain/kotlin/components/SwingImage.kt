@@ -61,16 +61,23 @@ open class SwingImageClass :
         isDoubleBuffered = true
         isOpaque = false
 
-        Timer().schedule(object: TimerTask(){
+        Timer().schedule(object : TimerTask() {
             override fun run() {
                 image = createImage(source)
 
-                if (zoomBox == null){
+                if (zoomBox == null) {
                     zoomBox = ZoomBox()
                     add(zoomBox)
                 }
             }
         }, 100)
+
+        EventBus.listen(FractalSizeEvent::class.java).subscribe {
+            imgHeight = 0
+            imgWidth = it.width.toInt()
+            imgHeight = it.height.toInt()
+            prepareForCalc(false)
+        }
 
         EventBus.listen(FractalEvent::class.java).subscribe {
             val color = palette!!.color(it.data).toArgb()
@@ -79,11 +86,14 @@ open class SwingImageClass :
                 prepareForCalc()
             }
 
-            pixels[it.row * imgWidth + it.column] = color
+            try {
+                pixels[it.row * imgWidth + it.column] = color
 
-            if (it.endOfRow) {
-                source.newPixels(0, it.row, imgWidth, 1)
-                if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) update(graphics)
+                if (it.endOfRow) {
+                    source.newPixels(0, it.row, imgWidth, 1)
+                    if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) update(graphics)
+                }
+            } catch (_: Exception) {
             }
         }
 
@@ -118,7 +128,7 @@ open class SwingImageClass :
         if (clear) {
             pixels.fill(background.rgb)
             prepareImage(image, null)
-            source.newPixels(0, 0, imgWidth, imgHeight)
+            repaint(0, 0, width, height)
         }
 
         zoomBox!!.isEnabled = false

@@ -34,10 +34,10 @@ fun array2dOfLong(sizeOuter: Int, sizeInner: Int): Array<LongArray> = Array(size
 abstract class Fractal {
     private var cancelCalc = false
 
-    private var defaultParams =
+    private val defaultParams =
         FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L, FractalBounds(), 1.0)
 
-    open var params = defaultParams
+    open var params = defaultParams.copy()
 
     var name: String = ""
 
@@ -253,29 +253,14 @@ abstract class Fractal {
     }
 
     open fun setSize(width: Double, height: Double) {
-        val offsetX = (params.width - width) * incX
-        val offsetY = (params.height - height) * incY
+        params.apply {
+            this.width = width
+            this.height = height
+        }
 
         defaultParams.apply {
             this.width = width
             this.height = height
-            bounds.bottom += offsetY / 2
-            bounds.top -= offsetY / 2
-            bounds.left += offsetX / 2
-            bounds.right -= offsetX / 2
-            centerX += offsetX
-            centerY -= offsetY
-        }
-
-        params.apply {
-            this.width = width
-            this.height = height
-            bounds.bottom += offsetY / 2
-            bounds.top -= offsetY / 2
-            bounds.left += offsetX / 2
-            bounds.right -= offsetX / 2
-            centerX += offsetX
-            centerY -= offsetY
         }
 
         setup()
