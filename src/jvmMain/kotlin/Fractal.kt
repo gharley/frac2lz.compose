@@ -253,10 +253,32 @@ abstract class Fractal {
     }
 
     open fun setSize(width: Double, height: Double) {
-        defaultParams.width = width
-        defaultParams.height = height
-        params.width = width
-        params.height = height
+        val offsetX = (params.width - width) * incX
+        val offsetY = (params.height - height) * incY
+
+        defaultParams.apply {
+            this.width = width
+            this.height = height
+            bounds.bottom += offsetY / 2
+            bounds.top -= offsetY / 2
+            bounds.left += offsetX / 2
+            bounds.right -= offsetX / 2
+            centerX += offsetX
+            centerY -= offsetY
+        }
+
+        params.apply {
+            this.width = width
+            this.height = height
+            bounds.bottom += offsetY / 2
+            bounds.top -= offsetY / 2
+            bounds.left += offsetX / 2
+            bounds.right -= offsetX / 2
+            centerX += offsetX
+            centerY -= offsetY
+        }
+
+        setup()
     }
 
     open fun setup() {
