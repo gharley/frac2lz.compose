@@ -32,19 +32,26 @@ class ZoomBox : JPanel() {
     }
 
     inner class ParentKeyListener : KeyListener {
+        private fun checkKeys(e: KeyEvent?): Int {
+            if (e!!.keyCode == KeyEvent.VK_ENTER || e.keyCode == KeyEvent.VK_ESCAPE) {
+                e.consume()
+                return e.keyCode
+            }
+            return 0
+        }
+
         override fun keyTyped(e: KeyEvent?) {
-            e!!.consume()
+            checkKeys(e)
         }
 
         override fun keyPressed(e: KeyEvent?) {
-            e!!.consume()
-
-            if (e.keyChar.code == KeyEvent.VK_ESCAPE) {
-                isVisible = false
-            } else if (e.keyChar.code == KeyEvent.VK_ENTER) {
-                if (isVisible) {
-                    isVisible = false
-                    EventBus.publish(ZoomBoxEvent(this@ZoomBox))
+            when (checkKeys(e)) {
+                KeyEvent.VK_ESCAPE -> isVisible = false
+                KeyEvent.VK_ENTER -> {
+                    if (isVisible) {
+                        isVisible = false
+                        EventBus.publish(ZoomBoxEvent(this@ZoomBox))
+                    }
                 }
             }
 
@@ -52,7 +59,7 @@ class ZoomBox : JPanel() {
         }
 
         override fun keyReleased(e: KeyEvent?) {
-            e!!.consume()
+            checkKeys(e)
         }
     }
 
@@ -135,6 +142,7 @@ class ZoomBox : JPanel() {
 
         val graphics = g as Graphics2D
 
+        graphics.color = Color(0f, 0f, 0f, 0f)
         graphics.fillRect(minX.toInt(), minY.toInt(), zoomWidth.toInt(), zoomHeight.toInt())
     }
 
@@ -165,9 +173,9 @@ class ZoomBox : JPanel() {
         isEnabled = false
         isVisible = false
         isOpaque = true
-        isDoubleBuffered = true
+        isDoubleBuffered = false
 
-        Timer().schedule(object : TimerTask(){
+        Timer().schedule(object : TimerTask() {
             override fun run() {
                 while (parent == null) sleep(5)
                 parent.addMouseListener(ParentMouseListener())

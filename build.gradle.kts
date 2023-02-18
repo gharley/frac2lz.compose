@@ -25,12 +25,13 @@ kotlin {
     sourceSets {
         val material3Version = "1.3.0"
         val rxVersion = "3.1.3"
+        val jsonVersion = "1.1.4"
         val jvmMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation("io.reactivex.rxjava3:rxjava:$rxVersion")
-                implementation("org.glassfish:javax.json:1.1.4")
-                implementation("javax.json:javax.json-api:1.1.4")
+                implementation("org.glassfish:javax.json:$jsonVersion")
+                implementation("javax.json:javax.json-api:$jsonVersion")
                 implementation("org.jetbrains.compose.material3:material3-desktop:$material3Version")
                 implementation("commons-io:commons-io:2.11.0")
             }
