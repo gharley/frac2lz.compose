@@ -13,14 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import java.lang.Float.max
 import java.lang.Float.min
 
 data class HSL(var hue: Float = 0f, var saturation: Float = 0f, var luminance: Float = 0f)
 
 // Thanks to camick.com for the conversion code
-fun toHSL(color: Color): HSL {
+fun Color.Companion.rgbToHsl(color: Color): HSL {
     val red = color.red
     val green = color.green
     val blue = color.blue
@@ -67,7 +66,7 @@ fun hueToRGB(p: Float, q: Float, h: Float): Float {
     return p
 }
 
-fun toRGB(h: Float, s: Float, l: Float): Color {
+fun Color.Companion.hslToRgb(h: Float, s: Float, l: Float): Color {
     var hue = h
     var saturation = s
     var luminance = l

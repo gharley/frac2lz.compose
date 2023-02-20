@@ -28,8 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PaintMode
-import toHSL
-import toRGB
+import rgbToHsl
+import hslToRgb
 import java.util.*
 import kotlin.math.abs
 
@@ -96,8 +96,8 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
                 val endColor = palette.colors[marker.index]
                 val range = marker.index - startMarker!!.index
                 val divisor = (range + 1).toFloat()
-                val startHSV = toHSL(startColor)
-                val endHSV = toHSL(endColor)
+                val startHSV = Color.rgbToHsl(startColor)
+                val endHSV = Color.rgbToHsl(endColor)
                 val hueInc = (endHSV.hue - startHSV.hue) / divisor
                 val saturationInc = (endHSV.saturation - startHSV.saturation) / divisor
                 val luminanceInc = (endHSV.luminance - startHSV.luminance) / divisor
@@ -108,7 +108,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
                     val saturation = abs(startHSV.saturation + saturationInc * idx)// % 100f
                     val luminance = abs(startHSV.luminance + luminanceInc * idx)// % 100f
 
-                    palette.colors[colorIndex] = toRGB(hue, saturation, luminance)
+                    palette.colors[colorIndex] = Color.hslToRgb(hue, saturation, luminance)
                 }
 
                 startMarker = marker
