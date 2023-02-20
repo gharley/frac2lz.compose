@@ -2,13 +2,19 @@ package components
 
 import EventBus
 import FractalParameters
+import ToolTip
 import action.*
+import androidx.compose.foundation.BoxWithTooltip
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 data class UISettings(
@@ -18,10 +24,10 @@ data class UISettings(
     var refreshRate: Int = 50
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SettingsPanel(params: FractalParameters) {
-    Surface(Modifier.padding(20.dp).width(400.dp)) {
+    Surface(Modifier.padding(5.dp).width(400.dp), color = Color.Transparent, shadowElevation = 5.dp) {
         val settings: UISettings = remember { UISettings() }
         var trigger by remember { mutableStateOf(0) }
 
@@ -30,62 +36,68 @@ fun SettingsPanel(params: FractalParameters) {
             trigger++
         }
 
-        Column(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)) {
+            val cardModifier = Modifier.background(MaterialTheme.colorScheme.background)
             val rowModifier = Modifier.fillMaxWidth().wrapContentHeight().padding(10.dp, 0.dp)
             val rowAlignment = Alignment.CenterVertically
 
             trigger  // Causes recompose
 
-            Card(Modifier.padding(3.dp, 3.dp).background(MaterialTheme.colorScheme.background)) {
-                Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
-                    Column {
-                        Text("Color from Fractal Data:", color = MaterialTheme.colorScheme.primary)
-                    }
-                    Column {
-                        Checkbox(
-                            settings.colorFromFractal,
-                            { settings.colorFromFractal = it; broadcastSettings() }
-                        )
-                    }
-                }
-                Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
-
-                    Column {
-                        Text("Apply additional smoothing:", color = MaterialTheme.colorScheme.primary)
-                    }
-                    Column {
-                        Checkbox(
-                            settings.useSecondarySmoothing,
-                            { settings.useSecondarySmoothing = it; broadcastSettings() },
-                            enabled = settings.colorFromFractal
-                        )
+            Card(cardModifier.padding(3.dp, 3.dp), colors = CardDefaults.cardColors()) {
+                ToolTip("Select color based on the Complex number representing each pixel.") {
+                    Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
+                        Column {
+                            Text("Color from Fractal Data:", color = MaterialTheme.colorScheme.primary)
+                        }
+                        Column {
+                            Checkbox(
+                                settings.colorFromFractal,
+                                { settings.colorFromFractal = it; broadcastSettings() }
+                            )
+                        }
                     }
                 }
-                Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
-                    Column {
-                        Text("Refresh Rate:", color = MaterialTheme.colorScheme.primary)
+                ToolTip("Apply an algorithm to further smooth color transitions. Often results in monochrome colors."){
+                    Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
+                        Column {
+                            Text("Apply additional smoothing:", color = MaterialTheme.colorScheme.primary)
+                        }
+                        Column {
+                            Checkbox(
+                                settings.useSecondarySmoothing,
+                                { settings.useSecondarySmoothing = it; broadcastSettings() },
+                                enabled = settings.colorFromFractal
+                            )
+                        }
                     }
-                    Column {
-                        Slider(
-                            settings.refreshRate.toFloat(),
-                            onValueChange = { settings.refreshRate = it.toInt(); trigger++ },
-                            valueRange = (1f..100f),
-                            steps = 100,
-                            onValueChangeFinished = { broadcastSettings() },
-                            thumb = {
-                                SliderThumb(
-                                    positions = SliderPositions(
-                                        settings.refreshRate.toFloat(),
-                                        floatArrayOf(0f)
+                }
+                ToolTip("Controls the rate at which the image is drawn. Far left updates every row, far right delays update until image is completely drawn. May not have much effect if long calculations are involved."){
+                    Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
+                        Column {
+                            Text("Refresh Rate:", color = MaterialTheme.colorScheme.primary)
+                        }
+                        Column {
+                            Slider(
+                                settings.refreshRate.toFloat(),
+                                onValueChange = { settings.refreshRate = it.toInt(); trigger++ },
+                                valueRange = (1f..100f),
+                                steps = 100,
+                                onValueChangeFinished = { broadcastSettings() },
+                                thumb = {
+                                    SliderThumb(
+                                        positions = SliderPositions(
+                                            settings.refreshRate.toFloat(),
+                                            floatArrayOf(0f)
+                                        )
                                     )
-                                )
-                            }
-                        )
+                                }
+                            )
+                        }
                     }
                 }
             }
 
-            Card(Modifier.padding(3.dp, 10.dp).background(MaterialTheme.colorScheme.background)) {
+            Card(cardModifier.padding(3.dp, 10.dp)) {
                 Spacer(Modifier.padding(0.dp, 5.dp))
                 var width by remember { mutableStateOf(params.width.toInt().toString()) }
                 var height by remember { mutableStateOf(params.height.toInt().toString()) }

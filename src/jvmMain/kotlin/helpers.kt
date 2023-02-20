@@ -1,4 +1,19 @@
+import androidx.compose.foundation.BoxWithTooltip
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import java.lang.Float.max
 import java.lang.Float.min
 
@@ -83,4 +98,24 @@ fun toRGB(h: Float, s: Float, l: Float): Color {
     blue = min(blue, 1.0f)
 
     return Color(red, green, blue)
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ToolTip(text:String, content:@Composable () -> Unit){
+    BoxWithTooltip(tooltip = {
+        Surface(
+            modifier = Modifier
+                .shadow(5.dp)
+                .background(MaterialTheme.colorScheme.onBackground)
+                .border(2.dp, MaterialTheme.colorScheme.primary),
+            shape = RoundedCornerShape(10.dp)
+        ) {
+            Text(
+                text = text,
+                modifier = Modifier.padding(10.dp).width(150.dp),
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }, delay = 500, content = content)
 }
