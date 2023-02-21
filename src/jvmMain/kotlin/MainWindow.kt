@@ -14,13 +14,12 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import components.*
+import java.awt.FileDialog
 import java.io.*
 import java.util.*
 import javax.json.Json
 import javax.json.JsonObject
 import javax.json.JsonReader
-import javax.swing.JFileChooser
-import javax.swing.filechooser.FileNameExtensionFilter
 
 @Composable
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
@@ -36,42 +35,30 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             icon = painterResource("frac2lz128.png"),
             state = WindowState(placement = WindowPlacement.Maximized),
         ) {
-            val fractal = remember{ Mandelbrot() }
+            val fractal = remember { Mandelbrot() }
 
             fun getInitPath(key: String): String {
                 return if (properties.containsKey(key)) properties[key] as String
                 else "./"
             }
 
-            fun getFile(initPath: String, extFilter: FileNameExtensionFilter, save: Boolean = false): File? {
-                val dlg = JFileChooser()
+            fun getFile(initPath: String, extFilter: String, save: Boolean = false, title: String = ""): File? {
+                val dlg = FileDialog(this.window, title, if (save) FileDialog.SAVE else FileDialog.LOAD)
 
-                dlg.fileFilter = extFilter
-                dlg.currentDirectory = File(initPath)
+                dlg.directory = initPath
+                dlg.file = "*$extFilter"
+                dlg.filenameFilter = FilenameFilter { _, name -> name.endsWith(extFilter) }
+                dlg.isVisible = true
 
-                var file: File? = null
+                val filename = dlg.file
+                val directory = dlg.directory
 
-                val result = if (save) dlg.showSaveDialog(null) else dlg.showOpenDialog(null)
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    var filename = dlg.selectedFile.absolutePath
-                    val ext = extFilter.extensions[0]
-
-                    if (save) {
-                        if (!filename.endsWith(ext, true)) {
-                            filename += ".$ext"
-                        }
-                    }
-                    file = File(filename)
-                }
-
-                return file
+                return if (directory.isNullOrEmpty() || filename.isNullOrEmpty()) null
+                else File(directory, filename)
             }
 
             fun onOpen() {
-                val initPath: String = getInitPath("2lzPath")
-                val extFilter = FileNameExtensionFilter("Frac2lz image", "2lz")
-
-                val file = getFile(initPath, extFilter)
+                val file = getFile(getInitPath("2lzPath"), ".2lz", title = "Load Fractal Image")
 
                 if (file != null) {
                     properties["2lzPath"] = file.parent ?: "./"
@@ -88,10 +75,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             }
 
             fun onOpenJson() {
-                val initPath: String = getInitPath("jsonPath")
-                val extFilter = FileNameExtensionFilter("JSON Fractal Spec", "json")
-
-                val file = getFile(initPath, extFilter)
+                val file = getFile(getInitPath("jsonPath"), ".json", title = "Load JSON Specification")
 
                 if (file != null) {
                     properties["jsonPath"] = file.parent ?: "./"
@@ -110,10 +94,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             var palette by remember { mutableStateOf(Palette()) }
 
             fun onOpenPalette() {
-                val initPath: String = getInitPath("palPath")
-                val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
-
-                val file = getFile(initPath, extFilter)
+                val file = getFile(getInitPath("palPath"), ".pal", title = "Load Palette")
 
                 if (file != null) {
                     properties["palPath"] = file.parent ?: "./"
@@ -128,10 +109,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             }
 
             fun onSaveJson() {
-                val initPath: String = getInitPath("jsonPath")
-                val extFilter = FileNameExtensionFilter("JSON Fractal Spec", "json")
-
-                val file = getFile(initPath, extFilter, true)
+                val file = getFile(getInitPath("jsonPath"), ".json", true, title = "Save JSON Specification")
 
                 if (file != null) {
                     properties["jsonPath"] = file.parent ?: "./"
@@ -147,10 +125,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             }
 
             fun onSaveImage() {
-                val initPath: String = getInitPath("imgPath")
-                val extFilter = FileNameExtensionFilter("Save to PNG", "png")
-
-                val file = getFile(initPath, extFilter, true)
+                val file = getFile(getInitPath("imgPath"), ".png", true, title = "Export Image")
 
                 if (file != null) {
                     properties["imgPath"] = file.parent ?: "./"
@@ -161,10 +136,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             }
 
             fun onSavePalette() {
-                val initPath: String = getInitPath("palPath")
-                val extFilter = FileNameExtensionFilter("Fra2lz Palette", "pal")
-
-                val file = getFile(initPath, extFilter, true)
+                val file = getFile(getInitPath("palPath"), ".pal", true, title = "Save Palette")
 
                 if (file != null) {
                     properties["palPath"] = file.parent ?: "./"
