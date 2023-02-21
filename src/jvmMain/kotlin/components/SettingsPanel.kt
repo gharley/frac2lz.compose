@@ -3,17 +3,15 @@ package components
 import EventBus
 import FractalParameters
 import ToolTip
-import action.*
-import androidx.compose.foundation.BoxWithTooltip
-import androidx.compose.foundation.ExperimentalFoundationApi
+import action.FractalSizeEvent
+import action.UIAction
+import action.UIEvent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
@@ -24,7 +22,7 @@ data class UISettings(
     var refreshRate: Int = 50
 )
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPanel(params: FractalParameters) {
     Surface(Modifier.padding(5.dp).width(400.dp), color = Color.Transparent, shadowElevation = 5.dp) {
@@ -97,52 +95,54 @@ fun SettingsPanel(params: FractalParameters) {
                 }
             }
 
-            Card(cardModifier.padding(3.dp, 10.dp)) {
-                Spacer(Modifier.padding(0.dp, 5.dp))
-                var width by remember { mutableStateOf(params.width.toInt().toString()) }
-                var height by remember { mutableStateOf(params.height.toInt().toString()) }
+            ToolTip("Allows changing the actual dimensions and aspect ratio of the calculated image. After clicking the update button, either recalculate or calculate base fractal."){
+                Card(cardModifier.padding(3.dp, 10.dp)) {
+                    Spacer(Modifier.padding(0.dp, 5.dp))
+                    var width by remember { mutableStateOf(params.width.toInt().toString()) }
+                    var height by remember { mutableStateOf(params.height.toInt().toString()) }
 
-                EventBus.listen(FractalParameters::class.java).subscribe {
-                    width = it.width.toInt().toString()
-                    height = it.height.toInt().toString()
-                }
-
-                fun checkSize(): Boolean {
-                    var result = false
-
-                    if (width.isNotEmpty() && height.isNotEmpty()) {
-                        if (width.toInt() > 0 && height.toInt() > 0) result = true
+                    EventBus.listen(FractalParameters::class.java).subscribe {
+                        width = it.width.toInt().toString()
+                        height = it.height.toInt().toString()
                     }
 
-                    return result
+                    fun checkSize(): Boolean {
+                        var result = false
+
+                        if (width.isNotEmpty() && height.isNotEmpty()) {
+                            if (width.toInt() > 0 && height.toInt() > 0) result = true
+                        }
+
+                        return result
+                    }
+
+                    TextField(
+                        width,
+                        { width = it },
+                        Modifier.fillMaxWidth(),
+                        label = { Text("Image Width:", color = MaterialTheme.colorScheme.primary) },
+                        singleLine = true,
+                        maxLines = 1
+                    )
+
+                    TextField(
+                        height,
+                        { height = it },
+                        Modifier.fillMaxWidth(),
+                        label = { Text("Image Height:", color = MaterialTheme.colorScheme.primary) },
+                        singleLine = true,
+                        maxLines = 1
+                    )
+
+                    Button(
+                        onClick = { EventBus.publish(FractalSizeEvent(width.toDouble(), height.toDouble())) },
+                        Modifier.align(Alignment.CenterHorizontally).absolutePadding(top = 10.dp),
+                        enabled = checkSize()
+                    ) {
+                        Text("Update image size")
+                    }
+                    Spacer(Modifier.padding(0.dp, 5.dp))
                 }
-
-                TextField(
-                    width,
-                    { width = it },
-                    Modifier.fillMaxWidth(),
-                    label = { Text("Image Width:", color = MaterialTheme.colorScheme.primary) },
-                    singleLine = true,
-                    maxLines = 1
-                )
-
-                TextField(
-                    height,
-                    { height = it },
-                    Modifier.fillMaxWidth(),
-                    label = { Text("Image Height:", color = MaterialTheme.colorScheme.primary) },
-                    singleLine = true,
-                    maxLines = 1
-                )
-
-                Button(
-                    onClick = { EventBus.publish(FractalSizeEvent(width.toDouble(), height.toDouble())) },
-                    Modifier.align(Alignment.CenterHorizontally).absolutePadding(top = 10.dp),
-                    enabled = checkSize()
-                ) {
-                    Text("Update image size")
-                }
-                Spacer(Modifier.padding(0.dp, 5.dp))
             }
             Row(rowModifier.weight(1f), verticalAlignment = rowAlignment) {
             }

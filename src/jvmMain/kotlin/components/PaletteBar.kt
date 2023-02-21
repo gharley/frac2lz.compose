@@ -3,6 +3,7 @@ package components
 import EventBus
 import Fractal
 import Palette
+import ToolTip
 import action.ImageClickEvent
 import action.NewPaletteEvent
 import action.PaletteAction
@@ -197,40 +198,46 @@ fun PaletteBar() {
 
     Surface(modifier = Modifier.fillMaxWidth().padding(10.dp), shadowElevation = 5.dp) {
         Row(Modifier.height(48.dp).padding(horizontal = 5.dp)) {
-            Column {
-                IconButton(
-                    onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
-                ) {
-                    Icon(
-                        painterResource("random32.png"),
-                        "Random Palette",
-                        Modifier.scale(iconScale),
-                        tint = Color.Unspecified,
-                    )
+            ToolTip("Generates a random color palette."){
+                Column {
+                    IconButton(
+                        onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
+                    ) {
+                        Icon(
+                            painterResource("random32.png"),
+                            "Random Palette",
+                            Modifier.scale(iconScale),
+                            tint = Color.Unspecified,
+                        )
+                    }
                 }
             }
-            Column {
-                IconButton(
-                    onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
-                ) {
-                    Icon(
-                        painterResource("smooth32.png"),
-                        "Smooth Palette",
-                        Modifier.scale(iconScale),
-                        tint = Color.Unspecified
-                    )
+            ToolTip("Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size."){
+                Column {
+                    IconButton(
+                        onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
+                    ) {
+                        Icon(
+                            painterResource("smooth32.png"),
+                            "Smooth Palette",
+                            Modifier.scale(iconScale),
+                            tint = Color.Unspecified
+                        )
+                    }
                 }
             }
-            Column {
-                IconButton(
-                    onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
-                ) {
-                    Icon(
-                        painterResource("default32.png"),
-                        "Default Palette",
-                        Modifier.scale(iconScale),
-                        tint = Color.Unspecified
-                    )
+            ToolTip("Generates the default grayscale palette and sets color range to 1."){
+                Column {
+                    IconButton(
+                        onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
+                    ) {
+                        Icon(
+                            painterResource("default32.png"),
+                            "Default Palette",
+                            Modifier.scale(iconScale),
+                            tint = Color.Unspecified
+                        )
+                    }
                 }
             }
 //            Column {
@@ -243,22 +250,24 @@ fun PaletteBar() {
 //                    )
 //                }
 //            }
-            Column {
-                var enableButton by remember { mutableStateOf(false) }
+            ToolTip("Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button."){
+                Column {
+                    var enableButton by remember { mutableStateOf(false) }
 
-                EventBus.listen(PaletteEvent::class.java).subscribe {
-                    if (it.action == PaletteAction.MARKERS_CHANGED) {
-                        val enable = (it.data as Int > 1)
+                    EventBus.listen(PaletteEvent::class.java).subscribe {
+                        if (it.action == PaletteAction.MARKERS_CHANGED) {
+                            val enable = (it.data as Int > 1)
 
-                        if (enableButton != enable) enableButton = enable
+                            if (enableButton != enable) enableButton = enable
+                        }
                     }
-                }
 
-                Button(
-                    onClick = { EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE)) },
-                    enabled = enableButton
-                ) {
-                    Text("Interpolate between markers")
+                    Button(
+                        onClick = { EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE)) },
+                        enabled = enableButton
+                    ) {
+                        Text("Interpolate between markers")
+                    }
                 }
             }
         }
