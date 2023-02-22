@@ -2,6 +2,7 @@ package components
 
 import EventBus
 import FractalParameters
+import Palette
 import ToolTip
 import action.FractalSizeEvent
 import action.UIAction
@@ -25,9 +26,15 @@ data class UISettings(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun SettingsPanel(params: FractalParameters) {
+fun SettingsPanel(params: FractalParameters, palette: Palette) {
     Surface(Modifier.padding(5.dp).width(400.dp), color = Color.Transparent, shadowElevation = 5.dp) {
-        val settings: UISettings = remember { UISettings() }
+        val settings: UISettings = remember {
+                UISettings(
+                    palette.getColorFromFractal,
+                    palette.useSecondarySmoothing,
+                    palette.refineRange
+                )
+        }
         var trigger by remember { mutableStateOf(0) }
 
         fun broadcastSettings() {
@@ -52,6 +59,31 @@ fun SettingsPanel(params: FractalParameters) {
                             Checkbox(
                                 settings.colorFromFractal,
                                 { settings.colorFromFractal = it; broadcastSettings() }
+                            )
+                        }
+                    }
+                }
+                ToolTip("Further refines the color from fractal process. Indicates how many additional calculations to perform on each pixel.") {
+                    Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
+                        Column {
+                            Text("Refine Range:", color = MaterialTheme.colorScheme.primary)
+                        }
+                        Column {
+                            Slider(
+                                settings.refineRange.toFloat(),
+                                onValueChange = { settings.refineRange = it.toInt(); trigger++ },
+                                valueRange = (0f..5f),
+                                steps = 5,
+                                enabled = settings.colorFromFractal,
+                                onValueChangeFinished = { broadcastSettings() },
+                                thumb = {
+                                    SliderThumb(
+                                        positions = SliderPositions(
+                                            settings.refineRange.toFloat(),
+                                            floatArrayOf(0f)
+                                        )
+                                    )
+                                }
                             )
                         }
                     }

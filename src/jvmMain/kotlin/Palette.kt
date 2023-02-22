@@ -62,10 +62,10 @@ class Palette {
     var colors: Array<Color> = Array(1) { Color(0) }
 
     var size: Int by Delegate(1)
-    private var getColorFromFractal: Boolean by Delegate(false)
-    private var useSecondarySmoothing: Boolean by Delegate(false)
+    var getColorFromFractal: Boolean by Delegate(false)
+    var useSecondarySmoothing: Boolean by Delegate(false)
     var colorRange: Int by Delegate(1)
-    private var refineRange: Int by Delegate(0)
+    var refineRange: Int by Delegate(0)
 
     private val grayScaleColor: (Int) -> Color = {
         val value = (it + 1) / size.toFloat()
