@@ -9,10 +9,13 @@ import action.NewPaletteEvent
 import action.PaletteAction
 import action.PaletteEvent
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.TooltipPlacement
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.awtEventOrNull
@@ -27,10 +30,10 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import hslToRgb
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.PaintMode
 import rgbToHsl
-import hslToRgb
 import java.util.*
 import kotlin.math.abs
 
@@ -198,13 +201,15 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PaletteBar() {
     val iconScale = 3.0f
+    val placement = TooltipPlacement.ComponentRect(Alignment.TopStart, Alignment.TopEnd)
 
     Surface(modifier = Modifier.fillMaxWidth().padding(10.dp), shadowElevation = 5.dp) {
         Row(Modifier.height(48.dp).padding(horizontal = 5.dp)) {
-            ToolTip("Generates a random color palette.") {
+            ToolTip("Generates a random color palette.", placement = placement) {
                 Column {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
@@ -218,7 +223,7 @@ fun PaletteBar() {
                     }
                 }
             }
-            ToolTip("Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size.") {
+            ToolTip("Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size.", placement = placement) {
                 Column {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
@@ -232,7 +237,7 @@ fun PaletteBar() {
                     }
                 }
             }
-            ToolTip("Generates the default grayscale palette and sets color range to 1.") {
+            ToolTip("Generates the default grayscale palette and sets color range to 1.", placement = placement) {
                 Column {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
@@ -256,7 +261,7 @@ fun PaletteBar() {
 //                    )
 //                }
 //            }
-            ToolTip("Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button.") {
+            ToolTip("Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button.", placement = placement) {
                 Column {
                     var enableButton by remember { mutableStateOf(false) }
                     var subscribed by remember { mutableStateOf(false) }

@@ -6,6 +6,7 @@ import ToolTip
 import action.FractalSizeEvent
 import action.UIAction
 import action.UIEvent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -22,7 +23,7 @@ data class UISettings(
     var refreshRate: Int = 50
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun SettingsPanel(params: FractalParameters) {
     Surface(Modifier.padding(5.dp).width(400.dp), color = Color.Transparent, shadowElevation = 5.dp) {
@@ -69,7 +70,7 @@ fun SettingsPanel(params: FractalParameters) {
                         }
                     }
                 }
-                ToolTip("Controls the rate at which the image is drawn. Far left updates every row, far right delays update until image is completely drawn. May not have much effect if long calculations are involved.") {
+                ToolTip("Controls the rate at which the image is drawn. Far left updates every row, far right delays update until image is completely calculated. May not have much effect if long calculations are involved.") {
                     Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
                         Column {
                             Text("Refresh Rate:", color = MaterialTheme.colorScheme.primary)
