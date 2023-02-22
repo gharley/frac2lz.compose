@@ -215,8 +215,10 @@ class ZoomBox : JPanel() {
 
         zoomWidth = abs(maxX - minX)
 
-        zoomHeight = if (maintainAspect) zoomWidth * (parent.height.toDouble() / parent.width.toDouble())
-        else abs(maxY - minY)
+        if (maintainAspect) {
+            val swingImage = parent as SwingImage
+            zoomHeight = zoomWidth * swingImage.imgHeight / swingImage.imgWidth
+        } else abs(maxY - minY)
 
         setBounds()
     }
