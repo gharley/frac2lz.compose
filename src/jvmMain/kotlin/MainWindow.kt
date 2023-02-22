@@ -53,8 +53,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 dlg.filenameFilter = FilenameFilter { _, name -> name.endsWith(extFilter) }
                 dlg.isVisible = true
 
-                val filename = dlg.file
+                var filename = dlg.file
                 val directory = dlg.directory
+
+                if (!filename.endsWith(extFilter)) filename += extFilter
 
                 return if (directory.isNullOrEmpty() || filename.isNullOrEmpty()) null
                 else File(directory, filename)

@@ -189,7 +189,7 @@ class ZoomBox : JPanel() {
                 if (moveStarted) {
                     e!!.consume()
 
-                    if (abs(e.x.toDouble() - moveOffset.x) >= 5 || abs(e.y.toDouble() - moveOffset.y) >= 5) {
+                    if (abs(e.x.toDouble() - moveOffset.x) >= 2 || abs(e.y.toDouble() - moveOffset.y) >= 2) {
                         minX += (e.x - moveOffset.x)
                         minY += (e.y - moveOffset.y)
                     }
