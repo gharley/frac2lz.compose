@@ -40,6 +40,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
     var palette by remember { mutableStateOf(pal) }
     val markerMap = TreeMap<Int, PaletteMarker>()
     var trigger by remember { mutableStateOf(0) }
+    var subscribed by remember { mutableStateOf(false) }
     var index: Int
     var stripeWidth = 0
     var height = 0f
@@ -119,24 +120,29 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
         EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
     }
 
-    EventBus.listen(NewPaletteEvent::class.java).subscribe {
-        palette = it.palette
-    }
+    if (!subscribed) {
+        subscribed = true
 
-    EventBus.listen(PaletteEvent::class.java).subscribe {
-        if (it.action == PaletteAction.CHANGED) removeMarkers()
-        else if (it.action == PaletteAction.INTERPOLATE) interpolate()
-    }
+        EventBus.listen(NewPaletteEvent::class.java).subscribe {
+            palette = it.palette
+        }
 
-    EventBus.listen(ImageClickEvent::class.java).subscribe {
-        val scale = (it.image as SwingImage).scale
-        val x = (it.x / scale).toInt()
-        val y = (it.y / scale).toInt()
+        EventBus.listen(PaletteEvent::class.java).subscribe {
+            if (it.action == PaletteAction.CHANGED) removeMarkers()
+            else if (it.action == PaletteAction.INTERPOLATE) interpolate()
+        }
 
-        try {
-            val iterations = fractal.iterations[y][x]
-            setMarkerFromIterations(iterations)
-        }catch (_: Exception){}
+        EventBus.listen(ImageClickEvent::class.java).subscribe {
+            val scale = (it.image as SwingImage).scale
+            val x = (it.x / scale).toInt()
+            val y = (it.y / scale).toInt()
+
+            try {
+                val iterations = fractal.iterations[y][x]
+                setMarkerFromIterations(iterations)
+            } catch (_: Exception) {
+            }
+        }
     }
 
     fun onMouseClicked(it: PointerEvent) {
@@ -198,7 +204,7 @@ fun PaletteBar() {
 
     Surface(modifier = Modifier.fillMaxWidth().padding(10.dp), shadowElevation = 5.dp) {
         Row(Modifier.height(48.dp).padding(horizontal = 5.dp)) {
-            ToolTip("Generates a random color palette."){
+            ToolTip("Generates a random color palette.") {
                 Column {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
@@ -212,7 +218,7 @@ fun PaletteBar() {
                     }
                 }
             }
-            ToolTip("Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size."){
+            ToolTip("Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size.") {
                 Column {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
@@ -226,7 +232,7 @@ fun PaletteBar() {
                     }
                 }
             }
-            ToolTip("Generates the default grayscale palette and sets color range to 1."){
+            ToolTip("Generates the default grayscale palette and sets color range to 1.") {
                 Column {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
@@ -250,15 +256,20 @@ fun PaletteBar() {
 //                    )
 //                }
 //            }
-            ToolTip("Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button."){
+            ToolTip("Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button.") {
                 Column {
                     var enableButton by remember { mutableStateOf(false) }
+                    var subscribed by remember { mutableStateOf(false) }
 
-                    EventBus.listen(PaletteEvent::class.java).subscribe {
-                        if (it.action == PaletteAction.MARKERS_CHANGED) {
-                            val enable = (it.data as Int > 1)
+                    if (!subscribed) {
+                        subscribed = true
 
-                            if (enableButton != enable) enableButton = enable
+                        EventBus.listen(PaletteEvent::class.java).subscribe {
+                            if (it.action == PaletteAction.MARKERS_CHANGED) {
+                                val enable = (it.data as Int > 1)
+
+                                if (enableButton != enable) enableButton = enable
+                            }
                         }
                     }
 

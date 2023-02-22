@@ -30,23 +30,28 @@ fun StatusBar(palette: Palette) {
     var height by remember { mutableStateOf(0) }
     var colorRange by remember { mutableStateOf(palette.colorRange) }
     var size by remember { mutableStateOf(palette.size) }
+    var subscribed by remember { mutableStateOf(false) }
 
-    EventBus.listen(FractalEvent::class.java).subscribe {
-        if (it.data.iterations > usedIterations) usedIterations = it.data.iterations
-    }
+    if (!subscribed) {
+        subscribed = true
 
-    EventBus.listen(FractalParameters::class.java).subscribe {
-        maxIterations = it.maxIterations
-        centerX = it.centerX
-        centerY = it.centerY
-        magnify = it.magnify
-        width = it.width.toInt()
-        height = it.height.toInt()
-    }
+        EventBus.listen(FractalEvent::class.java).subscribe {
+            if (it.data.iterations > usedIterations) usedIterations = it.data.iterations
+        }
 
-    EventBus.listen(NewPaletteEvent::class.java).subscribe{
-        colorRange = it.palette.colorRange
-        size = it.palette.size
+        EventBus.listen(FractalParameters::class.java).subscribe {
+            maxIterations = it.maxIterations
+            centerX = it.centerX
+            centerY = it.centerY
+            magnify = it.magnify
+            width = it.width.toInt()
+            height = it.height.toInt()
+        }
+
+        EventBus.listen(NewPaletteEvent::class.java).subscribe {
+            colorRange = it.palette.colorRange
+            size = it.palette.size
+        }
     }
 
     val scale = .75f

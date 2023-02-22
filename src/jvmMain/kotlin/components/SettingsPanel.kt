@@ -55,7 +55,7 @@ fun SettingsPanel(params: FractalParameters) {
                         }
                     }
                 }
-                ToolTip("Apply an algorithm to further smooth color transitions. Often results in monochrome colors."){
+                ToolTip("Apply an algorithm to further smooth color transitions. Often results in monochrome colors.") {
                     Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
                         Column {
                             Text("Apply additional smoothing:", color = MaterialTheme.colorScheme.primary)
@@ -69,7 +69,7 @@ fun SettingsPanel(params: FractalParameters) {
                         }
                     }
                 }
-                ToolTip("Controls the rate at which the image is drawn. Far left updates every row, far right delays update until image is completely drawn. May not have much effect if long calculations are involved."){
+                ToolTip("Controls the rate at which the image is drawn. Far left updates every row, far right delays update until image is completely drawn. May not have much effect if long calculations are involved.") {
                     Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
                         Column {
                             Text("Refresh Rate:", color = MaterialTheme.colorScheme.primary)
@@ -95,15 +95,20 @@ fun SettingsPanel(params: FractalParameters) {
                 }
             }
 
-            ToolTip("Allows changing the actual dimensions and aspect ratio of the calculated image. After clicking the update button, either recalculate or calculate base fractal."){
+            ToolTip("Allows changing the actual dimensions and aspect ratio of the calculated image. After clicking the update button, either recalculate or calculate base fractal.") {
                 Card(cardModifier.padding(3.dp, 10.dp)) {
                     Spacer(Modifier.padding(0.dp, 5.dp))
                     var width by remember { mutableStateOf(params.width.toInt().toString()) }
                     var height by remember { mutableStateOf(params.height.toInt().toString()) }
+                    var subscribed by remember { mutableStateOf(false) }
 
-                    EventBus.listen(FractalParameters::class.java).subscribe {
-                        width = it.width.toInt().toString()
-                        height = it.height.toInt().toString()
+                    if (!subscribed) {
+                        subscribed = true
+
+                        EventBus.listen(FractalParameters::class.java).subscribe {
+                            width = it.width.toInt().toString()
+                            height = it.height.toInt().toString()
+                        }
                     }
 
                     fun checkSize(): Boolean {

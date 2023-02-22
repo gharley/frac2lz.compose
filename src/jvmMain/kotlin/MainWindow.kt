@@ -25,7 +25,6 @@ import javax.json.JsonReader
 fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
     val properties = remember { props }
-    var jsonLoaded by remember { mutableStateOf(false) }
     val useDark = props["useDark"].toString().toBoolean()
 
     MaterialTheme(if (useDark) darkColorScheme() else lightColorScheme()) {
@@ -35,7 +34,11 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             icon = painterResource("frac2lz128.png"),
             state = WindowState(placement = WindowPlacement.Maximized),
         ) {
+            MainMenu()
+
             val fractal = remember { Mandelbrot() }
+            var jsonLoaded by remember { mutableStateOf(false) }
+            var subscribed by remember { mutableStateOf(false) }
 
             fun getInitPath(key: String): String {
                 return if (properties.containsKey(key)) properties[key] as String
@@ -148,33 +151,36 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 }
             }
 
-            EventBus.listen(AppTitle::class.java).subscribe {
-                var appTitle = appName
+            if (!subscribed) {
+                subscribed = true
 
-                if (it.title.isNotEmpty()) {
-                    appTitle += " - " + it.title
+                EventBus.listen(AppTitle::class.java).subscribe {
+                    var appTitle = appName
+
+                    if (it.title.isNotEmpty()) {
+                        appTitle += " - " + it.title
+                    }
+
+                    this.window.title = appTitle
                 }
 
-                this.window.title = appTitle
-            }
+                EventBus.listen(FileEvent::class.java).subscribe {
+                    when (it.action) {
+                        FileAction.OPEN_FRACTAL -> onOpen()
+                        FileAction.OPEN_JSON -> onOpenJson()
+                        FileAction.OPEN_PALETTE -> onOpenPalette()
+                        FileAction.SAVE_JSON -> onSaveJson()
+                        FileAction.SAVE_PALETTE -> onSavePalette()
+                        FileAction.SAVE_IMAGE -> onSaveImage()
+                        else -> {}
+                    }
+                }
 
-            EventBus.listen(FileEvent::class.java).subscribe {
-                when (it.action) {
-                    FileAction.OPEN_FRACTAL -> onOpen()
-                    FileAction.OPEN_JSON -> onOpenJson()
-                    FileAction.OPEN_PALETTE -> onOpenPalette()
-                    FileAction.SAVE_JSON -> onSaveJson()
-                    FileAction.SAVE_PALETTE -> onSavePalette()
-                    FileAction.SAVE_IMAGE -> onSaveImage()
-                    else -> {}
+                EventBus.listen(NewPaletteEvent::class.java).subscribe {
+                    palette = Palette(it.palette)
                 }
             }
 
-            EventBus.listen(NewPaletteEvent::class.java).subscribe {
-                palette = Palette(it.palette)
-            }
-
-            MainMenu()
             Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
                 Row(Modifier.weight(1f)) {
                     if (jsonLoaded) {

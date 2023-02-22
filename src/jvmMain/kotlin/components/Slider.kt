@@ -16,9 +16,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SliderThumb(positions: SliderPositions) {
     Badge(Modifier.size(30.dp), MaterialTheme.colorScheme.primary) {
-        Text(positions.positionFraction.toInt().toString(),
+        Text(
+            positions.positionFraction.toInt().toString(),
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.background)
+            color = MaterialTheme.colorScheme.background
+        )
     }
 }
 
@@ -27,9 +29,14 @@ fun SliderThumb(positions: SliderPositions) {
 fun PaletteSlider(min: Float, max: Float, type: PaletteSliderType, palette: Palette, onChangeComplete: (Int) -> Unit) {
     val default = if (type == PaletteSliderType.SIZE) palette.size else palette.colorRange
     var currentValue by remember { mutableStateOf(default.toFloat()) }
+    var subscribed by remember { mutableStateOf(false) }
 
-    EventBus.listen(NewPaletteEvent::class.java).subscribe {
-        currentValue = (if (type == PaletteSliderType.SIZE) it.palette.size else it.palette.colorRange).toFloat()
+    if (!subscribed) {
+        subscribed = true
+
+        EventBus.listen(NewPaletteEvent::class.java).subscribe {
+            currentValue = (if (type == PaletteSliderType.SIZE) it.palette.size else it.palette.colorRange).toFloat()
+        }
     }
 
     Row {
