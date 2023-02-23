@@ -41,7 +41,7 @@ import kotlin.math.abs
 @Composable
 fun PaletteCanvas(pal: Palette, fractal: Fractal) {
     var palette by remember { mutableStateOf(pal) }
-    val markerMap = TreeMap<Int, PaletteMarker>()
+    val markerMap = remember { TreeMap<Int, PaletteMarker>() }
     var trigger by remember { mutableStateOf(0) }
     var subscribed by remember { mutableStateOf(false) }
     var index: Int
@@ -110,8 +110,8 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
                 for (idx in 1 until range) {
                     val colorIndex = startMarker!!.index + idx
                     val hue = abs(startHSV.hue + hueInc * idx) % 360f
-                    val saturation = abs(startHSV.saturation + saturationInc * idx)// % 100f
-                    val luminance = abs(startHSV.luminance + luminanceInc * idx)// % 100f
+                    val saturation = abs(startHSV.saturation + saturationInc * idx) % 100f
+                    val luminance = abs(startHSV.luminance + luminanceInc * idx) % 100f
 
                     palette.colors[colorIndex] = Color.hslToRgb(hue, saturation, luminance)
                 }
@@ -223,7 +223,10 @@ fun PaletteBar() {
                     }
                 }
             }
-            ToolTip("Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size.", placement = placement) {
+            ToolTip(
+                "Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size.",
+                placement = placement
+            ) {
                 Column {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
@@ -261,7 +264,10 @@ fun PaletteBar() {
 //                    )
 //                }
 //            }
-            ToolTip("Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button.", placement = placement) {
+            ToolTip(
+                "Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button.",
+                placement = placement
+            ) {
                 Column {
                     var enableButton by remember { mutableStateOf(false) }
                     var subscribed by remember { mutableStateOf(false) }
