@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.toArgb
 import components.UISettings
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.sin
@@ -206,6 +207,20 @@ class Palette {
         val b = ((colors[clr1].blue * t1 + colors[clr2].blue * t2)).toFloat()
 
         return Color(r, g, b)
+    }
+
+    fun colorsUsed(data: Array<LongArray>):TreeMap<Int, Color>{
+        val colorsUsed = TreeMap<Int, Color>()
+
+        data.distinct().forEach{ distinctData ->
+            distinctData.forEach {
+                val index = indexFromIterations(it)
+
+                colorsUsed[index] = colors[index]
+            }
+        }
+
+        return colorsUsed
     }
 
     private fun fireChanged() {
