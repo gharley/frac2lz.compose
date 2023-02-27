@@ -4,10 +4,7 @@ import EventBus
 import Fractal
 import Palette
 import ToolTip
-import action.ImageClickEvent
-import action.NewPaletteEvent
-import action.PaletteAction
-import action.PaletteEvent
+import action.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipPlacement
@@ -128,6 +125,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
 
         EventBus.listen(NewPaletteEvent::class.java).subscribe {
             palette = it.palette
+            removeMarkers()
         }
 
         EventBus.listen(PaletteEvent::class.java).subscribe {
@@ -144,6 +142,14 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
                 val iterations = fractal.iterations[y][x]
                 setMarkerFromIterations(iterations)
             } catch (_: Exception) {
+            }
+        }
+
+        EventBus.listen(CalculateEvent::class.java).subscribe { event ->
+            if (event.action == CalculateAction.COMPLETE) {
+                val colorsUsed = palette.colorsUsed(fractal.iterations)
+
+                colorsUsed.distinctBy { it != -1 }.forEach { setMarker(it) }
             }
         }
     }

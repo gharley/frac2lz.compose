@@ -52,7 +52,7 @@ class Palette {
                     PaletteType.SMOOTH -> palette.buildPalette(palette.smoothColor)
                     PaletteType.CUSTOM -> palette.buildDefaultPalette()
                 }
-            }else if (property.name == "colorRange") palette.fireUpdate()
+            } else if (property.name == "colorRange") palette.fireUpdate()
         }
     }
 
@@ -209,14 +209,14 @@ class Palette {
         return Color(r, g, b)
     }
 
-    fun colorsUsed(data: Array<LongArray>):TreeMap<Int, Color>{
-        val colorsUsed = TreeMap<Int, Color>()
+    fun colorsUsed(data: Array<LongArray>): List<Int> {
+        val colorsUsed = List(size) { -1 }.toMutableList()
 
-        data.distinct().forEach{ distinctData ->
-            distinctData.forEach {
+        data.forEach { row ->
+            row.distinctBy { it != -1L }.forEach {
                 val index = indexFromIterations(it)
 
-                colorsUsed[index] = colors[index]
+                colorsUsed[index] = index
             }
         }
 
