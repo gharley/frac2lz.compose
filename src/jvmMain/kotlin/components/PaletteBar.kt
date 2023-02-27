@@ -145,13 +145,14 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
             }
         }
 
-        EventBus.listen(CalculateEvent::class.java).subscribe { event ->
-            if (event.action == CalculateAction.COMPLETE) {
-                val colorsUsed = palette.colorsUsed(fractal.iterations)
-
-                colorsUsed.distinctBy { it != -1 }.forEach { setMarker(it) }
-            }
-        }
+//        EventBus.listen(CalculateEvent::class.java).subscribe { event ->
+//            if (event.action == CalculateAction.COMPLETE) {
+//                val colorsUsed = palette.colorsUsed(fractal.iterations)
+//
+//                removeMarkers()
+//                colorsUsed.distinct().forEach { if (it != -1) setMarker(it) }
+//            }
+//        }
     }
 
     fun onMouseClicked(it: PointerEvent) {

@@ -212,12 +212,17 @@ class Palette {
     fun colorsUsed(data: Array<LongArray>): List<Int> {
         val colorsUsed = List(size) { -1 }.toMutableList()
 
-        data.forEach { row ->
-            row.distinctBy { it != -1L }.forEach {
-                val index = indexFromIterations(it)
+        try {
+            data.forEach { row ->
+                row.distinct().forEach {
+                    if (it != -1L) {
+                        val index = indexFromIterations(it)
 
-                colorsUsed[index] = index
+                        colorsUsed[index] = index
+                    }
+                }
             }
+        } catch (_: Exception) {
         }
 
         return colorsUsed
