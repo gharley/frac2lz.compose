@@ -39,6 +39,7 @@ import kotlin.math.abs
 fun PaletteCanvas(pal: Palette, fractal: Fractal) {
     var palette by remember { mutableStateOf(pal) }
     val markerMap = remember { TreeMap<Int, PaletteMarker>() }
+    var usedList by remember { mutableStateOf(List<Int>(0) { x -> x }) }
     var trigger by remember { mutableStateOf(0) }
     var subscribed by remember { mutableStateOf(false) }
     var index: Int
@@ -64,6 +65,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
 
     fun removeMarkers() {
         markerMap.clear()
+        usedList = List<Int>(0) { x -> x }
         trigger++
         publishChanges()
     }
@@ -73,7 +75,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
             removeMarker(index)
         } else if (index < palette.size) {
             val fillColor = palette.colors[index]
-            val marker = PaletteMarker(index, height / 2, fillColor)
+            val marker = PaletteMarker(index, height / 3, fillColor)
 
             markerMap[index] = marker
             trigger++
@@ -145,14 +147,12 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
             }
         }
 
-//        EventBus.listen(CalculateEvent::class.java).subscribe { event ->
-//            if (event.action == CalculateAction.COMPLETE) {
-//                val colorsUsed = palette.colorsUsed(fractal.iterations)
-//
-//                removeMarkers()
-//                colorsUsed.distinct().forEach { if (it != -1) setMarker(it) }
-//            }
-//        }
+        EventBus.listen(CalculateEvent::class.java).subscribe { event ->
+            if (event.action == CalculateAction.SHOW_USED_COLORS) {
+                usedList = palette.colorsUsed(fractal.iterations)
+                trigger++
+            }
+        }
     }
 
     fun onMouseClicked(it: PointerEvent) {
@@ -187,22 +187,32 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
             }
         }
 
-        val paint = Paint()
         val stroke = Paint()
 
-        paint.mode = PaintMode.FILL
         stroke.mode = PaintMode.STROKE
-        stroke.strokeWidth = 10f
-        stroke.color = Color.Black.toArgb()
+        stroke.strokeWidth = 1f
 
         markerMap.forEach { entry ->
             val marker = entry.value
             marker.setPoints(stripeWidth)
 
             drawIntoCanvas {
-                paint.color = (marker.fillColor.toArgb() xor 0xffffff)
-                it.nativeCanvas.drawPolygon(marker.points, paint = paint)
                 it.nativeCanvas.drawPolygon(marker.points, paint = stroke)
+            }
+        }
+
+        val paint = Paint()
+        paint.mode = PaintMode.FILL
+        paint.color = Color.Black.toArgb()
+
+        usedList.forEach { index ->
+            drawIntoCanvas {
+                it.nativeCanvas.drawCircle(
+                    (index * stripeWidth) + (stripeWidth / 2f),
+                    height / 2,
+                    stripeWidth / 4f,
+                    paint = paint
+                )
             }
         }
     }
@@ -298,6 +308,16 @@ fun PaletteBar() {
                         Text("Interpolate between markers")
                     }
                 }
+//                ToolTip("", placement = placement) {
+//                    Column {
+//                        Button(
+//                            onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_USED_COLORS)) },
+//                            enabled = true
+//                        ) {
+//                            Text("Show used colors")
+//                        }
+//                    }
+//                }
             }
         }
     }
