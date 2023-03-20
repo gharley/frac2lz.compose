@@ -1,19 +1,21 @@
 package components
 
 import androidx.compose.ui.graphics.Color
-import org.jetbrains.skia.Point
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.toArgb
 
-class PaletteMarker(val index: Int = 0, private val height: Float = 0f, val fillColor: Color = Color.Black){
-    var points: Array<Point> = arrayOf()
-    private var offset: Float = 0f
+class PaletteMarker(val index: Int = 0, private val height: Float = 0f, fillColor: Color){
+    val color = Color(fillColor.toArgb() xor 0xffffff)
 
-    fun setPoints(stripeWidth: Int){
-        offset = (index * stripeWidth + stripeWidth / 2).toFloat()
+    fun getPath(stripeWidth: Int):Path{
+        val offset = (index * stripeWidth + stripeWidth / 2).toFloat()
+        val path = Path()
 
-        points = arrayOf(
-            Point(offset, height),
-            Point((-stripeWidth / 2) + offset, 0f),
-            Point((stripeWidth / 2) + offset, 0f)
-        )
+        path.moveTo(offset,height)
+        path.lineTo((-stripeWidth / 2) + offset, 0f)
+        path.lineTo((stripeWidth / 2) + offset, 0f)
+        path.close()
+
+        return path
     }
 }

@@ -19,8 +19,8 @@ import androidx.compose.ui.awt.awtEventOrNull
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -28,8 +28,6 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import hslToRgb
-import org.jetbrains.skia.Paint
-import org.jetbrains.skia.PaintMode
 import rgbToHsl
 import java.util.*
 import kotlin.math.abs
@@ -39,7 +37,7 @@ import kotlin.math.abs
 fun PaletteCanvas(pal: Palette, fractal: Fractal) {
     var palette by remember { mutableStateOf(pal) }
     val markerMap = remember { TreeMap<Int, PaletteMarker>() }
-    var usedList by remember { mutableStateOf(List<Int>(0) { x -> x }) }
+    var usedList by remember { mutableStateOf(List(0) { x -> x }) }
     var trigger by remember { mutableStateOf(0) }
     var subscribed by remember { mutableStateOf(false) }
     var index: Int
@@ -65,7 +63,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
 
     fun removeMarkers() {
         markerMap.clear()
-        usedList = List<Int>(0) { x -> x }
+        usedList = List(0) { x -> x }
         trigger++
         publishChanges()
     }
@@ -74,8 +72,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
         if (markerMap.containsKey(index)) {
             removeMarker(index)
         } else if (index < palette.size) {
-            val fillColor = palette.colors[index]
-            val marker = PaletteMarker(index, height / 3, fillColor)
+            val marker = PaletteMarker(index, height / 3, palette.colors[index])
 
             markerMap[index] = marker
             trigger++
@@ -187,33 +184,20 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
             }
         }
 
-        val stroke = Paint()
-
-        stroke.mode = PaintMode.STROKE
-        stroke.strokeWidth = 1f
-
         markerMap.forEach { entry ->
             val marker = entry.value
-            marker.setPoints(stripeWidth)
+            val path = marker.getPath(stripeWidth)
 
-            drawIntoCanvas {
-                it.nativeCanvas.drawPolygon(marker.points, paint = stroke)
-            }
+            drawPath(path, marker.color, style = Fill)
+            drawPath(path, Color.Black, style = Stroke(2f))
         }
 
-        val paint = Paint()
-        paint.mode = PaintMode.FILL
-        paint.color = Color.Black.toArgb()
 
         usedList.forEach { index ->
-            drawIntoCanvas {
-                it.nativeCanvas.drawCircle(
-                    (index * stripeWidth) + (stripeWidth / 2f),
-                    height / 2,
-                    stripeWidth / 4f,
-                    paint = paint
-                )
-            }
+            drawCircle(
+                Color(palette.colors[index].toArgb() xor 0xffffff),
+                stripeWidth / 4f, Offset((index * stripeWidth) + (stripeWidth / 2f), height / 2)
+            )
         }
     }
 }
