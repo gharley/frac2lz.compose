@@ -194,10 +194,12 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
 
 
         usedList.forEach { index ->
-            drawCircle(
-                Color(palette.colors[index].toArgb() xor 0xffffff),
-                stripeWidth / 4f, Offset((index * stripeWidth) + (stripeWidth / 2f), height / 2)
-            )
+            if (index >= 0) {
+                drawCircle(
+                    Color(palette.colors[index].toArgb() xor 0xffffff),
+                    stripeWidth / 4f, Offset((index * stripeWidth) + (stripeWidth / 2f), height / 2)
+                )
+            }
         }
     }
 }
@@ -210,8 +212,8 @@ fun PaletteBar() {
 
     Surface(modifier = Modifier.fillMaxWidth().padding(10.dp), shadowElevation = 5.dp) {
         Row(Modifier.height(48.dp).padding(horizontal = 5.dp)) {
-            ToolTip("Generates a random color palette.", placement = placement) {
-                Column {
+            Column {
+                ToolTip("Generates a random color palette.", placement = placement) {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
                     ) {
@@ -224,11 +226,11 @@ fun PaletteBar() {
                     }
                 }
             }
-            ToolTip(
-                "Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size.",
-                placement = placement
-            ) {
-                Column {
+            Column {
+                ToolTip(
+                    "Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size.",
+                    placement = placement
+                ) {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
                     ) {
@@ -241,8 +243,8 @@ fun PaletteBar() {
                     }
                 }
             }
-            ToolTip("Generates the default grayscale palette and sets color range to 1.", placement = placement) {
-                Column {
+            Column {
+                ToolTip("Generates the default grayscale palette and sets color range to 1.", placement = placement) {
                     IconButton(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
                     ) {
@@ -265,11 +267,11 @@ fun PaletteBar() {
 //                    )
 //                }
 //            }
-            ToolTip(
-                "Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button.",
-                placement = placement
-            ) {
-                Column {
+            Column {
+                ToolTip(
+                    "Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button.",
+                    placement = placement
+                ) {
                     var enableButton by remember { mutableStateOf(false) }
                     var subscribed by remember { mutableStateOf(false) }
 
@@ -292,16 +294,22 @@ fun PaletteBar() {
                         Text("Interpolate between markers")
                     }
                 }
-//                ToolTip("", placement = placement) {
-//                    Column {
-//                        Button(
-//                            onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_USED_COLORS)) },
-//                            enabled = true
-//                        ) {
-//                            Text("Show used colors")
-//                        }
-//                    }
-//                }
+            }
+            Column {
+                var enabled by remember { mutableStateOf(false) }
+
+                EventBus.listen(CalculateEvent::class.java).subscribe {
+                    if (it.action == CalculateAction.COMPLETE) enabled = true
+                }
+
+                ToolTip("", placement = placement) {
+                    Button(
+                        onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_USED_COLORS)) },
+                        enabled = enabled
+                    ) {
+                        Text("Show used colors")
+                    }
+                }
             }
         }
     }
