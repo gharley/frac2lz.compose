@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream
 import javax.json.Json
 import javax.json.JsonBuilderFactory
 import javax.json.JsonObject
+import javax.json.JsonReader
 import javax.swing.JPanel
 import kotlin.math.abs
 import kotlin.math.max
@@ -364,11 +365,10 @@ abstract class Fractal {
     }
 
     open fun readObject(stream: ObjectInputStream) {
-        name = stream.readUTF()
-        version = stream.readUTF()
-        maxIterationsActual = stream.readLong()
-        @Suppress("UNCHECKED_CAST")
-        params = stream.readObject() as FractalParameters
+        val reader: JsonReader = Json.createReader(stream)
+
+        fromJson(reader.readObject())
+
         @Suppress("UNCHECKED_CAST")
         iterations = stream.readObject() as Array<LongArray>
 

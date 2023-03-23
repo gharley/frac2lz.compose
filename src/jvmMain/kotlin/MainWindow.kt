@@ -37,6 +37,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             MainMenu()
 
             val fractal = remember { Mandelbrot() }
+            var palette by remember { mutableStateOf(Palette()) }
+
             var jsonLoaded by remember { mutableStateOf(false) }
             var subscribed by remember { mutableStateOf(false) }
 
@@ -71,6 +73,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     val stream = ObjectInputStream(file.inputStream())
 
                     fractal.readObject(stream)
+                    palette.readObject(stream)
+
                     stream.close()
 
                     EventBus.publish(AppTitle(file.name))
@@ -95,8 +99,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     jsonLoaded = true
                 }
             }
-
-            var palette by remember { mutableStateOf(Palette()) }
 
             fun onOpenPalette() {
                 val file = getFile(getInitPath("palPath"), ".pal", title = "Load Palette")

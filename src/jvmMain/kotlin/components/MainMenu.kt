@@ -14,7 +14,7 @@ import androidx.compose.ui.window.MenuBar
 fun FrameWindowScope.MainMenu() {
     MenuBar {
         Menu("File") {
-//            Item("Open Fractal", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_FRACTAL)) })
+            Item("Open Fractal", onClick = { EventBus.publish(FileEvent(FileAction.OPEN_FRACTAL)) })
             Item("Open JSON file",
                 onClick = { EventBus.publish(FileEvent(FileAction.OPEN_JSON)) },
                 shortcut = KeyShortcut(Key.J, true)
