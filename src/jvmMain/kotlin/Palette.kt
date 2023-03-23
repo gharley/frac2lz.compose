@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.toArgb
 import components.UISettings
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.util.*
 import kotlin.math.abs
 import kotlin.math.ln
 import kotlin.math.sin
@@ -228,10 +227,6 @@ class Palette {
         return colorsUsed
     }
 
-    private fun fireChanged() {
-        EventBus.publish(PaletteEvent(PaletteAction.CHANGED))
-    }
-
     private fun fireUpdate() {
         if (!disableSideEffects) {
             EventBus.publish(NewPaletteEvent(this))
@@ -278,10 +273,6 @@ class Palette {
         stream.writeInt(size)
         stream.writeInt(colorRange)
         colors.forEach { color ->
-//            val test = 0xff000000.toInt() or
-//                    ((color.red * 255).toInt() * 0x10000) or
-//                    ((color.green * 255).toInt() * 0x100) or
-//                    (color.blue * 255).toInt()
             stream.writeInt(color.toArgb())
         }
     }

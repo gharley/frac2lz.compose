@@ -4,10 +4,7 @@ import kotlinx.coroutines.*
 import java.awt.geom.Point2D
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import javax.json.Json
-import javax.json.JsonBuilderFactory
-import javax.json.JsonObject
-import javax.json.JsonReader
+import javax.json.*
 import javax.swing.JPanel
 import kotlin.math.abs
 import kotlin.math.max
@@ -42,7 +39,8 @@ abstract class Fractal {
 
     var name: String = ""
 
-    private var version: String = "1.2"
+    private val currentVersion = "1.2"
+    private var version = currentVersion
     private var aspectAdjustX: Double = 1.0
     private var aspectAdjustY: Double = 1.0
     private val boundsHeight: Double
@@ -323,7 +321,7 @@ abstract class Fractal {
 
         return factory.createObjectBuilder()
             .add("name", name)
-            .add("version", "1.2")
+            .add("version", currentVersion)
             .add(
                 "params", factory.createObjectBuilder()
                     .add("width", params.width)
@@ -387,10 +385,10 @@ abstract class Fractal {
     }
 
     open fun writeObject(stream: ObjectOutputStream) {
-        stream.writeUTF(name)
-        stream.writeUTF("1.1")
-        stream.writeLong(maxIterationsActual)
-        stream.writeObject(params)
+        val writer: JsonWriter = Json.createWriter(stream)
+
+        writer.writeObject(toJson())
+
         stream.writeObject(iterations)
         stream.writeObject(reals)
         stream.writeObject(imaginarys)

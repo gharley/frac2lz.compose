@@ -115,6 +115,23 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 }
             }
 
+            fun onSave() {
+                val file = getFile(getInitPath("2lzPath"), ".2lz", true, "Save Fractal Image")
+
+                if (file != null) {
+                    properties["2lzPath"] = file.parent ?: "./"
+
+                    val stream = ObjectOutputStream(file.outputStream())
+
+                    fractal.writeObject(stream)
+                    palette.writeObject(stream)
+
+                    stream.close()
+
+                    EventBus.publish(AppTitle(file.name))
+                }
+            }
+
             fun onSaveJson() {
                 val file = getFile(getInitPath("jsonPath"), ".json", true, title = "Save JSON Specification")
 
@@ -173,6 +190,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                         FileAction.OPEN_FRACTAL -> onOpen()
                         FileAction.OPEN_JSON -> onOpenJson()
                         FileAction.OPEN_PALETTE -> onOpenPalette()
+                        FileAction.SAVE_FRACTAL -> onSave()
                         FileAction.SAVE_JSON -> onSaveJson()
                         FileAction.SAVE_PALETTE -> onSavePalette()
                         FileAction.SAVE_IMAGE -> onSaveImage()

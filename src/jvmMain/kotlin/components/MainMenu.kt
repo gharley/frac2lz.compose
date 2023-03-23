@@ -25,7 +25,7 @@ fun FrameWindowScope.MainMenu() {
                 shortcut = KeyShortcut(Key.P, true)
                 )
             Separator()
-//            Item("Save Fractal", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_FRACTAL)) })
+            Item("Save Fractal", onClick = { EventBus.publish(FileEvent(FileAction.SAVE_FRACTAL)) })
             Item("Save JSON file",
                 onClick = { EventBus.publish(FileEvent(FileAction.SAVE_JSON)) },
                 shortcut = KeyShortcut(Key.J, true, shift = true)
