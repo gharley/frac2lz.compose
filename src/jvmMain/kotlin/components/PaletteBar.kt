@@ -228,7 +228,8 @@ fun PaletteBar() {
             }
             Column {
                 ToolTip(
-                    "Uses a custom algorithm to generate a 'smooth' palette. Output will always be the same spread over palette size.",
+                    "Uses a custom algorithm to generate a 'smooth' palette. " +
+                            "Output will always be the same spread over palette size.",
                     placement = placement
                 ) {
                     IconButton(
@@ -269,7 +270,8 @@ fun PaletteBar() {
 //            }
             Column {
                 ToolTip(
-                    "Allows creation of custom palette by interpolating between selected colors. Click on 2 or more color bars above, then click the interpolate button.",
+                    "Allows creation of custom palette by interpolating between selected colors. " +
+                            "Click on 2 or more color bars above, then click the interpolate button.",
                     placement = placement
                 ) {
                     var enableButton by remember { mutableStateOf(false) }
@@ -302,7 +304,8 @@ fun PaletteBar() {
                     if (it.action == CalculateAction.COMPLETE) enabled = true
                 }
 
-                ToolTip("", placement = placement) {
+                ToolTip("Mark all of the colors in the palette that are used in the image. " +
+                        "Most likely all colors will be marked unless you've set a color range.", placement = placement) {
                     Button(
                         onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_USED_COLORS)) },
                         enabled = enabled

@@ -98,8 +98,8 @@ fun Color.Companion.hslToRgb(h: Float, s: Float, l: Float): Color {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ToolTip(text: String = "", width: Dp = 200.dp, placement: TooltipPlacement = TooltipPlacement.ComponentRect(), content: @Composable () -> Unit) {
-    BoxWithTooltip(
+fun ToolTip(text: String = "", width: Dp = 250.dp, placement: TooltipPlacement = TooltipPlacement.ComponentRect(), content: @Composable () -> Unit) {
+    TooltipArea(
         tooltip = {
             Surface(
                 shape = RoundedCornerShape(15.dp),
@@ -112,9 +112,8 @@ fun ToolTip(text: String = "", width: Dp = 200.dp, placement: TooltipPlacement =
                 )
             }
         },
-        delay = 1000,
+        delayMillis = 1000,
         tooltipPlacement = placement,
-        propagateMinConstraints = true,
         content = content
     )
 }
