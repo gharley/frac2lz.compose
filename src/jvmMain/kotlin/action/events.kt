@@ -9,9 +9,11 @@ interface ActionEvent {
     val action: Any
 }
 
+class AppTitle(val title: String)
 class CalculateEvent(override val action: CalculateAction) : ActionEvent
 class FileEvent(override val action: FileAction, val data: String = "") : ActionEvent
 class PaletteEvent(override val action: PaletteAction, val data: Any = 0) : ActionEvent
+class PropertyEvent(override val action: PropertyAction, val data: Any? = 0) : ActionEvent
 class UIEvent(override val action: UIAction, val data: Any = 0) : ActionEvent
 
 data class NewPaletteEvent(val palette: Palette)

@@ -13,6 +13,8 @@ import androidx.compose.ui.unit.dp
 import java.lang.Float.max
 import java.lang.Float.min
 
+data class KeyValuePair(val key:String, val value:String)
+
 data class HSL(var hue: Float = 0f, var saturation: Float = 0f, var luminance: Float = 0f)
 
 // Thanks to camick.com for the conversion code

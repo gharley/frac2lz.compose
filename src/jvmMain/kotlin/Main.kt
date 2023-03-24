@@ -24,19 +24,29 @@ fun App() {
 
             properties.load(stream)
         }
+
+        if (!properties.containsKey("autoUpdate")) properties["autoUpdate"] = "true"
     }
 
-    EventBus.listen(GetProperties::class.java).subscribe {
-        EventBus.publish(HaveProperties(properties))
-    }
-
-    EventBus.listen(SetProperty::class.java).subscribe {
-        properties[it.key] = it.value
+    EventBus.listen(PropertyEvent::class.java).subscribe {
+        when (it.action) {
+            PropertyAction.GET_PROPERTY -> {
+                if (properties.containsKey(it.data))
+                    EventBus.publish(PropertyEvent(PropertyAction.HAVE_PROPERTY, properties[it.data]))
+            }
+            PropertyAction.GET_PROPERTIES ->
+                EventBus.publish(PropertyEvent(PropertyAction.HAVE_PROPERTY, properties))
+            PropertyAction.SET_PROPERTY -> {
+                val data = it.data as KeyValuePair
+                properties[data.key] = data.value
+            }
+            else -> {}
+        }
     }
 
     EventBus.listen(UIEvent::class.java).subscribe {
         if (it.action == UIAction.EXIT) {
-            try{
+            try {
                 val file = Path(userHome).resolve(propFile).toFile()
 
                 if (!file.isFile) {
@@ -44,7 +54,9 @@ fun App() {
                 }
 
                 properties.store(file.outputStream(), "Frac2lz Properties")
-            }catch (_: Exception){}finally {
+            } catch (ex: Exception) {
+                val ex1 = ex
+            } finally {
                 exitProcess(0)
             }
         }

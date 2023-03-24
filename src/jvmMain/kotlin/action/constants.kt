@@ -19,6 +19,10 @@ enum class PaletteSliderType{
     SIZE, COLOR_RANGE
 }
 
+enum class PropertyAction{
+    GET_PROPERTY, GET_PROPERTIES, HAVE_PROPERTY, HAVE_PROPERTIES, SET_PROPERTY, SET_PROPERTIES
+}
+
 enum class UIAction {
     INIT, CHANGE, SETTINGS, EXIT
 }
