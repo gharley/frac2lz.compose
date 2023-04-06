@@ -260,12 +260,15 @@ class Palette {
                 Color(stream.readInt())
             }
 
-            disableSideEffects = false
-            fireUpdate()
+            // These were overlooked so may cause an exception
+            getColorFromFractal = stream.readBoolean()
+            useSecondarySmoothing = stream.readBoolean()
+            refineRange = stream.readInt()
         } catch (ex: Exception) {
             ex.message
         } finally {
             disableSideEffects = false
+            fireUpdate()
         }
     }
 
@@ -275,5 +278,8 @@ class Palette {
         colors.forEach { color ->
             stream.writeInt(color.toArgb())
         }
+        stream.writeBoolean(getColorFromFractal)
+        stream.writeBoolean(useSecondarySmoothing)
+        stream.writeInt(refineRange)
     }
 }
