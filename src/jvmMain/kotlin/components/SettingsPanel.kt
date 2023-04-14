@@ -5,6 +5,7 @@ import FractalParameters
 import Palette
 import ToolTip
 import action.FractalSizeEvent
+import action.NewPaletteEvent
 import action.UIAction
 import action.UIEvent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -141,6 +142,12 @@ fun SettingsPanel(params: FractalParameters, palette: Palette) {
                         EventBus.listen(FractalParameters::class.java).subscribe {
                             width = it.width.toInt().toString()
                             height = it.height.toInt().toString()
+                        }
+
+                        EventBus.listen(NewPaletteEvent::class.java).subscribe{
+                            settings.colorFromFractal = it.palette.getColorFromFractal
+                            settings.refineRange = it.palette.refineRange
+                            settings.useSecondarySmoothing = it.palette.useSecondarySmoothing
                         }
                     }
 
