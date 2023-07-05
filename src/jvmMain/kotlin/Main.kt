@@ -25,7 +25,7 @@ fun App() {
             properties.load(stream)
         }
 
-        if (!properties.containsKey("autoUpdate")) properties["autoUpdate"] = "true"
+        if (!properties.containsKey("autoRefresh")) properties["autoRefresh"] = "true"
     }
 
     EventBus.listen(PropertyEvent::class.java).subscribe {

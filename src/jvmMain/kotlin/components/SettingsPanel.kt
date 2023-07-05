@@ -4,10 +4,7 @@ import EventBus
 import FractalParameters
 import Palette
 import ToolTip
-import action.FractalSizeEvent
-import action.NewPaletteEvent
-import action.UIAction
-import action.UIEvent
+import action.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import setProperty
 
 data class UISettings(
     var colorFromFractal: Boolean = false,
@@ -27,19 +25,27 @@ data class UISettings(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun SettingsPanel(params: FractalParameters, palette: Palette) {
+fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Boolean) {
     Surface(Modifier.padding(5.dp).width(400.dp), color = Color.Transparent, shadowElevation = 5.dp) {
         val settings: UISettings = remember {
-                UISettings(
-                    palette.getColorFromFractal,
-                    palette.useSecondarySmoothing,
-                    palette.refineRange
-                )
+            UISettings(
+                palette.getColorFromFractal,
+                palette.useSecondarySmoothing,
+                palette.refineRange
+            )
         }
+        var refresh by remember { mutableStateOf(autoRefresh) }
         var trigger by remember { mutableStateOf(0) }
 
-        fun broadcastSettings() {
+        fun checkRefresh() {
+            if (refresh) {
+                EventBus.publish(CalculateEvent(CalculateAction.REFRESH))
+            }
+        }
+
+        fun broadcastSettings(check: Boolean = true) {
             EventBus.publish(UIEvent(UIAction.SETTINGS, settings))
+            if (check) checkRefresh()
             trigger++
         }
 
@@ -59,7 +65,10 @@ fun SettingsPanel(params: FractalParameters, palette: Palette) {
                         Column {
                             Checkbox(
                                 settings.colorFromFractal,
-                                { settings.colorFromFractal = it; broadcastSettings() }
+                                {
+                                    settings.colorFromFractal = it
+                                    broadcastSettings()
+                                }
                             )
                         }
                     }
@@ -76,7 +85,9 @@ fun SettingsPanel(params: FractalParameters, palette: Palette) {
                                 valueRange = (0f..5f),
                                 steps = 5,
                                 enabled = settings.colorFromFractal,
-                                onValueChangeFinished = { broadcastSettings() },
+                                onValueChangeFinished = {
+                                    broadcastSettings()
+                                },
                                 thumb = {
                                     SliderThumb(
                                         positions = SliderPositions(
@@ -97,7 +108,10 @@ fun SettingsPanel(params: FractalParameters, palette: Palette) {
                         Column {
                             Checkbox(
                                 settings.useSecondarySmoothing,
-                                { settings.useSecondarySmoothing = it; broadcastSettings() },
+                                {
+                                    settings.useSecondarySmoothing = it
+                                    broadcastSettings()
+                                },
                                 enabled = settings.colorFromFractal
                             )
                         }
@@ -114,7 +128,7 @@ fun SettingsPanel(params: FractalParameters, palette: Palette) {
                                 onValueChange = { settings.refreshRate = it.toInt(); trigger++ },
                                 valueRange = (1f..100f),
                                 steps = 100,
-                                onValueChangeFinished = { broadcastSettings() },
+                                onValueChangeFinished = { broadcastSettings(false) },
                                 thumb = {
                                     SliderThumb(
                                         positions = SliderPositions(
@@ -144,7 +158,7 @@ fun SettingsPanel(params: FractalParameters, palette: Palette) {
                             height = it.height.toInt().toString()
                         }
 
-                        EventBus.listen(NewPaletteEvent::class.java).subscribe{
+                        EventBus.listen(NewPaletteEvent::class.java).subscribe {
                             settings.colorFromFractal = it.palette.getColorFromFractal
                             settings.refineRange = it.palette.refineRange
                             settings.useSecondarySmoothing = it.palette.useSecondarySmoothing
@@ -180,7 +194,10 @@ fun SettingsPanel(params: FractalParameters, palette: Palette) {
                     )
 
                     Button(
-                        onClick = { EventBus.publish(FractalSizeEvent(width.toDouble(), height.toDouble())) },
+                        onClick = {
+                            EventBus.publish(FractalSizeEvent(width.toDouble(), height.toDouble()))
+                            checkRefresh()
+                        },
                         Modifier.align(Alignment.CenterHorizontally).absolutePadding(top = 10.dp),
                         enabled = checkSize()
                     ) {
@@ -189,7 +206,18 @@ fun SettingsPanel(params: FractalParameters, palette: Palette) {
                     Spacer(Modifier.padding(0.dp, 5.dp))
                 }
             }
-            Row(rowModifier.weight(1f), verticalAlignment = rowAlignment) {
+            ToolTip("Automatically update the image when parameters are changed.") {
+                Row(rowModifier.weight(1f), verticalAlignment = rowAlignment) {
+                    Column {
+                        Text("Automatic refresh:", color = MaterialTheme.colorScheme.primary)
+                    }
+                    Column {
+                        Checkbox(
+                            refresh,
+                            { refresh = it; setProperty("autoRefresh", it) },
+                        )
+                    }
+                }
             }
         }
     }

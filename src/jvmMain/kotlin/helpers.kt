@@ -1,3 +1,5 @@
+import action.PropertyAction
+import action.PropertyEvent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -96,6 +98,12 @@ fun Color.Companion.hslToRgb(h: Float, s: Float, l: Float): Color {
     blue = min(blue, 1.0f)
 
     return Color(red, green, blue)
+}
+
+fun setProperty(key: String, value: Any){
+    val data = KeyValuePair(key, value.toString())
+
+    EventBus.publish(PropertyEvent(PropertyAction.SET_PROPERTY, data))
 }
 
 @OptIn(ExperimentalFoundationApi::class)

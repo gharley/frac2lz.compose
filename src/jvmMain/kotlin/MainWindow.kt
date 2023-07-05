@@ -27,6 +27,14 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val properties = remember { props }
     val useDark = props["useDark"].toString().toBoolean()
 
+    val refresh = properties["autoRefresh"] == "true"
+
+    fun checkRefresh() {
+        if (refresh) {
+            EventBus.publish(CalculateEvent(CalculateAction.REFRESH))
+        }
+    }
+
     MaterialTheme(if (useDark) darkColorScheme() else lightColorScheme()) {
         Window(
             onCloseRequest = { closeFunction() },
@@ -200,6 +208,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                 EventBus.listen(NewPaletteEvent::class.java).subscribe {
                     palette = Palette(it.palette)
+                    checkRefresh()
                 }
             }
 
@@ -216,7 +225,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                             })
                     } else {
                         Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
-                        Column { SettingsPanel(fractal.params, palette) }
+                        Column { SettingsPanel(fractal.params, palette, refresh) }
                     }
                 }
                 PaletteCanvas(palette, fractal)
@@ -225,7 +234,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
                             palette.colorRange = it
-                        }
+                            checkRefresh()                        }
                     }
                 }
                 Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -233,7 +242,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
                             palette.size = it
-                        }
+                            checkRefresh()                        }
                     }
                 }
                 Row { PaletteBar() }
