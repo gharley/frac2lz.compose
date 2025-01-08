@@ -2,39 +2,41 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import java.util.Properties
 
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose")
-}
-
-group = "com.resmass"
-version = "1.0-SNAPSHOT"
-
-repositories {
-    google()
-    mavenCentral()
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "11"
-        }
-        withJava()
-    }
+    jvm("desktop")
+
     sourceSets {
-        val material3Version = "1.3.0"
+        commonMain.dependencies {
+            implementation(compose.components.resources)
+        }
         val rxVersion = "3.1.3"
         val jsonVersion = "1.1.4"
-        val jvmMain by getting {
+        val collectionVersion = "1.4.5"
+        val desktopMain by getting {
             dependencies {
-                implementation(compose.desktop.currentOs)
+                implementation(compose.desktop.windows_x64)
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material)
+                implementation(compose.ui)
+                implementation(compose.components.resources)
+                implementation(compose.components.uiToolingPreview)
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtime.compose)
+                implementation(libs.kotlinx.coroutines.swing)
+                implementation(libs.androidx.material3.desktop)
                 implementation("io.reactivex.rxjava3:rxjava:$rxVersion")
                 implementation("org.glassfish:javax.json:$jsonVersion")
                 implementation("javax.json:javax.json-api:$jsonVersion")
-                implementation("org.jetbrains.compose.material3:material3-desktop:$material3Version")
                 implementation("commons-io:commons-io:2.11.0")
+                implementation("androidx.collection:collection:$collectionVersion")
             }
-            val jvmTest by getting
+            val desktopTest by getting
         }
     }
 }

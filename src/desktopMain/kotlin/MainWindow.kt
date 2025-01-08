@@ -1,19 +1,21 @@
 import action.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import components.*
+import frac2lz_compose.generated.resources.Res
+import frac2lz_compose.generated.resources.frac2lz128
+import org.jetbrains.compose.resources.painterResource
 import java.awt.FileDialog
 import java.io.*
 import java.util.*
@@ -26,6 +28,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
     val properties = remember { props }
     val useDark = props["useDark"].toString().toBoolean()
+//    val icon = painterResource(Res.drawable.frac2lz128)
 
     val refresh = properties["autoRefresh"] == "true"
 
@@ -35,15 +38,15 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
-    MaterialTheme(if (useDark) darkColorScheme() else lightColorScheme()) {
+    MaterialTheme(if (useDark) darkColors() else lightColors()) {
         Window(
             onCloseRequest = { closeFunction() },
             title = appName,
-            icon = painterResource("frac2lz128.png"),
+            icon = painterResource(Res.drawable.frac2lz128),
             state = WindowState(placement = WindowPlacement.Maximized),
         ) {
             MainMenu()
-
+//            window.setIcon(Res.drawable.frac2lz128)
             val fractal = remember { Mandelbrot() }
             var palette by remember { mutableStateOf(Palette()) }
 
@@ -212,7 +215,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 }
             }
 
-            Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
+            Column(Modifier.background(MaterialTheme.colors.background).fillMaxSize()) {
                 Row(Modifier.weight(1f)) {
                     if (jsonLoaded) {
                         YesNoAlert(
@@ -230,7 +233,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 }
                 PaletteCanvas(palette, fractal)
                 Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column { Text("Color Range:", color = MaterialTheme.colorScheme.primary) }
+                    Column { Text("Color Range:", color = MaterialTheme.colors.primary) }
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
                             palette.colorRange = it
@@ -238,7 +241,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     }
                 }
                 Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column { Text("Palette Size:", color = MaterialTheme.colorScheme.primary) }
+                    Column { Text("Palette Size:", color = MaterialTheme.colors.primary) }
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
                             palette.size = it

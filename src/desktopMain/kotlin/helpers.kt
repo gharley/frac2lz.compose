@@ -3,10 +3,12 @@ import action.PropertyEvent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -110,15 +112,16 @@ fun setProperty(key: String, value: Any){
 @Composable
 fun ToolTip(text: String = "", width: Dp = 250.dp, placement: TooltipPlacement = TooltipPlacement.ComponentRect(), content: @Composable () -> Unit) {
     TooltipArea(
+        modifier = Modifier.wrapContentSize(),
         tooltip = {
             Surface(
                 shape = RoundedCornerShape(15.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                border = BorderStroke(1.dp, MaterialTheme.colors.primary)
             ) {
                 Text(
                     text = text,
                     modifier = Modifier.padding(10.dp).width(width),
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colors.primary
                 )
             }
         },

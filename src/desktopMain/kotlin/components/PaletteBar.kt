@@ -10,7 +10,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipPlacement
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -25,9 +25,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import frac2lz_compose.generated.resources.Res
+import frac2lz_compose.generated.resources.default32
+import frac2lz_compose.generated.resources.random32
+import frac2lz_compose.generated.resources.smooth32
 import hslToRgb
+import org.jetbrains.compose.resources.painterResource
 import rgbToHsl
 import java.util.*
 import kotlin.math.abs
@@ -93,9 +97,9 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
         markerMap.forEach { (_, marker) ->
             if (startMarker == null) startMarker = marker
             else {
-                val startColor = palette.colors[startMarker!!.index]
+                val startColor = palette.colors[startMarker.index]
                 val endColor = palette.colors[marker.index]
-                val range = marker.index - startMarker!!.index
+                val range = marker.index - startMarker.index
                 val divisor = (range + 1).toFloat()
                 val startHSV = Color.rgbToHsl(startColor)
                 val endHSV = Color.rgbToHsl(endColor)
@@ -104,7 +108,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
                 val luminanceInc = (endHSV.luminance - startHSV.luminance) / divisor
 
                 for (idx in 1 until range) {
-                    val colorIndex = startMarker!!.index + idx
+                    val colorIndex = startMarker.index + idx
                     val hue = abs(startHSV.hue + hueInc * idx) % 360f
                     val saturation = abs(startHSV.saturation + saturationInc * idx) % 100f
                     val luminance = abs(startHSV.luminance + luminanceInc * idx) % 100f
@@ -210,7 +214,7 @@ fun PaletteBar() {
     val iconScale = 3.0f
     val placement = TooltipPlacement.ComponentRect(Alignment.TopStart, Alignment.TopEnd)
 
-    Surface(modifier = Modifier.fillMaxWidth().padding(10.dp), shadowElevation = 5.dp) {
+    Surface(modifier = Modifier.fillMaxWidth().padding(10.dp), elevation = 5.dp) {
         Row(Modifier.height(48.dp).padding(horizontal = 5.dp)) {
             Column {
                 ToolTip("Generates a random color palette.", placement = placement) {
@@ -218,7 +222,7 @@ fun PaletteBar() {
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.RANDOM)) },
                     ) {
                         Icon(
-                            painterResource("random32.png"),
+                            painterResource(Res.drawable.random32),
                             "Random Palette",
                             Modifier.scale(iconScale),
                             tint = Color.Unspecified,
@@ -236,7 +240,7 @@ fun PaletteBar() {
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
                     ) {
                         Icon(
-                            painterResource("smooth32.png"),
+                            painterResource(Res.drawable.smooth32),
                             "Smooth Palette",
                             Modifier.scale(iconScale),
                             tint = Color.Unspecified
@@ -250,7 +254,7 @@ fun PaletteBar() {
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.DEFAULT)) },
                     ) {
                         Icon(
-                            painterResource("default32.png"),
+                            painterResource(Res.drawable.default32),
                             "Default Palette",
                             Modifier.scale(iconScale),
                             tint = Color.Unspecified

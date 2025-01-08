@@ -6,10 +6,10 @@ import Palette
 import action.FractalEvent
 import action.NewPaletteEvent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.Divider
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -89,7 +89,7 @@ fun ClipText(text: String, modifier: Modifier, scale: Float, fontWeight: FontWei
         ),
         fontWeight = fontWeight,
         modifier = modifier.wrapContentWidth(unbounded = true),
-        color = MaterialTheme.colorScheme.primary
+        color = MaterialTheme.colors.primary
     )
 
 }
