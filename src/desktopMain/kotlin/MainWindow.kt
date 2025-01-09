@@ -46,7 +46,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             state = WindowState(placement = WindowPlacement.Maximized),
         ) {
             MainMenu()
-//            window.setIcon(Res.drawable.frac2lz128)
             val fractal = remember { Mandelbrot() }
             var palette by remember { mutableStateOf(Palette()) }
 

@@ -15,9 +15,7 @@ import javax.swing.BoxLayout
 
 @Composable
 fun FractalImage(params: FractalParameters, palette: Palette) {
-    Surface(
-        elevation = 5.dp
-    ) {
+    Surface {
         val parameters = remember { params }
         val fractalHeight = parameters.height
         val fractalWidth = parameters.width
