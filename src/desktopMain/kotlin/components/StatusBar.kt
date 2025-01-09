@@ -84,9 +84,9 @@ fun ClipText(text: String, modifier: Modifier, scale: Float, fontWeight: FontWei
         text,
         maxLines = 1,
         overflow = TextOverflow.Clip,
-        style = LocalTextStyle.current.copy(
-            fontSize = LocalTextStyle.current.fontSize * scale
-        ),
+//        style = LocalTextStyle.current.copy(
+//            fontSize = 16 * scale
+//        ),
         fontWeight = fontWeight,
         modifier = modifier.wrapContentWidth(unbounded = true),
         color = MaterialTheme.colors.primary

@@ -1,10 +1,10 @@
 import action.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,7 +38,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         }
     }
 
-    MaterialTheme(if (useDark) darkColors() else lightColors()) {
+    MaterialTheme(if (useDark) darkColorScheme() else lightColorScheme()) {
         Window(
             onCloseRequest = { closeFunction() },
             title = appName,
@@ -215,7 +215,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 }
             }
 
-            Column(Modifier.background(MaterialTheme.colors.background).fillMaxSize()) {
+            Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
                 Row(Modifier.weight(1f)) {
                     if (jsonLoaded) {
                         YesNoAlert(
@@ -233,7 +233,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 }
                 PaletteCanvas(palette, fractal)
                 Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column { Text("Color Range:", color = MaterialTheme.colors.primary) }
+                    Column { Text("Color Range:", color = MaterialTheme.colorScheme.primary) }
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
                             palette.colorRange = it
@@ -241,7 +241,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     }
                 }
                 Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column { Text("Palette Size:", color = MaterialTheme.colors.primary) }
+                    Column { Text("Palette Size:", color = MaterialTheme.colorScheme.primary) }
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
                             palette.size = it

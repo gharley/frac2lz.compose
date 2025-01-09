@@ -3,7 +3,7 @@ package components
 import FractalParameters
 import Palette
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,10 +25,10 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
         val swingImage = remember { SwingImage }
 
         swingImage.palette = palette
-        swingImage.background = java.awt.Color(MaterialTheme.colors.background.toArgb())
+        swingImage.background = java.awt.Color(MaterialTheme.colorScheme.background.toArgb())
 
         SwingPanel(modifier = Modifier.fillMaxSize(),
-            background = MaterialTheme.colors.background,
+            background = MaterialTheme.colorScheme.background,
             factory = {
                 swingImage.apply {
                     layout = BoxLayout(this, BoxLayout.Y_AXIS)

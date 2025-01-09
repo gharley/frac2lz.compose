@@ -8,16 +8,8 @@ import action.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderState
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -144,7 +136,7 @@ fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Bool
 
             ToolTip("Allows changing the actual dimensions and aspect ratio of the calculated image. After clicking the update button, either recalculate or calculate base fractal.") {
 //                Card(cardModifier.padding(3.dp, 10.dp)) {
-                    Spacer(Modifier.padding(0.dp, 5.dp))
+//                    Spacer(Modifier.padding(0.dp, 5.dp))
                     var width by remember { mutableStateOf(params.width.toInt().toString()) }
                     var height by remember { mutableStateOf(params.height.toInt().toString()) }
                     var subscribed by remember { mutableStateOf(false) }
@@ -202,7 +194,7 @@ fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Bool
                     ) {
                         Text("Update image size")
                     }
-                    Spacer(Modifier.padding(0.dp, 5.dp))
+//                    Spacer(Modifier.padding(0.dp, 5.dp))
                 }
 //            }
             ToolTip("Automatically update the image when parameters are changed.") {
