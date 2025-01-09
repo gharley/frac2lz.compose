@@ -97,11 +97,9 @@ fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Bool
                                 onValueChangeFinished = {
                                     broadcastSettings()
                                 },
-//                                thumb = {
-//                                    SliderThumb(
-//                                        state = SliderState(0f)
-//                                    )
-//                                }
+                                thumb = {
+                                    SliderThumb(it)
+                                }
                             )
                         }
                     }
@@ -136,9 +134,7 @@ fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Bool
                                 steps = 100,
                                 onValueChangeFinished = { broadcastSettings(false) },
                                 thumb = {
-                                    SliderThumb(
-                                        state = it
-                                    )
+                                    SliderThumb(it)
                                 }
                             )
                         }
