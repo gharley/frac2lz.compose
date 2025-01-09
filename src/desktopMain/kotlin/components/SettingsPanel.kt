@@ -55,7 +55,7 @@ fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Bool
             val rowModifier = Modifier.fillMaxWidth().wrapContentHeight().padding(10.dp, 0.dp)
             val rowAlignment = Alignment.CenterVertically
 
-            trigger  // Causes recompose
+            trigger  // Don't remove, tricks app into recomposing
 
             ToolTip("Select color based on the Complex number representing each pixel.") {
                 Row(modifier = rowModifier, verticalAlignment = rowAlignment) {
