@@ -1,3 +1,4 @@
+import Fractal
 import action.*
 import components.SwingImage
 import kotlinx.coroutines.*
@@ -417,5 +418,17 @@ open class Mandelbrot : Fractal() {
         }
 
         return iterate(start, 0)
+    }
+}
+
+open class Julia : Mandelbrot() {
+    init {
+        name = "Julia"
+    }
+
+    override fun calcOne(start: Complex, maxIterations: Long): FractalPointData {
+        val result = super.calcOne(start, maxIterations)
+
+        return super.calcOne(result.z, maxIterations)
     }
 }
