@@ -1,4 +1,3 @@
-import Fractal
 import action.*
 import components.SwingImage
 import kotlinx.coroutines.*
@@ -22,7 +21,7 @@ data class FractalBounds(
 data class FractalParameters(
     var width: Double, var height: Double, var centerX: Double, var centerY: Double,
     var maxIterations: Long, val bounds: FractalBounds = FractalBounds(),
-    var magnify: Double = 1.0
+    var magnify: Double = 1.0, var juliaReal: Double = 0.0, var juliaImaginary: Double = 0.0
 )
 
 fun array2dOfDouble(sizeOuter: Int, sizeInner: Int): Array<DoubleArray> =
@@ -40,7 +39,7 @@ abstract class Fractal {
 
     var name: String = ""
 
-    private val currentVersion = "1.2"
+    private val currentVersion = "1.3"
     private var version = currentVersion
     private var aspectAdjustX: Double = 1.0
     private var aspectAdjustY: Double = 1.0
@@ -58,7 +57,11 @@ abstract class Fractal {
         get() = ((maxY - minY)) / params.height
     private val magnify: Double
         get() = params.magnify
+
     var maxIterationsActual: Long = 0L
+    private var juliaSeed: Complex = Complex(0.0, 0.0)
+        get() = Complex(params.juliaReal, params.juliaImaginary)
+
     private val minX: Double
         get() = params.centerX + params.bounds.left * magnify / aspectAdjustX
     private val maxX: Double
@@ -95,10 +98,23 @@ abstract class Fractal {
         EventBus.publish(params)
     }
 
+    private fun startMandelbrot(row: Int, column: Int): Complex {
+        return Complex(startReal(column), startImaginary(row))
+    }
+
+    private fun startJulia(row: Int, column: Int): Complex {
+        return juliaSeed
+    }
+
     @OptIn(DelicateCoroutinesApi::class)
-    fun startCalc() {
+    fun startCalc(isJulia: Boolean = false) {
         GlobalScope.launch {
-            calcAll()
+            if (isJulia) calcAll(getStart = ::startJulia)
+            else {
+                juliaSeed = Complex(0.0, 0.0)
+                calcAll()
+            }
+
             fireComplete()
         }
     }
@@ -128,7 +144,8 @@ abstract class Fractal {
         EventBus.listen(CalculateEvent::class.java).subscribe {
             when (it.action) {
                 CalculateAction.CALCULATE_BASE -> baseCalc()
-                CalculateAction.RECALCULATE -> startCalc()
+                CalculateAction.CALCULATE_JULIA -> startCalc(true)
+                CalculateAction.RECALCULATE -> startCalc(juliaSeed != Complex(0.0, 0.0))
                 CalculateAction.REFINE -> refineImage()
                 CalculateAction.REFRESH -> refreshImage()
                 else -> {}
@@ -145,7 +162,7 @@ abstract class Fractal {
         }
     }
 
-    open suspend fun calcAll() {
+    open suspend fun calcAll(getStart: (row: Int, column: Int) -> Complex = this::startMandelbrot) {
         setup()
 
         iterations = array2dOfLong(imageHeight, imageWidth)
@@ -155,14 +172,10 @@ abstract class Fractal {
 //            MainController.showWaitCursor()
 
         calcLoop@ for (row in 0 until imageHeight) {
-            val startImaginary = startImaginary(row)
-
             for (column in 0 until imageWidth) {
                 if (cancelCalc) break@calcLoop
 
-                val startReal = startReal(column)
-
-                with(calcOne(Complex(startReal, startImaginary), params.maxIterations)) {
+                with(calcOne(getStart(row, column), params.maxIterations)) {
                     this@Fractal.iterations[row][column] = iterations
                     reals[row][column] = z.real
                     imaginarys[row][column] = z.imaginary
@@ -292,7 +305,7 @@ abstract class Fractal {
     open fun fromJson(data: JsonObject) {
         name = data.getString("name")
         when (name) {
-            "Mandelbrot" -> {
+            "Mandelbrot", "Julia" -> {
                 version = data.getString("version")
                 val fracParams: JsonObject = data.getJsonObject("params")
                 val boundsObject: JsonObject = fracParams.getJsonObject("bounds")
@@ -308,6 +321,11 @@ abstract class Fractal {
                     bounds.bottom = boundsObject.getJsonNumber("bottom").doubleValue()
                     bounds.left = boundsObject.getJsonNumber("left").doubleValue()
                     maxIterations = fracParams.getJsonNumber("maxIterations").longValue()
+
+                    if (version >= "1.3") {
+                        juliaReal = fracParams.getJsonNumber("juliaReal").doubleValue()
+                        juliaImaginary = fracParams.getJsonNumber("juliaImaginary").doubleValue()
+                    }
                 }
             }
 
@@ -338,7 +356,10 @@ abstract class Fractal {
                             .add("left", params.bounds.left)
                     )
                     .add("maxIterations", params.maxIterations)
+                    .add("juliaReal", juliaSeed.real)
+                    .add("juliaImaginary", juliaSeed.imaginary)
             )
+
             .build()
     }
 
@@ -405,7 +426,7 @@ open class Mandelbrot : Fractal() {
     override fun calcOne(start: Complex, maxIterations: Long): FractalPointData {
         tailrec fun iterate(z: Complex, iterations: Long): FractalPointData {
             return when {
-                iterations == maxIterations -> FractalPointData(-1L, params.maxIterations, z, start)
+                iterations == maxIterations -> FractalPointData(-1L, maxIterations, z, start)
                 z.sidesSquared() >= 4.0 -> {
                     maxIterationsActual = max(maxIterationsActual, iterations)
                     val result = FractalPointData(iterations, params.maxIterations, z, start)
@@ -421,14 +442,30 @@ open class Mandelbrot : Fractal() {
     }
 }
 
-open class Julia : Mandelbrot() {
+open class Julia : Fractal() {
     init {
         name = "Julia"
     }
 
-    override fun calcOne(start: Complex, maxIterations: Long): FractalPointData {
-        val result = super.calcOne(start, maxIterations)
+    var seed = Complex(0.0, 0.0)
 
-        return super.calcOne(result.z, maxIterations)
+    override fun calcOne(start: Complex, maxIterations: Long): FractalPointData {
+        tailrec fun iterate(z: Complex, iterations: Long): FractalPointData {
+            return when {
+                iterations == maxIterations -> FractalPointData(-1L, maxIterations, z, start)
+                z.sidesSquared() >= 4.0 -> {
+                    maxIterationsActual = max(maxIterationsActual, iterations)
+                    val result = FractalPointData(iterations, maxIterations, z, start)
+
+                    EventBus.publish(result)
+
+                    result
+                }
+
+                else -> iterate(start, iterations + 1)
+            }
+        }
+
+        return iterate(start, 0)
     }
 }

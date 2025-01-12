@@ -28,8 +28,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
     val appName = "Frac2lz"
     val properties = remember { props }
     val useDark = props["useDark"].toString().toBoolean()
-//    val icon = painterResource(Res.drawable.frac2lz128)
-
     val refresh = properties["autoRefresh"] == "true"
 
     fun checkRefresh() {
@@ -46,7 +44,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             state = WindowState(placement = WindowPlacement.Maximized),
         ) {
             MainMenu()
-            val fractal = remember { Julia() }
+            var fractal: Fractal = remember { Mandelbrot() }
             var palette by remember { mutableStateOf(Palette()) }
 
             var jsonLoaded by remember { mutableStateOf(false) }
@@ -104,6 +102,11 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     val data: JsonObject = reader.readObject()
 
                     EventBus.publish(AppTitle(file.name))
+
+                    when (data.getString("name")) {
+                        "Mandelbrot" -> if (fractal.name != "Mandelbrot") fractal = Mandelbrot()
+                        "Julia" -> if (fractal.name != "Julia") fractal = Julia()
+                    }
 
                     fractal.fromJson(data)
                     jsonLoaded = true
@@ -236,7 +239,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
                             palette.colorRange = it
-                            checkRefresh()                        }
+                            checkRefresh()
+                        }
                     }
                 }
                 Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -244,7 +248,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     Column(Modifier.weight(1f)) {
                         PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
                             palette.size = it
-                            checkRefresh()                        }
+                            checkRefresh()
+                        }
                     }
                 }
                 Row { PaletteBar() }
