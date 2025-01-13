@@ -165,14 +165,16 @@ abstract class Fractal {
             if (!it.shift) return@subscribe
 
             val scale = (it.image as SwingImage).scale
-            val x = (it.x / scale).toInt()
-            val y = (it.y / scale).toInt()
+            val column = (it.x / scale).toInt()
+            val row = (it.y / scale).toInt()
 
             try {
-                params.juliaReal = minX + x * incX
-                params.juliaImaginary = maxY - y * incY
-                params.centerX = params.juliaReal
-                params.centerY = params.juliaImaginary
+                params.juliaReal = startReal(column)// reals[row][column]
+                params.juliaImaginary = startImaginary(row)// imaginarys[row][column]
+//                params.centerX = (maxX - minX) / 2
+//                params.centerY = -(maxY - minY) / 2
+//                params.centerX = minX + column * incX + abs(params.bounds.left)
+//                params.centerY = maxY - (row * incY + abs(params.bounds.bottom))
 
                 startCalc(true)
             } catch (_: Exception) {
@@ -246,7 +248,7 @@ abstract class Fractal {
     }
 
     open suspend fun refineSet() {
-        params.maxIterations += 5000
+        params.maxIterations += 500
         setup()
 
 //            MainController.showWaitCursor()
