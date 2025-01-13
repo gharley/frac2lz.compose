@@ -94,7 +94,7 @@ class ZoomBox : JPanel() {
 
                     val localPoint = adjustPoint(e)
 
-                    EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y, parent as JPanel))
+                    EventBus.publish(ImageClickEvent(localPoint.x, localPoint.y, parent as JPanel, e.isShiftDown))
                 }
             }
         }

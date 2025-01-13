@@ -97,9 +97,9 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
         markerMap.forEach { (_, marker) ->
             if (startMarker == null) startMarker = marker
             else {
-                val startColor = palette.colors[startMarker!!.index]
+                val startColor = palette.colors[startMarker.index]
                 val endColor = palette.colors[marker.index]
-                val range = marker.index - startMarker!!.index
+                val range = marker.index - startMarker.index
                 val divisor = (range + 1).toFloat()
                 val startHSV = Color.rgbToHsl(startColor)
                 val endHSV = Color.rgbToHsl(endColor)
@@ -108,7 +108,7 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
                 val luminanceInc = (endHSV.luminance - startHSV.luminance) / divisor
 
                 for (idx in 1 until range) {
-                    val colorIndex = startMarker!!.index + idx
+                    val colorIndex = startMarker.index + idx
                     val hue = abs(startHSV.hue + hueInc * idx) % 360f
                     val saturation = abs(startHSV.saturation + saturationInc * idx) % 100f
                     val luminance = abs(startHSV.luminance + luminanceInc * idx) % 100f
@@ -137,6 +137,8 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
         }
 
         EventBus.listen(ImageClickEvent::class.java).subscribe {
+            if (it.shift) return@subscribe
+
             val scale = (it.image as SwingImage).scale
             val x = (it.x / scale).toInt()
             val y = (it.y / scale).toInt()

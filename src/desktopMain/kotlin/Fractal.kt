@@ -59,7 +59,7 @@ abstract class Fractal {
         get() = params.magnify
 
     var maxIterationsActual: Long = 0L
-    private var juliaSeed: Complex = Complex(0.0, 0.0)
+    internal var juliaSeed: Complex = Complex(0.0, 0.0)
         get() = Complex(params.juliaReal, params.juliaImaginary)
 
     private val minX: Double
@@ -103,7 +103,7 @@ abstract class Fractal {
     }
 
     private fun startJulia(row: Int, column: Int): Complex {
-        return juliaSeed
+        return juliaSeed + startMandelbrot(row, column)
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -160,6 +160,25 @@ abstract class Fractal {
             zoomTo(it.zoomBox)
             EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
         }
+
+        EventBus.listen(ImageClickEvent::class.java).subscribe {
+            if (!it.shift) return@subscribe
+
+            val scale = (it.image as SwingImage).scale
+            val x = (it.x / scale).toInt()
+            val y = (it.y / scale).toInt()
+
+            try {
+                params.juliaReal = minX + x * incX
+                params.juliaImaginary = maxY - y * incY
+                params.centerX = params.juliaReal
+                params.centerY = params.juliaImaginary
+
+                startCalc(true)
+            } catch (_: Exception) {
+            }
+        }
+
     }
 
     open suspend fun calcAll(getStart: (row: Int, column: Int) -> Complex = this::startMandelbrot) {
@@ -424,6 +443,9 @@ open class Mandelbrot : Fractal() {
     }
 
     override fun calcOne(start: Complex, maxIterations: Long): FractalPointData {
+        val seed = juliaSeed
+        val isJulia = if (juliaSeed.real == 0.0 && juliaSeed.imaginary == 0.0) false else true
+
         tailrec fun iterate(z: Complex, iterations: Long): FractalPointData {
             return when {
                 iterations == maxIterations -> FractalPointData(-1L, maxIterations, z, start)
@@ -433,8 +455,8 @@ open class Mandelbrot : Fractal() {
                     EventBus.publish(result)
                     result
                 }
-
-                else -> iterate((z * z) + start, iterations + 1)
+                isJulia -> iterate((z * z) + seed, iterations + 1)
+                else ->  iterate((z * z) + start, iterations + 1)
             }
         }
 
@@ -446,8 +468,6 @@ open class Julia : Fractal() {
     init {
         name = "Julia"
     }
-
-    var seed = Complex(0.0, 0.0)
 
     override fun calcOne(start: Complex, maxIterations: Long): FractalPointData {
         tailrec fun iterate(z: Complex, iterations: Long): FractalPointData {

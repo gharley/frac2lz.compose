@@ -38,4 +38,4 @@ data class FractalPointData(
 
 data class ZoomBoxEvent(val zoomBox: ZoomBox)
 
-data class ImageClickEvent(val x: Double, val y: Double, val image: JPanel)
+data class ImageClickEvent(val x: Double, val y: Double, val image: JPanel, val shift: Boolean)
