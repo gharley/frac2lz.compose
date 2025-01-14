@@ -109,9 +109,9 @@ abstract class Fractal {
     @OptIn(DelicateCoroutinesApi::class)
     fun startCalc(isJulia: Boolean = false) {
         GlobalScope.launch {
+            juliaSeed = Complex(0.0, 0.0)
             if (isJulia) calcAll(getStart = ::startJulia)
             else {
-                juliaSeed = Complex(0.0, 0.0)
                 calcAll()
             }
 
@@ -169,12 +169,13 @@ abstract class Fractal {
             val row = (it.y / scale).toInt()
 
             try {
-                params.juliaReal = startReal(column)// reals[row][column]
-                params.juliaImaginary = startImaginary(row)// imaginarys[row][column]
-//                params.centerX = (maxX - minX) / 2
-//                params.centerY = -(maxY - minY) / 2
-//                params.centerX = minX + column * incX + abs(params.bounds.left)
-//                params.centerY = maxY - (row * incY + abs(params.bounds.bottom))
+//                val newCenterX = startReal(((it.image.width / scale / 2 + params.centerX).toInt() + column))
+//                val newCenterY = startImaginary(((it.image.height / scale / 2 + params.centerY).toInt() + row / 2))
+
+                params.juliaReal = startReal(column)
+                params.juliaImaginary = startImaginary(row)
+                params.centerX = params.juliaReal
+                params.centerY = -params.juliaImaginary
 
                 startCalc(true)
             } catch (_: Exception) {
@@ -446,7 +447,7 @@ open class Mandelbrot : Fractal() {
 
     override fun calcOne(start: Complex, maxIterations: Long): FractalPointData {
         val seed = juliaSeed
-        val isJulia = if (juliaSeed.real == 0.0 && juliaSeed.imaginary == 0.0) false else true
+        val isJulia = !(seed.real == 0.0 && seed.imaginary == 0.0)
 
         tailrec fun iterate(z: Complex, iterations: Long): FractalPointData {
             return when {
