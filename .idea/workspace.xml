@@ -48,7 +48,7 @@
   "keyToString": {
     "Gradle.Build Frac2lz_compose.executor": "Run",
     "Gradle.Main [desktop].executor": "Run",
-    "Gradle.Run.executor": "Debug",
+    "Gradle.Run.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
@@ -106,7 +106,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1736464249414</updated>
-      <workItem from="1736464250698" duration="50041000" />
+      <workItem from="1736464250698" duration="53195000" />
     </task>
     <task id="LOCAL-00001" summary="Fix intellij build by running Fleet">
       <option name="closed" value="true" />
@@ -156,7 +156,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736873967400</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="working on Julia set">
+      <option name="closed" value="true" />
+      <created>1736878506763</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1736878506764</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,11 +182,6 @@
           <properties class="java.lang.StackOverflowError" package="java.lang" />
           <option name="timeStamp" value="4" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt</url>
-          <line>177</line>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>

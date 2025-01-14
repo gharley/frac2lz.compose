@@ -458,7 +458,9 @@ open class Mandelbrot : Fractal() {
                     EventBus.publish(result)
                     result
                 }
-                isJulia -> iterate((z * z) + seed, iterations + 1)
+                isJulia -> {
+                    iterate((z * z) + seed, iterations + 1)
+                }
                 else ->  iterate((z * z) + start, iterations + 1)
             }
         }
