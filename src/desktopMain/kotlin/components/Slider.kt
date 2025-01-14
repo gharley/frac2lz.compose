@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlin.math.ceil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +47,7 @@ fun PaletteSlider(min: Float, max: Float, type: PaletteSliderType, palette: Pale
             Modifier.weight(1f),
             valueRange = (min..max),
             steps = (max - min).toInt(),
-            onValueChangeFinished = { onChangeComplete(currentValue.toInt()) },
+            onValueChangeFinished = { onChangeComplete(ceil(currentValue).toInt()) },
             thumb = { SliderThumb(it) }
         )
     }
