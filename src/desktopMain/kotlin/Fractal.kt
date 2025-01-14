@@ -169,13 +169,13 @@ abstract class Fractal {
             val row = (it.y / scale).toInt()
 
             try {
-//                val newCenterX = startReal(((it.image.width / scale / 2 + params.centerX).toInt() + column))
-//                val newCenterY = startImaginary(((it.image.height / scale / 2 + params.centerY).toInt() + row / 2))
+                val centerXAdjust = ((it.image.width / 2).toInt() - it.x)
+                val centerYAdjust = ((it.image.height / 2).toInt() - it.y)
 
                 params.juliaReal = startReal(column)
                 params.juliaImaginary = startImaginary(row)
-                params.centerX = params.juliaReal
-                params.centerY = -params.juliaImaginary
+                params.centerX = -params.juliaReal - centerXAdjust * incX
+                params.centerY = -params.juliaImaginary - centerYAdjust * incY
 
                 startCalc(true)
             } catch (_: Exception) {
