@@ -158,7 +158,8 @@ fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Bool
                         var result = false
 
                         if (width.isNotEmpty() && height.isNotEmpty()) {
-                            if (width.toInt() > 0 && height.toInt() > 0) result = true
+                            result = (width.toInt() > 0 && height.toInt() > 0) &&
+                                    (width.toInt() != params.width.toInt() || height.toInt() != params.height.toInt())
                         }
 
                         return result
@@ -168,7 +169,7 @@ fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Bool
                         Column {
                             TextField(
                                 width,
-                                { width = it },
+                                { width = it; checkSize() },
                                 Modifier.fillMaxWidth(),
                                 label = { Text("Image Width:", color = MaterialTheme.colorScheme.primary) },
                                 singleLine = true,
@@ -181,7 +182,7 @@ fun SettingsPanel(params: FractalParameters, palette: Palette, autoRefresh: Bool
                         Column {
                             TextField(
                                 height,
-                                { height = it },
+                                { height = it; checkSize() },
                                 Modifier.fillMaxWidth(),
                                 label = { Text("Image Height:", color = MaterialTheme.colorScheme.primary) },
                                 singleLine = true,

@@ -7,7 +7,6 @@ import java.io.ObjectOutputStream
 import javax.json.*
 import javax.swing.JPanel
 import kotlin.math.abs
-import kotlin.math.max
 
 const val zInit = -10.0
 
@@ -90,7 +89,7 @@ abstract class Fractal {
         if (isEndOfRow) fireIterationUpdate()
     }
 
-    private suspend fun fireIterationUpdate() = coroutineScope {
+    protected suspend fun fireIterationUpdate() = coroutineScope {
         EventBus.publish(FractalIterationEvent(params.maxIterations, maxIterationsActual))
     }
 
@@ -348,6 +347,8 @@ abstract class Fractal {
                         juliaReal = fracParams.getJsonNumber("juliaReal").doubleValue()
                         juliaImaginary = fracParams.getJsonNumber("juliaImaginary").doubleValue()
                     }
+
+                    EventBus.publish(FractalSizeEvent(width.toDouble(), height.toDouble()))
                 }
             }
 
@@ -453,7 +454,10 @@ open class Mandelbrot : Fractal() {
             return when {
                 iterations == maxIterations -> FractalPointData(-1L, maxIterations, z, start)
                 z.sidesSquared() >= 4.0 -> {
-                    maxIterationsActual = max(maxIterationsActual, iterations)
+                    if (iterations > maxIterationsActual) {
+                        maxIterationsActual = iterations
+                        suspend { fireIterationUpdate() }
+                    }
                     val result = FractalPointData(iterations, params.maxIterations, z, start)
                     EventBus.publish(result)
                     result

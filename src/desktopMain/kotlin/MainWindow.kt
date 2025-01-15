@@ -87,6 +87,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                     EventBus.publish(AppTitle(file.name))
 
+                    EventBus.publish(FractalSizeEvent(fractal.params.width.toDouble(), fractal.params.height.toDouble()))
+
                     fractal.refreshImage()
                 }
             }
