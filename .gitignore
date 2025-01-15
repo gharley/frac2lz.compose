@@ -46,5 +46,4 @@ frac2lz.properties
 samples/*.png
 *.stl
 wix311/
-workspace.xml
-
+.idea/*

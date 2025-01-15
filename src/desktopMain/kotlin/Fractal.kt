@@ -468,29 +468,3 @@ open class Mandelbrot : Fractal() {
         return iterate(start, 0)
     }
 }
-
-open class Julia : Fractal() {
-    init {
-        name = "Julia"
-    }
-
-    override fun calcOne(start: Complex, maxIterations: Long): FractalPointData {
-        tailrec fun iterate(z: Complex, iterations: Long): FractalPointData {
-            return when {
-                iterations == maxIterations -> FractalPointData(-1L, maxIterations, z, start)
-                z.sidesSquared() >= 4.0 -> {
-                    maxIterationsActual = max(maxIterationsActual, iterations)
-                    val result = FractalPointData(iterations, maxIterations, z, start)
-
-                    EventBus.publish(result)
-
-                    result
-                }
-
-                else -> iterate(start, iterations + 1)
-            }
-        }
-
-        return iterate(start, 0)
-    }
-}

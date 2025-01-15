@@ -103,10 +103,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                     EventBus.publish(AppTitle(file.name))
 
-                    when (data.getString("name")) {
-                        "Mandelbrot" -> if (fractal.name != "Mandelbrot") fractal = Mandelbrot()
-                        "Julia" -> if (fractal.name != "Julia") fractal = Julia()
-                    }
+//                    when (data.getString("name")) {
+//                        "Mandelbrot" -> if (fractal.name != "Mandelbrot") fractal = Mandelbrot()
+//                        "Julia" -> if (fractal.name != "Julia") fractal = Julia()
+//                    }
 
                     fractal.fromJson(data)
                     jsonLoaded = true
