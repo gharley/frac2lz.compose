@@ -2,9 +2,7 @@
   <artifact type="jar" name="Frac2lz_compose-desktop">
     <output-path>$PROJECT_DIR$/build/libs</output-path>
     <root id="archive" name="Frac2lz_compose-desktop.jar">
-      <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/.idea/artifacts/META-INF/MANIFEST.MF" />
-      </element>
+      <element id="module-output" name="Frac2lz_compose.desktopMain" />
     </root>
   </artifact>
 </component>
