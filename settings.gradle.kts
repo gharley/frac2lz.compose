@@ -27,7 +27,7 @@ dependencyResolutionManagement {
         }
         mavenCentral()
         maven(url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev/"))
-        maven(url = uri("https://mvnrepository.com/artifact/org.jetbrains.skiko/skiko-awt-runtime-windows-x64"))
+//        maven(url = uri("https://mvnrepository.com/artifact/org.jetbrains.skiko/skiko-awt-runtime-windows-x64"))
     }
 }
 

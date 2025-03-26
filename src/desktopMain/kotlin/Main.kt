@@ -55,7 +55,7 @@ fun App() {
 
                 properties.store(file.outputStream(), "Frac2lz Properties")
             } catch (ex: Exception) {
-                val ex1 = ex
+//                val ex1 = ex
             } finally {
                 exitProcess(0)
             }

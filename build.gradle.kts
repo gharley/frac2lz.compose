@@ -19,17 +19,18 @@ kotlin {
         val collectionVersion = "1.4.5"
         val desktopMain by getting {
             dependencies {
+                implementation(compose.material3)
                 implementation(compose.desktop.windows_x64)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material)
+// Explicitly include this is required to fix Proguard warnings coming from Kotlinx.DateTime
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.0")
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
                 implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.androidx.lifecycle.runtime.compose)
                 implementation(libs.kotlinx.coroutines.swing)
-                implementation(libs.androidx.material3.desktop)
                 implementation("io.reactivex.rxjava3:rxjava:$rxVersion")
                 implementation("org.glassfish:javax.json:$jsonVersion")
                 implementation("javax.json:javax.json-api:$jsonVersion")
@@ -43,6 +44,10 @@ kotlin {
 
 compose.desktop {
     application {
+        buildTypes.release.proguard {
+            version.set("7.5.0")
+            configurationFiles.from("proguard.pro")
+        }
         mainClass = "MainKt"
         nativeDistributions {
             val major: String
@@ -71,14 +76,16 @@ compose.desktop {
 
             val version = "$major.$minor.$buildVersion"
 
-            modules("java.instrument", "jdk.unsupported")
-            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb)
+            modules("java.instrument" , "jdk.unsupported", "java.lang")
+//            includeAllModules = true
+            targetFormats(TargetFormat.Msi)
             windows {
                 console = true
                 msiPackageVersion = version
-                exePackageVersion = version
+//                exePackageVersion = version
                 upgradeUuid = "e1b4694e-cab1-4208-8987-f2e361662b47"
                 menuGroup = "Frac2lz"
+                includeAllModules = true
             }
             packageName = "Frac2lz"
             packageVersion = version
