@@ -24,5 +24,5 @@ enum class PropertyAction{
 }
 
 enum class UIAction {
-    INIT, CHANGE, SETTINGS, EXIT
+    INIT, CHANGE, SETTINGS, EXIT, MOUSE_ENTER, MOUSE_EXIT
 }

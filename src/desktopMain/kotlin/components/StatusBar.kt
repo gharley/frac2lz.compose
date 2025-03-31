@@ -5,6 +5,8 @@ import FractalParameters
 import Palette
 import action.FractalEvent
 import action.NewPaletteEvent
+import action.UIAction
+import action.UIEvent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -20,6 +22,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun StatusBar(palette: Palette) {
+    val imageHelp = "Click to select color; shift-click to generate Julia; click and drag to create zoom box, " +
+            "then enter to zoom."
     var maxIterations by remember { mutableStateOf(0L) }
     var usedIterations by remember { mutableStateOf(0L) }
     var centerX by remember { mutableStateOf(0.0) }
@@ -30,6 +34,7 @@ fun StatusBar(palette: Palette) {
     var colorRange by remember { mutableStateOf(palette.colorRange) }
     var size by remember { mutableStateOf(palette.size) }
     var subscribed by remember { mutableStateOf(false) }
+    var inImage by remember { mutableStateOf(false) }
 
     if (!subscribed) {
         subscribed = true
@@ -51,6 +56,13 @@ fun StatusBar(palette: Palette) {
             colorRange = it.palette.colorRange
             size = it.palette.size
         }
+
+        EventBus.listen(UIEvent::class.java).subscribe {
+            if (it.action == UIAction.MOUSE_ENTER)
+                inImage = true
+            else if (it.action == UIAction.MOUSE_EXIT)
+                inImage = false
+        }
     }
 
     val scale = .75f
@@ -64,15 +76,22 @@ fun StatusBar(palette: Palette) {
         Row(
             Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
         ) {
-            addTextField("Iterations -> Allowed: ", maxIterations.toString(), scale = scale)
-            addTextField("Used: ", usedIterations.toString(), scale = scale)
-            addTextField("RE Center: ", centerX.toString(), scale = scale)
-            addTextField("IM Center: ", centerY.toString(), scale = scale)
-            addTextField("Zoom: ", magnify.toString(), scale = scale)
-            addTextField("Width: ", width.toString(), scale = scale)
-            addTextField("Height: ", height.toString(), scale = scale)
-//            addTextField("Color Range: ", colorRange.toString(), scale = scale)
-//            addTextField("Palette Size: ", size.toString(), false, scale = scale)
+            if (inImage && usedIterations != 0L) {
+                ClipText(
+                    imageHelp,
+                    Modifier.padding(horizontal = 5.dp, vertical = 10.dp),
+                    scale,
+                    fontWeight = FontWeight.Bold
+                )
+            } else {
+                addTextField("Iterations -> Allowed: ", maxIterations.toString(), scale = scale)
+                addTextField("Used: ", usedIterations.toString(), scale = scale)
+                addTextField("RE Center: ", centerX.toString(), scale = scale)
+                addTextField("IM Center: ", centerY.toString(), scale = scale)
+                addTextField("Zoom: ", magnify.toString(), scale = scale)
+                addTextField("Width: ", width.toString(), scale = scale)
+                addTextField("Height: ", height.toString(), scale = scale)
+            }
         }
     }
 }
@@ -83,9 +102,6 @@ fun ClipText(text: String, modifier: Modifier, scale: Float, fontWeight: FontWei
         text,
         maxLines = 1,
         overflow = TextOverflow.Clip,
-//        style = LocalTextStyle.current.copy(
-//            fontSize = 16 * scale
-//        ),
         fontWeight = fontWeight,
         modifier = modifier.wrapContentWidth(unbounded = true),
         color = MaterialTheme.colors.primary

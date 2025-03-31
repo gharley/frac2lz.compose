@@ -7,6 +7,9 @@ import androidx.compose.ui.graphics.toArgb
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.Image
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
+import java.awt.event.MouseListener
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
 import java.awt.image.MemoryImageSource
@@ -56,6 +59,16 @@ open class SwingImageClass :
 
     var palette: Palette? = null
     var zoomBox: ZoomBox? = null
+
+    inner class MouseMoveListener : MouseAdapter() {
+        override fun mouseEntered(e: MouseEvent?) {
+            EventBus.publish(UIEvent(UIAction.MOUSE_ENTER, "image"))
+        }
+
+        override fun mouseExited(e: MouseEvent?) {
+            EventBus.publish(UIEvent(UIAction.MOUSE_EXIT, "image"))
+        }
+    }
 
     init {
         isDoubleBuffered = true
@@ -113,6 +126,8 @@ open class SwingImageClass :
                 saveToImageFile(it.data)
             }
         }
+
+        addMouseListener(MouseMoveListener())
     }
 
     override fun paint(g: Graphics?) {
