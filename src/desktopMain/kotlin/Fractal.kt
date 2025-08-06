@@ -1,5 +1,4 @@
 import action.*
-import Complex
 import components.SwingImage
 import kotlinx.coroutines.*
 import java.awt.geom.Point2D
@@ -20,7 +19,7 @@ data class FractalBounds(
 
 data class FractalParameters(
     var width: Double, var height: Double, var centerX: Double, var centerY: Double,
-    var maxIterations: Long, val bounds: FractalBounds = FractalBounds(),
+    var maxIterations: Long, var bounds: FractalBounds = FractalBounds(),
     var magnify: Double = 1.0, var juliaReal: Double = 0.0, var juliaImaginary: Double = 0.0
 )
 
@@ -33,7 +32,7 @@ abstract class Fractal {
     private var cancelCalc = false
 
     private val defaultParams =
-        FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L, FractalBounds(), 1.0)
+        FractalParameters(3840.0, 2160.0, 0.0, 0.0, 100L)
 
     open var params = defaultParams.copy()
 
@@ -59,7 +58,7 @@ abstract class Fractal {
         get() = params.magnify
 
     var maxIterationsActual: Long = 0L
-    internal var juliaSeed: Complex = Complex(0.0, 0.0)
+    internal val juliaSeed: Complex
         get() = Complex(params.juliaReal, params.juliaImaginary)
 
     private val minX: Double
@@ -109,7 +108,6 @@ abstract class Fractal {
     @OptIn(DelicateCoroutinesApi::class)
     fun startCalc(isJulia: Boolean = false) {
         GlobalScope.launch {
-            juliaSeed = Complex(0.0, 0.0)
             if (isJulia) calcAll(getStart = ::startJulia)
             else {
                 calcAll()
@@ -121,6 +119,9 @@ abstract class Fractal {
 
     private fun baseCalc() = runBlocking {
         setDefaultParameters()
+
+        EventBus.publish(AppTitle(""))
+
         startCalc()
     }
 
@@ -169,8 +170,8 @@ abstract class Fractal {
             val row = (it.y / scale).toInt()
 
             try {
-                val centerXAdjust = ((it.image.width / 2).toInt() - it.x)
-                val centerYAdjust = ((it.image.height / 2).toInt() - it.y)
+                val centerXAdjust = ((it.image.width / 2) - it.x)
+                val centerYAdjust = ((it.image.height / 2) - it.y)
 
                 params.juliaReal = startReal(column)
                 params.juliaImaginary = startImaginary(row)
@@ -285,6 +286,8 @@ abstract class Fractal {
 
     open fun setDefaultParameters() {
         params = defaultParams.copy()
+        params.bounds = FractalBounds()
+        EventBus.publish(FractalSizeEvent(params.width, params.height))
     }
 
     open fun setSize(width: Double, height: Double) {
@@ -293,10 +296,10 @@ abstract class Fractal {
             this.height = height
         }
 
-        defaultParams.apply {
-            this.width = width
-            this.height = height
-        }
+//        defaultParams.apply {
+//            this.width = width
+//            this.height = height
+//        }
 
         setup()
     }
@@ -349,7 +352,7 @@ abstract class Fractal {
                         juliaImaginary = fracParams.getJsonNumber("juliaImaginary").doubleValue()
                     }
 
-                    EventBus.publish(FractalSizeEvent(width.toDouble(), height.toDouble()))
+                    EventBus.publish(FractalSizeEvent(width, height))
                 }
             }
 

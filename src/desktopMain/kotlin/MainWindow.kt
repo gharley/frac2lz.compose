@@ -66,7 +66,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 var filename = dlg.file
                 val directory = dlg.directory
 
-                if (!filename.endsWith(extFilter)) filename += extFilter
+                if (!filename.isNullOrEmpty() && !filename.endsWith(extFilter)) filename += extFilter
 
                 return if (directory.isNullOrEmpty() || filename.isNullOrEmpty()) null
                 else File(directory, filename)
@@ -87,7 +87,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                     EventBus.publish(AppTitle(file.name))
 
-                    EventBus.publish(FractalSizeEvent(fractal.params.width.toDouble(), fractal.params.height.toDouble()))
+                    EventBus.publish(FractalSizeEvent(fractal.params.width, fractal.params.height))
 
                     fractal.refreshImage()
                 }
@@ -104,11 +104,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     val data: JsonObject = reader.readObject()
 
                     EventBus.publish(AppTitle(file.name))
-
-//                    when (data.getString("name")) {
-//                        "Mandelbrot" -> if (fractal.name != "Mandelbrot") fractal = Mandelbrot()
-//                        "Julia" -> if (fractal.name != "Julia") fractal = Julia()
-//                    }
 
                     fractal.fromJson(data)
                     jsonLoaded = true

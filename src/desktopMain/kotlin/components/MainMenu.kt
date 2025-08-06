@@ -47,7 +47,7 @@ fun FrameWindowScope.MainMenu() {
             )
         }
         Menu("Fractal") {
-            Item("Calculate Base Fractal",
+            Item("Calculate Base Mandelbrot",
                 onClick = { EventBus.publish(CalculateEvent(CalculateAction.CALCULATE_BASE)) },
                 shortcut = KeyShortcut(Key.F5, true)
             )

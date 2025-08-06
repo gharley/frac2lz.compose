@@ -43,7 +43,7 @@ bin/
 
 ### Frac2lz ###
 frac2lz.properties
-samples/*.png
+samples/*.*
 *.stl
 wix311/
 .idea/*
