@@ -37,7 +37,7 @@ kotlin {
 
     val generateVersionInfo by tasks.registering(Copy::class) {
         from(project.projectDir.resolve("src/desktopMain/kotlin/templates"))
-        into(project.layout.buildDirectory.file("src/desktopMain/kotlin"))
+        into(project.projectDir.resolve("src/desktopMain/kotlin"))
         filter { line ->
             line.replace("\$projectVersion", project.version.toString())
         }
@@ -45,8 +45,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            generateVersionInfo
-
+            generateVersionInfo.run {  }
             implementation(compose.components.resources)
         }
         val rxVersion = "3.1.3"

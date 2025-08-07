@@ -44,7 +44,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
             state = WindowState(placement = WindowPlacement.Maximized),
         ) {
             MainMenu()
-            var fractal: Fractal = remember { Mandelbrot() }
+            val fractal: Fractal = remember { Mandelbrot() }
             var palette by remember { mutableStateOf(Palette()) }
 
             var jsonLoaded by remember { mutableStateOf(false) }
