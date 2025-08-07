@@ -86,7 +86,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     stream.close()
 
                     EventBus.publish(AppTitle(file.name))
-
                     EventBus.publish(FractalSizeEvent(fractal.params.width, fractal.params.height))
 
                     fractal.refreshImage()
@@ -186,7 +185,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 subscribed = true
 
                 EventBus.listen(AppTitle::class.java).subscribe {
-                    var appTitle = appName
+                    var appTitle = appName + ": " + VersionInfo.VERSION
 
                     if (it.title.isNotEmpty()) {
                         appTitle += " - " + it.title
@@ -212,6 +211,8 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     palette = Palette(it.palette)
                     checkRefresh()
                 }
+
+                EventBus.publish(AppTitle(""))
             }
 
             Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {

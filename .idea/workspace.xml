@@ -9,13 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="added image help to status bar">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="tweaks and bug fixes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/MainMenu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/MainMenu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -93,6 +90,13 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -136,6 +140,15 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Development\Frac2lz_compose\src\desktopMain\kotlin" />
+      <recent name="C:\Development\Frac2lz_compose\src\desktopMain" />
+    </key>
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+  </component>
   <component name="RunManager" selected="Gradle.Run">
     <configuration name="Frac2lz_compose [createReleaseDistributable]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -276,7 +289,7 @@
       <workItem from="1753332213535" duration="693000" />
       <workItem from="1753332928746" duration="1371000" />
       <workItem from="1754089215128" duration="2179000" />
-      <workItem from="1754513151800" duration="7340000" />
+      <workItem from="1754513151800" duration="15375000" />
     </task>
     <task id="LOCAL-00001" summary="Fix intellij build by running Fleet">
       <option name="closed" value="true" />
@@ -398,7 +411,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743455982823</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="tweaks and bug fixes">
+      <option name="closed" value="true" />
+      <created>1754520888648</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1754520888648</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -423,7 +444,8 @@
     <MESSAGE value="tweaks" />
     <MESSAGE value="fixed distribution" />
     <MESSAGE value="added image help to status bar" />
-    <option name="LAST_COMMIT_MESSAGE" value="added image help to status bar" />
+    <MESSAGE value="tweaks and bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="tweaks and bug fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -434,13 +456,18 @@
         </breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt</url>
-          <line>113</line>
+          <line>112</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt</url>
           <line>122</line>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt</url>
+          <line>187</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

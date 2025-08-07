@@ -7,11 +7,46 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
+var major: String
+var minor: String
+var buildVersion: String
+var versionPropsFile = file("version.properties")
+
+if (versionPropsFile.isFile) {
+    val versionProps = Properties()
+    val inStream = versionPropsFile.inputStream()
+
+    versionProps.load(inStream)
+    inStream.close()
+
+    major = versionProps["major"].toString()
+    minor = versionProps["minor"].toString()
+    buildVersion = (versionProps["build"].toString().toInt() + 1).toString()
+
+    val outStream = versionPropsFile.outputStream()
+    versionProps["build"] = buildVersion
+    versionProps.store(outStream, null)
+} else {
+    throw GradleException("Could not read version.properties!")
+}
+
+val version = "$major.$minor.$buildVersion"
+
 kotlin {
     jvm("desktop")
 
+    val generateVersionInfo by tasks.registering(Copy::class) {
+        from(project.projectDir.resolve("src/desktopMain/kotlin/templates"))
+        into(project.layout.buildDirectory.file("src/desktopMain/kotlin"))
+        filter { line ->
+            line.replace("\$projectVersion", project.version.toString())
+        }
+    }
+
     sourceSets {
         commonMain.dependencies {
+            generateVersionInfo
+
             implementation(compose.components.resources)
         }
         val rxVersion = "3.1.3"
@@ -42,6 +77,7 @@ kotlin {
     }
 }
 
+
 compose.desktop {
     application {
         buildTypes.release.proguard {
@@ -49,33 +85,8 @@ compose.desktop {
             configurationFiles.from("proguard.pro")
         }
         mainClass = "MainKt"
+
         nativeDistributions {
-            val major: String
-            val minor: String
-            val buildVersion: String
-
-            var versionPropsFile = file("version.properties")
-
-            if (versionPropsFile.isFile) {
-                val versionProps = Properties()
-                val inStream = versionPropsFile.inputStream()
-
-                versionProps.load(inStream)
-                inStream.close()
-
-                major = versionProps["major"].toString()
-                minor = versionProps["minor"].toString()
-                buildVersion = (versionProps["build"].toString().toInt() + 1).toString()
-
-                val outStream = versionPropsFile.outputStream()
-                versionProps["build"] = buildVersion
-                versionProps.store(outStream, null)
-            } else {
-                throw GradleException("Could not read version.properties!")
-            }
-
-            val version = "$major.$minor.$buildVersion"
-
             modules("java.instrument" , "jdk.unsupported", "java.lang")
 //            includeAllModules = true
             targetFormats(TargetFormat.Msi)
