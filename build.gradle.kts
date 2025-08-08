@@ -37,9 +37,15 @@ kotlin {
 
     val generateVersionInfo by tasks.registering(Copy::class) {
         from(project.projectDir.resolve("src/desktopMain/templates"))
-        into(project.projectDir.resolve("src/desktopMain/kotlin"))
+        into(project.projectDir.resolve("build/generated/compose/version"))
         filter { line ->
-            line.replace("\$projectVersion", version)
+            line.replace("\$majorVersion", major)
+        }
+        filter { line ->
+            line.replace("\$minorVersion", minor)
+        }
+        filter { line ->
+            line.replace("\$buildNumber", buildVersion)
         }
     }
 
@@ -53,6 +59,7 @@ kotlin {
         val collectionVersion = "1.4.5"
         val desktopMain by getting {
             kotlin.srcDir(generateVersionInfo)
+
             dependencies {
                 implementation(compose.material3)
                 implementation(compose.desktop.windows_x64)

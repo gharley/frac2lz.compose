@@ -1,3 +1,8 @@
 object VersionInfo {
-    const val VERSION: String = "$projectVersion" // Placeholder for Gradle
+    // Placeholders for Gradle
+    const val MAJOR: String = "$majorVersion"
+    const val MINOR: String = "$minorVersion"
+    const val BUILD: String = "$buildNumber"
+
+    const val VERSION: String = "$MAJOR.$MINOR.$BUILD"
 }
