@@ -36,22 +36,23 @@ kotlin {
     jvm("desktop")
 
     val generateVersionInfo by tasks.registering(Copy::class) {
-        from(project.projectDir.resolve("src/desktopMain/kotlin/templates"))
+        from(project.projectDir.resolve("src/desktopMain/templates"))
         into(project.projectDir.resolve("src/desktopMain/kotlin"))
         filter { line ->
-            line.replace("\$projectVersion", project.version.toString())
+            line.replace("\$projectVersion", version)
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            generateVersionInfo.run {  }
             implementation(compose.components.resources)
         }
+
         val rxVersion = "3.1.3"
         val jsonVersion = "1.1.4"
         val collectionVersion = "1.4.5"
         val desktopMain by getting {
+            kotlin.srcDir(generateVersionInfo)
             dependencies {
                 implementation(compose.material3)
                 implementation(compose.desktop.windows_x64)

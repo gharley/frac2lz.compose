@@ -12,7 +12,7 @@
     <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="working on embedded version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/templates/VersionInfo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/templates/VersionInfo.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -143,8 +143,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Development\Frac2lz_compose\src\desktopMain\kotlin" />
       <recent name="C:\Development\Frac2lz_compose\src\desktopMain" />
+      <recent name="C:\Development\Frac2lz_compose\src\desktopMain\kotlin" />
     </key>
     <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
       <recent name="" />
@@ -314,7 +314,7 @@
       <workItem from="1753332213535" duration="693000" />
       <workItem from="1753332928746" duration="1371000" />
       <workItem from="1754089215128" duration="2179000" />
-      <workItem from="1754513151800" duration="16887000" />
+      <workItem from="1754513151800" duration="23751000" />
     </task>
     <task id="LOCAL-00001" summary="Fix intellij build by running Fleet">
       <option name="closed" value="true" />
@@ -452,7 +452,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754604303428</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="working on embedded version">
+      <option name="closed" value="true" />
+      <created>1754605801987</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1754605801987</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
