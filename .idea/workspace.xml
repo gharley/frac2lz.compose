@@ -11,8 +11,8 @@
   <component name="ChangeListManager">
     <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="working on embedded version">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/desktopMain/templates/VersionInfo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/templates/VersionInfo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -151,50 +151,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Gradle.Run">
-    <configuration name="Frac2lz_compose [createReleaseDistributable]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="createReleaseDistributable" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="Frac2lz_compose [generateVersionInfo]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="generateVersionInfo" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
     <configuration name="Frac2lz_compose [packageDistributionForCurrentOS]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -207,28 +163,6 @@
         <option name="taskNames">
           <list>
             <option value="packageDistributionForCurrentOS" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="Frac2lz_compose [suggestRuntimeModules]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="suggestRuntimeModules" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -262,19 +196,13 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Gradle.Frac2lz_compose [generateVersionInfo]" />
-      <item itemvalue="Gradle.Frac2lz_compose [createReleaseDistributable]" />
-      <item itemvalue="Gradle.Frac2lz_compose [suggestRuntimeModules]" />
       <item itemvalue="Gradle.Frac2lz_compose [packageDistributionForCurrentOS]" />
       <item itemvalue="Gradle.Run" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.Run" />
-        <item itemvalue="Gradle.Frac2lz_compose [generateVersionInfo]" />
         <item itemvalue="Gradle.Frac2lz_compose [packageDistributionForCurrentOS]" />
-        <item itemvalue="Gradle.Frac2lz_compose [suggestRuntimeModules]" />
-        <item itemvalue="Gradle.Frac2lz_compose [createReleaseDistributable]" />
       </list>
     </recent_temporary>
   </component>
@@ -314,7 +242,7 @@
       <workItem from="1753332213535" duration="693000" />
       <workItem from="1753332928746" duration="1371000" />
       <workItem from="1754089215128" duration="2179000" />
-      <workItem from="1754513151800" duration="25399000" />
+      <workItem from="1754513151800" duration="28145000" />
     </task>
     <task id="LOCAL-00001" summary="Fix intellij build by running Fleet">
       <option name="closed" value="true" />
@@ -468,7 +396,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754682320299</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="working on embedded version">
+      <option name="closed" value="true" />
+      <created>1754685223753</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1754685223753</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

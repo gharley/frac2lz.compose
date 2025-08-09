@@ -296,11 +296,6 @@ abstract class Fractal {
             this.height = height
         }
 
-//        defaultParams.apply {
-//            this.width = width
-//            this.height = height
-//        }
-
         setup()
     }
 

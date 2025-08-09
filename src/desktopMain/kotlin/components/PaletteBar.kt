@@ -232,24 +232,24 @@ fun PaletteBar() {
                     }
                 }
             }
-            Column {
-                ToolTip(
-                    "Uses a custom algorithm to generate a 'smooth' palette. " +
-                            "Output will always be the same spread over palette size.",
-                    placement = placement
-                ) {
-                    IconButton(
-                        onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
-                    ) {
-                        Icon(
-                            painterResource(Res.drawable.smooth32),
-                            "Smooth Palette",
-                            Modifier.scale(iconScale),
-                            tint = Color.Unspecified
-                        )
-                    }
-                }
-            }
+//            Column {
+//                ToolTip(
+//                    "Uses a custom algorithm to generate a 'smooth' palette. " +
+//                            "Output will always be the same spread over palette size.",
+//                    placement = placement
+//                ) {
+//                    IconButton(
+//                        onClick = { EventBus.publish(PaletteEvent(PaletteAction.SMOOTH)) },
+//                    ) {
+//                        Icon(
+//                            painterResource(Res.drawable.smooth32),
+//                            "Smooth Palette",
+//                            Modifier.scale(iconScale),
+//                            tint = Color.Unspecified
+//                        )
+//                    }
+//                }
+//            }
             Column {
                 ToolTip("Generates the default grayscale palette and sets color range to 1.", placement = placement) {
                     IconButton(
