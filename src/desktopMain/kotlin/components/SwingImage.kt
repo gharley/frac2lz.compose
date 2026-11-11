@@ -9,9 +9,12 @@ import java.awt.Graphics2D
 import java.awt.Image
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.awt.event.MouseListener
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
+import java.awt.image.ColorModel
+import java.awt.image.DataBuffer
+import java.awt.image.DirectColorModel
+import java.awt.image.IndexColorModel
 import java.awt.image.MemoryImageSource
 import java.io.File
 import java.lang.Double.min
@@ -27,10 +30,31 @@ open class SwingImageClass :
     fun createSwingImage() {
         if (imgHeight != 0 && imgWidth != 0) {
             pixels = IntArray(imgWidth * imgHeight)
-            source = MemoryImageSource(imgWidth, imgHeight, pixels, 0, imgWidth)
+            source = MemoryImageSource(imgWidth, imgHeight, colorModel, pixels, 0, imgWidth)
             image = createImage(source)
             source.setAnimated(true)
         }
+    }
+
+    fun createColorModel(isIndexed: Boolean = false) {
+        if (isIndexed) {
+            indexColors = IntArray(256)
+            indexColors.fill(0)
+
+            for (i in 0..palette!!.size) {
+                indexColors[i] = palette!!.color(FractalPointData(i.toLong())).toArgb()
+            }
+
+            colorModel = IndexColorModel(16, 256, indexColors, 0, false, -1, DataBuffer.TYPE_USHORT)
+        } else {
+            colorModel = DirectColorModel(24, 0x00ff0000, 0x0000ff00, 0x000000ff)
+        }
+
+        source = MemoryImageSource(imgWidth, imgHeight, colorModel, pixels, 0, imgWidth)
+        image = createImage(source)
+        source.setAnimated(true)
+
+        repaint()
     }
 
     private class Delegate<T>(private var value: T) {
@@ -51,14 +75,17 @@ open class SwingImageClass :
     var imgHeight: Int by Delegate(1)
     var imgWidth: Int by Delegate(1)
 
+    var palette: Palette? = null
+    var zoomBox: ZoomBox? = null
+
+    private var colorModel: ColorModel? = null
+    private var indexColors = IntArray(0)
     private var pixels = IntArray(imgWidth * imgHeight)
-    private var source = MemoryImageSource(imgWidth, imgHeight, pixels, 0, imgWidth)
+
+    private var source = MemoryImageSource(imgWidth, imgHeight, colorModel!!, pixels, 0, imgWidth)
     private var image: Image? = null
     private val imageTransform = AffineTransform()
     private var refreshRate = UISettings().refreshRate
-
-    var palette: Palette? = null
-    var zoomBox: ZoomBox? = null
 
     inner class MouseMoveListener : MouseAdapter() {
         override fun mouseEntered(e: MouseEvent?) {

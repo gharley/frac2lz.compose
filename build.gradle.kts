@@ -104,6 +104,7 @@ compose.desktop {
                 upgradeUuid = "e1b4694e-cab1-4208-8987-f2e361662b47"
                 menuGroup = "Frac2lz"
                 includeAllModules = true
+                iconFile.set(project.file("src\\desktopMain\\composeResources\\drawable\\frac2lz64.bmp"))
             }
             packageName = "Frac2lz"
             packageVersion = version

@@ -1,8 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" name="Frac2lz_compose-desktop">
     <output-path>$PROJECT_DIR$/build/libs</output-path>
-    <root id="archive" name="Frac2lz_compose-desktop.jar">
-      <element id="module-output" name="Frac2lz_compose.desktopMain" />
-    </root>
+    <root id="archive" name="Frac2lz_compose-desktop.jar" />
   </artifact>
 </component>

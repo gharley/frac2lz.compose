@@ -9,10 +9,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="working on embedded version">
+    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="removed smooth palette">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Frac2lz_compose_desktop.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Frac2lz_compose_desktop.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/FractalImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/FractalImage.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -21,7 +25,19 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ComposerSettings">
-    <execution />
+    <execution>
+      <execution>
+        <execution>
+          <execution>
+            <execution>
+              <execution>
+                <execution />
+              </execution>
+            </execution>
+          </execution>
+        </execution>
+      </execution>
+    </execution>
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -100,7 +116,82 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="$USER_HOME$/.gradle/wrapper/dists/gradle-8.10-bin/deqhafrv1ntovfmgh0nh3npr9/gradle-8.10" javaHome="$USER_HOME$/Downloads/jdk-18.0.2" gradleVersion="8.10" />
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;gharley&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/gharley/frac2lz.compose.git&quot;,
+    &quot;accountId&quot;: &quot;2993a63c-31a7-4558-8dc7-5084211600a5&quot;
+  }
+}</component>
+  <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\greg\.gradle\wrapper\dists\gradle-8.10-bin\deqhafrv1ntovfmgh0nh3npr9\gradle-8.10" javaHome="C:\Users\greg\Downloads\jdk-18.0.2" gradleVersion="8.10" />
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0000000000015812" />
+      <entry key="S10" value="1.0000012602714878" />
+      <entry key="S30" value="1.0122191341819624" />
+      <entry key="S60" value="1.1465505541440872" />
+      <entry key="M2" value="1.676823747839018" />
+      <entry key="M5" value="3.833488127273377" />
+      <entry key="M10" value="6.899463775887878" />
+      <entry key="M15" value="9.051707116287433" />
+      <entry key="M30" value="12.604351597242896" />
+      <entry key="H1" value="15.484826796448468" />
+      <entry key="H2" value="19.05699706458335" />
+      <entry key="H4" value="24.83432325813872" />
+      <entry key="D1" value="38.33355087400526" />
+      <entry key="W1" value="47.57997343859745" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="5.1824615583216E-311" />
+      <entry key="S2" value="2.683082555808919E-78" />
+      <entry key="S5" value="9.373092798732236E-32" />
+      <entry key="S10" value="3.157084398037617E-16" />
+      <entry key="S30" value="9.632874751181846E-6" />
+      <entry key="S60" value="0.005717044546922149" />
+      <entry key="M2" value="0.18515153408254134" />
+      <entry key="M5" value="2.2461040973131823" />
+      <entry key="M10" value="6.333861177880819" />
+      <entry key="M15" value="9.266748535964998" />
+      <entry key="M30" value="13.817628440885867" />
+      <entry key="H1" value="17.0994589668909" />
+      <entry key="H2" value="20.097458631792" />
+      <entry key="H4" value="24.03638900455405" />
+      <entry key="D1" value="33.49413042137843" />
+      <entry key="W1" value="45.69996626843738" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.5471468506303697" />
+      <entry key="MS500" value="0.8863816991948673" />
+      <entry key="S2" value="0.9702981317828073" />
+      <entry key="S5" value="0.988011678519608" />
+      <entry key="S10" value="0.9939890196637599" />
+      <entry key="S30" value="1.009651385673917" />
+      <entry key="S60" value="1.1424420453723254" />
+      <entry key="M2" value="1.8284344037069342" />
+      <entry key="M5" value="5.983728831327839" />
+      <entry key="M10" value="13.104022007909125" />
+      <entry key="M15" value="18.192030742289578" />
+      <entry key="M30" value="26.326249750268175" />
+      <entry key="H1" value="32.523985963176855" />
+      <entry key="H2" value="39.11770196842544" />
+      <entry key="H4" value="48.847437547397874" />
+      <entry key="D1" value="71.8219318845566" />
+      <entry key="W1" value="93.27893855342437" />
+    </decayedShown>
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -113,34 +204,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Gradle.Build Frac2lz_compose.executor": "Run",
-    "Gradle.Create Release.executor": "Run",
-    "Gradle.Frac2lz_compose [createReleaseDistributable].executor": "Run",
-    "Gradle.Frac2lz_compose [generateVersionInfo].executor": "Run",
-    "Gradle.Frac2lz_compose [packageDistributionForCurrentOS].executor": "Run",
-    "Gradle.Frac2lz_compose [suggestRuntimeModules].executor": "Run",
-    "Gradle.Main [desktop].executor": "Run",
-    "Gradle.Run.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Development/Frac2lz_compose/.idea/artifacts",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.5724138",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.Build Frac2lz_compose.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Create Release.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Frac2lz_compose [createReleaseDistributable].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Frac2lz_compose [generateVersionInfo].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Frac2lz_compose [packageDistributionForCurrentOS].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Frac2lz_compose [suggestRuntimeModules].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Main [desktop].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.Run.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Development/Frac2lz_compose&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.5724138&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Development\Frac2lz_compose\src\desktopMain" />
@@ -169,8 +263,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="Run" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -191,8 +288,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <list>
@@ -209,8 +309,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
-        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
+        <option value="bundled-jdk-30f59d01ecdd-ac68fc9d2b05-intellij.indexing.shared.core-IU-263.7307.200" />
       </set>
     </attachedChunks>
   </component>
@@ -242,7 +341,11 @@
       <workItem from="1753332213535" duration="693000" />
       <workItem from="1753332928746" duration="1371000" />
       <workItem from="1754089215128" duration="2179000" />
-      <workItem from="1754513151800" duration="28145000" />
+      <workItem from="1754513151800" duration="28843000" />
+      <workItem from="1760933427733" duration="2966000" />
+      <workItem from="1761949716084" duration="18000" />
+      <workItem from="1769730915913" duration="1010000" />
+      <workItem from="1788927611935" duration="1035000" />
     </task>
     <task id="LOCAL-00001" summary="Fix intellij build by running Fleet">
       <option name="closed" value="true" />
@@ -404,7 +507,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754685223753</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="removed smooth palette">
+      <option name="closed" value="true" />
+      <created>1754774276938</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1754774276938</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -431,7 +542,8 @@
     <MESSAGE value="added image help to status bar" />
     <MESSAGE value="tweaks and bug fixes" />
     <MESSAGE value="working on embedded version" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on embedded version" />
+    <MESSAGE value="removed smooth palette" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed smooth palette" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -440,11 +552,6 @@
           <properties class="java.lang.StackOverflowError" package="java.lang" />
           <option name="timeStamp" value="4" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt</url>
-          <line>112</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt</url>
           <line>122</line>
