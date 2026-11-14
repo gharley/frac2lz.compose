@@ -136,7 +136,7 @@ abstract class Fractal {
     @OptIn(DelicateCoroutinesApi::class)
     fun refreshImage() {
         GlobalScope.launch {
-            refresh()
+//            refresh()
             fireComplete()
         }
     }

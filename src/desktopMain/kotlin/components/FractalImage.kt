@@ -35,7 +35,7 @@ fun FractalImage(params: FractalParameters, palette: Palette) {
             },
             update = {
                 swingImage.palette = palette
-                swingImage.createColorModel()
+                swingImage.createSwingImage(false)
             }
         )
     }

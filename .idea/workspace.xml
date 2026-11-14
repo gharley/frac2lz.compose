@@ -9,13 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="removed smooth palette">
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Frac2lz_compose_desktop.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Frac2lz_compose_desktop.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="beginning work on indexed palette">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/FractalImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/FractalImage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
@@ -31,7 +27,9 @@
           <execution>
             <execution>
               <execution>
-                <execution />
+                <execution>
+                  <execution />
+                </execution>
               </execution>
             </execution>
           </execution>
@@ -137,59 +135,59 @@
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
       <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0000000000015812" />
-      <entry key="S10" value="1.0000012602714878" />
-      <entry key="S30" value="1.0122191341819624" />
-      <entry key="S60" value="1.1465505541440872" />
-      <entry key="M2" value="1.676823747839018" />
-      <entry key="M5" value="3.833488127273377" />
-      <entry key="M10" value="6.899463775887878" />
-      <entry key="M15" value="9.051707116287433" />
-      <entry key="M30" value="12.604351597242896" />
-      <entry key="H1" value="15.484826796448468" />
-      <entry key="H2" value="19.05699706458335" />
-      <entry key="H4" value="24.83432325813872" />
-      <entry key="D1" value="38.33355087400526" />
-      <entry key="W1" value="47.57997343859745" />
+      <entry key="S2" value="1.0000000000000016" />
+      <entry key="S5" value="1.000001478450868" />
+      <entry key="S10" value="1.0016932320638212" />
+      <entry key="S30" value="1.2222902282595545" />
+      <entry key="S60" value="1.815552518414044" />
+      <entry key="M2" value="2.7640083376941336" />
+      <entry key="M5" value="4.760777825418971" />
+      <entry key="M10" value="7.582493693386546" />
+      <entry key="M15" value="10.00393046750604" />
+      <entry key="M30" value="15.127113741957245" />
+      <entry key="H1" value="20.331926501245793" />
+      <entry key="H2" value="24.365328764928254" />
+      <entry key="H4" value="26.93919641938036" />
+      <entry key="D1" value="36.468689976121894" />
+      <entry key="W1" value="72.3641709944165" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="5.1824615583216E-311" />
-      <entry key="S2" value="2.683082555808919E-78" />
-      <entry key="S5" value="9.373092798732236E-32" />
-      <entry key="S10" value="3.157084398037617E-16" />
-      <entry key="S30" value="9.632874751181846E-6" />
-      <entry key="S60" value="0.005717044546922149" />
-      <entry key="M2" value="0.18515153408254134" />
-      <entry key="M5" value="2.2461040973131823" />
-      <entry key="M10" value="6.333861177880819" />
-      <entry key="M15" value="9.266748535964998" />
-      <entry key="M30" value="13.817628440885867" />
-      <entry key="H1" value="17.0994589668909" />
-      <entry key="H2" value="20.097458631792" />
-      <entry key="H4" value="24.03638900455405" />
-      <entry key="D1" value="33.49413042137843" />
-      <entry key="W1" value="45.69996626843738" />
+      <entry key="MS100" value="2.4960389970635392E-5" />
+      <entry key="MS500" value="0.12009008932229122" />
+      <entry key="S2" value="0.651635854758954" />
+      <entry key="S5" value="1.142603467092651" />
+      <entry key="S10" value="1.549597490632821" />
+      <entry key="S30" value="2.5766782795455483" />
+      <entry key="S60" value="3.4012288786482365" />
+      <entry key="M2" value="4.233236296974951" />
+      <entry key="M5" value="5.772083925065655" />
+      <entry key="M10" value="7.903681055915973" />
+      <entry key="M15" value="9.808479146952992" />
+      <entry key="M30" value="14.325723296070736" />
+      <entry key="H1" value="19.490056579636505" />
+      <entry key="H2" value="23.762867532517983" />
+      <entry key="H4" value="26.578928558833287" />
+      <entry key="D1" value="34.45281100500845" />
+      <entry key="W1" value="64.80776957169535" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.5471468506303697" />
-      <entry key="MS500" value="0.8863816991948673" />
-      <entry key="S2" value="0.9702981317828073" />
-      <entry key="S5" value="0.988011678519608" />
-      <entry key="S10" value="0.9939890196637599" />
-      <entry key="S30" value="1.009651385673917" />
-      <entry key="S60" value="1.1424420453723254" />
-      <entry key="M2" value="1.8284344037069342" />
-      <entry key="M5" value="5.983728831327839" />
-      <entry key="M10" value="13.104022007909125" />
-      <entry key="M15" value="18.192030742289578" />
-      <entry key="M30" value="26.326249750268175" />
-      <entry key="H1" value="32.523985963176855" />
-      <entry key="H2" value="39.11770196842544" />
-      <entry key="H4" value="48.847437547397874" />
-      <entry key="D1" value="71.8219318845566" />
-      <entry key="W1" value="93.27893855342437" />
+      <entry key="MS100" value="0.8066417592221263" />
+      <entry key="MS500" value="0.9580101022683148" />
+      <entry key="S2" value="1.1067775004078289" />
+      <entry key="S5" value="1.6112178085738391" />
+      <entry key="S10" value="2.159586627667337" />
+      <entry key="S30" value="3.5632893001912516" />
+      <entry key="S60" value="5.038208011076675" />
+      <entry key="M2" value="6.864878169532095" />
+      <entry key="M5" value="10.414611943189865" />
+      <entry key="M10" value="15.373837937630237" />
+      <entry key="M15" value="19.712325245149955" />
+      <entry key="M30" value="29.38102085481006" />
+      <entry key="H1" value="39.77666494870478" />
+      <entry key="H2" value="48.10215838193824" />
+      <entry key="H4" value="53.504063438546254" />
+      <entry key="D1" value="70.91811726172955" />
+      <entry key="W1" value="137.17081077846487" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -204,37 +202,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Build Frac2lz_compose.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Create Release.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Frac2lz_compose [createReleaseDistributable].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Frac2lz_compose [generateVersionInfo].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Frac2lz_compose [packageDistributionForCurrentOS].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Frac2lz_compose [suggestRuntimeModules].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Main [desktop].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Run.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Development/Frac2lz_compose&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.5724138&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build Frac2lz_compose.executor": "Run",
+    "Gradle.Create Release.executor": "Run",
+    "Gradle.Frac2lz_compose [createReleaseDistributable].executor": "Run",
+    "Gradle.Frac2lz_compose [generateVersionInfo].executor": "Run",
+    "Gradle.Frac2lz_compose [packageDistributionForCurrentOS].executor": "Run",
+    "Gradle.Frac2lz_compose [suggestRuntimeModules].executor": "Run",
+    "Gradle.Main [desktop].executor": "Run",
+    "Gradle.Run.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Development/Frac2lz_compose",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.5724138",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Development\Frac2lz_compose\src\desktopMain" />
@@ -515,7 +513,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754774276938</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="beginning work on indexed palette">
+      <option name="closed" value="true" />
+      <created>1794377424806</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1794377424806</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -543,7 +549,8 @@
     <MESSAGE value="tweaks and bug fixes" />
     <MESSAGE value="working on embedded version" />
     <MESSAGE value="removed smooth palette" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed smooth palette" />
+    <MESSAGE value="beginning work on indexed palette" />
+    <option name="LAST_COMMIT_MESSAGE" value="beginning work on indexed palette" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -552,11 +559,6 @@
           <properties class="java.lang.StackOverflowError" package="java.lang" />
           <option name="timeStamp" value="4" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt</url>
-          <line>122</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
