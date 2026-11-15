@@ -27,9 +27,9 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import frac2lz_compose.generated.resources.Res
+import frac2lz_compose.generated.resources.animate32
 import frac2lz_compose.generated.resources.default32
 import frac2lz_compose.generated.resources.random32
-import frac2lz_compose.generated.resources.smooth32
 import hslToRgb
 import org.jetbrains.compose.resources.painterResource
 import rgbToHsl
@@ -247,16 +247,16 @@ fun PaletteBar() {
                     }
                 }
             }
-//            Column {
-//                IconButton(onClick = {}) {
-//                    Icon(
-//                        painterResource("animate32.png"),
-//                        "Animate Palette",
-//                        Modifier.scale(iconScale),
-//                        tint = Color.Unspecified
-//                    )
-//                }
-//            }
+            Column {
+                IconButton(onClick = {}) {
+                    Icon(
+                        painterResource(Res.drawable.animate32),
+                        "Animate Palette",
+                        Modifier.scale(iconScale),
+                        tint = Color.Unspecified
+                    )
+                }
+            }
             Column {
                 ToolTip(
                     "Allows creation of custom palette by interpolating between selected colors. " +

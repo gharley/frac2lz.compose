@@ -243,7 +243,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                 Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column { Text("Palette Size:", color = MaterialTheme.colorScheme.primary) }
                     Column(Modifier.weight(1f)) {
-                        PaletteSlider(2f, 512f, PaletteSliderType.SIZE, palette) {
+                        PaletteSlider(2f, 255f, PaletteSliderType.SIZE, palette) {
                             palette.size = it
                             checkRefresh()
                         }
