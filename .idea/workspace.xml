@@ -9,9 +9,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="beginning work on indexed palette">
+    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="working on indexed palette">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Frac2lz_compose_desktop.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/Frac2lz_compose_desktop.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/FractalImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/FractalImage.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/Fractal.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/Palette.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/Palette.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
@@ -135,59 +139,59 @@
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
       <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0000000000000016" />
-      <entry key="S5" value="1.000001478450868" />
-      <entry key="S10" value="1.0016932320638212" />
-      <entry key="S30" value="1.2222902282595545" />
-      <entry key="S60" value="1.815552518414044" />
-      <entry key="M2" value="2.7640083376941336" />
-      <entry key="M5" value="4.760777825418971" />
-      <entry key="M10" value="7.582493693386546" />
-      <entry key="M15" value="10.00393046750604" />
-      <entry key="M30" value="15.127113741957245" />
-      <entry key="H1" value="20.331926501245793" />
-      <entry key="H2" value="24.365328764928254" />
-      <entry key="H4" value="26.93919641938036" />
-      <entry key="D1" value="36.468689976121894" />
-      <entry key="W1" value="72.3641709944165" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0" />
+      <entry key="S10" value="1.0" />
+      <entry key="S30" value="1.0" />
+      <entry key="S60" value="1.0" />
+      <entry key="M2" value="1.0000000000000004" />
+      <entry key="M5" value="1.0000011375421485" />
+      <entry key="M10" value="1.002087391285933" />
+      <entry key="M15" value="1.0280469868629114" />
+      <entry key="M30" value="1.4487705663726322" />
+      <entry key="H1" value="3.740110963351384" />
+      <entry key="H2" value="10.062011422956662" />
+      <entry key="H4" value="18.88757940680143" />
+      <entry key="D1" value="39.9094553031989" />
+      <entry key="W1" value="79.07156748222846" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="2.4960389970635392E-5" />
-      <entry key="MS500" value="0.12009008932229122" />
-      <entry key="S2" value="0.651635854758954" />
-      <entry key="S5" value="1.142603467092651" />
-      <entry key="S10" value="1.549597490632821" />
-      <entry key="S30" value="2.5766782795455483" />
-      <entry key="S60" value="3.4012288786482365" />
-      <entry key="M2" value="4.233236296974951" />
-      <entry key="M5" value="5.772083925065655" />
-      <entry key="M10" value="7.903681055915973" />
-      <entry key="M15" value="9.808479146952992" />
-      <entry key="M30" value="14.325723296070736" />
-      <entry key="H1" value="19.490056579636505" />
-      <entry key="H2" value="23.762867532517983" />
-      <entry key="H4" value="26.578928558833287" />
-      <entry key="D1" value="34.45281100500845" />
-      <entry key="W1" value="64.80776957169535" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="1.6368096810826097E-238" />
+      <entry key="S30" value="5.4701520088976444E-80" />
+      <entry key="S60" value="2.3388356096351977E-40" />
+      <entry key="M2" value="1.5293252138231416E-20" />
+      <entry key="M5" value="1.185223664909872E-8" />
+      <entry key="M10" value="1.0923632244488704E-4" />
+      <entry key="M15" value="0.0024133296409294164" />
+      <entry key="M30" value="0.10349433181774714" />
+      <entry key="H1" value="1.4930882459230634" />
+      <entry key="H2" value="6.837144600612759" />
+      <entry key="H4" value="15.113162740135314" />
+      <entry key="D1" value="34.1678596023935" />
+      <entry key="W1" value="67.6492680039034" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.8066417592221263" />
-      <entry key="MS500" value="0.9580101022683148" />
-      <entry key="S2" value="1.1067775004078289" />
-      <entry key="S5" value="1.6112178085738391" />
-      <entry key="S10" value="2.159586627667337" />
-      <entry key="S30" value="3.5632893001912516" />
-      <entry key="S60" value="5.038208011076675" />
-      <entry key="M2" value="6.864878169532095" />
-      <entry key="M5" value="10.414611943189865" />
-      <entry key="M10" value="15.373837937630237" />
-      <entry key="M15" value="19.712325245149955" />
-      <entry key="M30" value="29.38102085481006" />
-      <entry key="H1" value="39.77666494870478" />
-      <entry key="H2" value="48.10215838193824" />
-      <entry key="H4" value="53.504063438546254" />
-      <entry key="D1" value="70.91811726172955" />
-      <entry key="W1" value="137.17081077846487" />
+      <entry key="MS100" value="0.6241652744508059" />
+      <entry key="MS500" value="0.9100388240808991" />
+      <entry key="S2" value="0.9767085289622274" />
+      <entry key="S5" value="0.9906174913493875" />
+      <entry key="S10" value="0.9952976898141518" />
+      <entry key="S30" value="0.9984300999750134" />
+      <entry key="S60" value="0.999214741672186" />
+      <entry key="M2" value="0.999607293726985" />
+      <entry key="M5" value="0.9998440427768389" />
+      <entry key="M10" value="1.0021083788438168" />
+      <entry key="M15" value="1.0302955925933122" />
+      <entry key="M30" value="1.5509944686451649" />
+      <entry key="H1" value="5.228370890381365" />
+      <entry key="H2" value="16.890519404969105" />
+      <entry key="H4" value="33.99206524874578" />
+      <entry key="D1" value="74.07388639900077" />
+      <entry key="W1" value="146.71966019232917" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -521,7 +525,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794377424806</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="working on indexed palette">
+      <option name="closed" value="true" />
+      <created>1794692362366</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1794692362366</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -550,7 +562,8 @@
     <MESSAGE value="working on embedded version" />
     <MESSAGE value="removed smooth palette" />
     <MESSAGE value="beginning work on indexed palette" />
-    <option name="LAST_COMMIT_MESSAGE" value="beginning work on indexed palette" />
+    <MESSAGE value="working on indexed palette" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on indexed palette" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -559,6 +572,11 @@
           <properties class="java.lang.StackOverflowError" package="java.lang" />
           <option name="timeStamp" value="4" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt</url>
+          <line>82</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>

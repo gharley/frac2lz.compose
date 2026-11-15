@@ -187,7 +187,7 @@ class Palette {
         if (value.iterations == -1L) return Color(0)
 
         var z = value.z
-        for (idx in 0 until refineRange) {
+        repeat(refineRange) {
             z = z * z + value.zStart
         }
 

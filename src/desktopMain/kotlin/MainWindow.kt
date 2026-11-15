@@ -209,7 +209,6 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
 
                 EventBus.listen(NewPaletteEvent::class.java).subscribe {
                     palette = Palette(it.palette)
-                    checkRefresh()
                 }
 
                 EventBus.publish(AppTitle(""))
