@@ -17,6 +17,7 @@ import java.lang.Double.min
 import java.util.*
 import javax.imageio.ImageIO
 import javax.swing.JPanel
+import javax.swing.Timer
 import kotlin.reflect.KProperty
 
 open class SwingImageClass :
@@ -31,20 +32,22 @@ open class SwingImageClass :
                 pixels.fill(0)
             }
 
+            val size = palette!!.size
             val zStart = firstPoint.zStart
             val z = firstPoint.z
-            val zInc = (lastPoint.zStart - zStart) / colorModelSize.toDouble()
+            val zInc = (lastPoint.zStart - zStart) / size.toDouble()
 
+            indexColors = IntArray(size)
             indexColors.fill(0)
 
-            for (i in 0..palette!!.size % colorModelSize) {
+            for (i in 0..<size) {
                 val inc = zStart + zInc * i.toDouble()
                 val data = FractalPointData(i + 1L, firstPoint.maxIterations, zStart + inc, z + inc)
 
                 indexColors[i] = palette!!.color(data).toArgb()
             }
 
-            val colorModel = IndexColorModel(8, colorModelSize, indexColors, 0, false, -1, DataBuffer.TYPE_BYTE)
+            val colorModel = IndexColorModel(8, palette!!.size, indexColors, 0, false, -1, DataBuffer.TYPE_BYTE)
 
             image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_BYTE_INDEXED, colorModel)
             image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels.toByteArray())
@@ -52,19 +55,19 @@ open class SwingImageClass :
         }
     }
 
-    private var colorOffset = 0;
+    private var colorOffset = 0
 
     private fun rotatePalette() {
-        val shifted = IntArray(colorModelSize)
+        val shifted = IntArray(indexColors.size)
 
-        for (i in 0 until colorModelSize) {
-            val sourceIndex = (i + colorOffset) % colorModelSize
+        for (i in 0 until palette!!.size) {
+            val sourceIndex = (i + colorOffset) % palette!!.size
 
             shifted[i] = indexColors[sourceIndex]
         }
 
         // Recreate the IndexColorModel with the shifted color bytes
-        val colorModel = IndexColorModel(8, colorModelSize, shifted, 0, false, -1, DataBuffer.TYPE_BYTE)
+        val colorModel = IndexColorModel(8, palette!!.size, shifted, 0, false, -1, DataBuffer.TYPE_BYTE)
 
         // Re-assign the color model to the existing image raster data
         // Note: TYPE_BYTE_INDEXED images bind their color model tightly,
@@ -79,6 +82,21 @@ open class SwingImageClass :
 
         repaint()
     }
+
+    private var animating = false
+    private var delay = 64
+
+    private fun toggleAnimation() {
+        if (animating) animating = false
+        else {
+            animating = true
+            Timer(delay) {
+                if (!animating) return@Timer
+                rotatePalette()
+            }.start()
+        }
+    }
+
     private class Delegate<T>(private var value: T) {
         operator fun getValue(swingImageClass: SwingImageClass, property: KProperty<*>): T {
             return value
@@ -104,7 +122,7 @@ open class SwingImageClass :
     private var pixels = IntArray(imgWidth * imgHeight)
     private lateinit var image: BufferedImage
     private val imageTransform = AffineTransform()
-    private val indexColors = IntArray(colorModelSize)
+    private var indexColors = IntArray(colorModelSize)
 
     private var refreshRate = UISettings().refreshRate
 
@@ -181,7 +199,7 @@ open class SwingImageClass :
         }
 
         EventBus.listen(PaletteEvent::class.java).subscribe {
-            if (it.action == PaletteAction.ANIMATE) rotatePalette()
+            if (it.action == PaletteAction.ANIMATE) toggleAnimation()
         }
 
         addMouseListener(MouseMoveListener())
