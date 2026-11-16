@@ -248,7 +248,7 @@ fun PaletteBar() {
                 }
             }
             Column {
-                IconButton(onClick = {}) {
+                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.ANIMATE)) }) {
                     Icon(
                         painterResource(Res.drawable.animate32),
                         "Animate Palette",

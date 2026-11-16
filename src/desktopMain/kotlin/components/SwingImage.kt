@@ -6,16 +6,12 @@ import action.*
 import androidx.compose.ui.graphics.toArgb
 import java.awt.Graphics
 import java.awt.Graphics2D
-import java.awt.Image
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
-import java.awt.image.ColorModel
 import java.awt.image.DataBuffer
-import java.awt.image.DirectColorModel
 import java.awt.image.IndexColorModel
-import java.awt.image.MemoryImageSource
 import java.io.File
 import java.lang.Double.min
 import java.util.*
@@ -30,26 +26,59 @@ open class SwingImageClass :
 
     fun createSwingImage(clear: Boolean = true) {
         if (imgHeight != 0 && imgWidth != 0) {
-            if (clear){
-                pixels = ByteArray(imgWidth * imgHeight)
+            if (clear) {
+                pixels = IntArray(imgWidth * imgHeight)
                 pixels.fill(0)
             }
 
-            val indexColors = IntArray(colorModelSize)
+            val zStart = firstPoint.zStart
+            val z = firstPoint.z
+            val zInc = (lastPoint.zStart - zStart) / colorModelSize.toDouble()
+
             indexColors.fill(0)
 
             for (i in 0..palette!!.size % colorModelSize) {
-                indexColors[i] = palette!!.color(FractalPointData(i.toLong())).toArgb()
+                val inc = zStart + zInc * i.toDouble()
+                val data = FractalPointData(i + 1L, firstPoint.maxIterations, zStart + inc, z + inc)
+
+                indexColors[i] = palette!!.color(data).toArgb()
             }
 
             val colorModel = IndexColorModel(8, colorModelSize, indexColors, 0, false, -1, DataBuffer.TYPE_BYTE)
 
             image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_BYTE_INDEXED, colorModel)
-            image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels)
+            image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels.toByteArray())
             repaint()
         }
     }
 
+    private var colorOffset = 0;
+
+    private fun rotatePalette() {
+        val shifted = IntArray(colorModelSize)
+
+        for (i in 0 until colorModelSize) {
+            val sourceIndex = (i + colorOffset) % colorModelSize
+
+            shifted[i] = indexColors[sourceIndex]
+        }
+
+        // Recreate the IndexColorModel with the shifted color bytes
+        val colorModel = IndexColorModel(8, colorModelSize, shifted, 0, false, -1, DataBuffer.TYPE_BYTE)
+
+        // Re-assign the color model to the existing image raster data
+        // Note: TYPE_BYTE_INDEXED images bind their color model tightly,
+        // so generating a new BufferedImage wrapper around the same raster or
+        // updating the model is necessary depending on your exact pipeline.
+        val raster = image.raster
+
+        image = BufferedImage(colorModel, raster, false, null)
+
+        colorOffset++
+        colorOffset %= colorModelSize
+
+        repaint()
+    }
     private class Delegate<T>(private var value: T) {
         operator fun getValue(swingImageClass: SwingImageClass, property: KProperty<*>): T {
             return value
@@ -70,10 +99,13 @@ open class SwingImageClass :
 
     var palette: Palette? = null
     var zoomBox: ZoomBox? = null
-
-    private var pixels = ByteArray(imgWidth * imgHeight)
+    var firstPoint = FractalPointData()
+    var lastPoint = FractalPointData()
+    private var pixels = IntArray(imgWidth * imgHeight)
     private lateinit var image: BufferedImage
     private val imageTransform = AffineTransform()
+    private val indexColors = IntArray(colorModelSize)
+
     private var refreshRate = UISettings().refreshRate
 
     class MouseMoveListener : MouseAdapter() {
@@ -109,18 +141,21 @@ open class SwingImageClass :
         }
 
         EventBus.listen(FractalEvent::class.java).subscribe {
-            val color = (it.data.iterations % colorModelSize).toByte()
+            val color = (it.data.iterations % colorModelSize).toInt()
 
             if (it.row == 0 && it.column == 0) {
                 prepareForCalc()
+                firstPoint = it.data
             }
 
             try {
                 pixels[it.row * imgWidth + it.column] = color
 
                 if (it.endOfRow) {
+                    lastPoint = it.data
+
                     if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) {
-                        image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels)
+                        image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels.toByteArray())
                         repaint()
                     }
                 }
@@ -145,6 +180,10 @@ open class SwingImageClass :
             }
         }
 
+        EventBus.listen(PaletteEvent::class.java).subscribe {
+            if (it.action == PaletteAction.ANIMATE) rotatePalette()
+        }
+
         addMouseListener(MouseMoveListener())
     }
 
@@ -159,7 +198,7 @@ open class SwingImageClass :
 
     private fun prepareForCalc(clear: Boolean = true) {
         if (clear) {
-            pixels = ByteArray(imgWidth * imgHeight)
+            pixels = IntArray(imgWidth * imgHeight)
             pixels.fill(0)
         }
 
@@ -211,6 +250,10 @@ open class SwingImageClass :
             e.printStackTrace()
         }
     }
+}
+
+private fun IntArray.toByteArray(): Any {
+    return ByteArray(this.size) { i -> this[i].toByte() }
 }
 
 object SwingImage : SwingImageClass() {
