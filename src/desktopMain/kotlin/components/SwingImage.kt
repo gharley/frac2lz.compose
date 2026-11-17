@@ -18,7 +18,6 @@ import java.util.*
 import javax.imageio.ImageIO
 import javax.swing.JPanel
 import javax.swing.Timer
-import kotlin.math.abs
 import kotlin.reflect.KProperty
 
 open class SwingImageClass :
