@@ -32,26 +32,32 @@ open class SwingImageClass :
                 pixels.fill(0)
             }
 
-            val size = palette!!.size
-            val zStart = firstPoint.zStart
-            val z = firstPoint.z
-            val zInc = (lastPoint.zStart - zStart) / size.toDouble()
+            val currentType = if (this::image.isInitialized) image.type else -1
 
-            indexColors = IntArray(size)
-            indexColors.fill(0)
+            if (palette!!.getColorFromFractal) {
+                BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
+            } else {
+                val size = palette!!.size
 
-            for (i in 0..<size) {
-                val inc = zStart + zInc * i.toDouble()
-                val data = FractalPointData(i + 1L, firstPoint.maxIterations, zStart + inc, z + inc)
+                indexColors = IntArray(size)
+                indexColors.fill(0)
 
-                indexColors[i] = palette!!.color(data).toArgb()
+                for (i in 0..<size) {
+                    val data = FractalPointData(i + 1L)
+
+                    indexColors[i] = palette!!.color(data).toArgb()
+                }
+
+                val colorModel = IndexColorModel(8, palette!!.size, indexColors, 0, false, -1, DataBuffer.TYPE_BYTE)
+
+                image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_BYTE_INDEXED, colorModel)
             }
 
-            val colorModel = IndexColorModel(8, palette!!.size, indexColors, 0, false, -1, DataBuffer.TYPE_BYTE)
+            val inData = if (palette!!.getColorFromFractal) pixels else pixels.toByteArray()
+            image.raster.setDataElements(0, 0, imgWidth, imgHeight, inData)
 
-            image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_BYTE_INDEXED, colorModel)
-            image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels.toByteArray())
-            repaint()
+            if (image.type != currentType) EventBus.publish(UIEvent(UIAction.REFRESH))
+            else repaint()
         }
     }
 
@@ -151,7 +157,7 @@ open class SwingImageClass :
 
         Timer().schedule(object : TimerTask() {
             override fun run() {
-                image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_BYTE_INDEXED)
+                image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
 
                 if (zoomBox == null) {
                     zoomBox = ZoomBox()
@@ -168,7 +174,8 @@ open class SwingImageClass :
         }
 
         EventBus.listen(FractalEvent::class.java).subscribe {
-            val color = (it.data.iterations % colorModelSize).toInt()
+            val color: Int = if (palette!!.getColorFromFractal) palette!!.color(it.data).toArgb()
+            else (it.data.iterations % colorModelSize).toInt()
 
             if (it.row == 0 && it.column == 0) {
                 prepareForCalc()
@@ -176,13 +183,14 @@ open class SwingImageClass :
             }
 
             try {
-                pixels[it.row * imgWidth + it.column] = color
+                pixels[it.row * imgWidth + it.column] = color as Int
 
                 if (it.endOfRow) {
                     lastPoint = it.data
 
                     if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) {
-                        image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels.toByteArray())
+                        val inData = if (palette!!.getColorFromFractal) pixels else pixels.toByteArray()
+                        image.raster.setDataElements(0, 0, imgWidth, imgHeight, inData)
                         repaint()
                     }
                 }
@@ -210,8 +218,14 @@ open class SwingImageClass :
         EventBus.listen(PaletteEvent::class.java).subscribe {
             when (it.action) {
                 PaletteAction.ANIMATE -> toggleAnimation()
-                PaletteAction.DIRECTION_CHANGED -> {animationDirection = it.data as Boolean}
-                PaletteAction.RATE_CHANGED -> {delay = (it.data as Float).toInt()}
+                PaletteAction.DIRECTION_CHANGED -> {
+                    animationDirection = it.data as Boolean
+                }
+
+                PaletteAction.RATE_CHANGED -> {
+                    delay = (it.data as Float).toInt()
+                }
+
                 else -> {}
             }
         }
@@ -284,7 +298,7 @@ open class SwingImageClass :
     }
 }
 
-private fun IntArray.toByteArray(): Any {
+private fun IntArray.toByteArray(): ByteArray {
     return ByteArray(this.size) { i -> this[i].toByte() }
 }
 

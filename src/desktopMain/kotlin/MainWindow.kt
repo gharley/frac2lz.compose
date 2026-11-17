@@ -228,6 +228,10 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                         palette = Palette(it.palette)
                     }
 
+                    EventBus.listen(UIEvent::class.java).subscribe {
+                        if (it.action == UIAction.REFRESH) fractal.refreshImage()
+                    }
+
                     EventBus.publish(AppTitle(""))
                 }
 
