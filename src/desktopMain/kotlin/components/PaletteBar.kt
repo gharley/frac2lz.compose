@@ -10,6 +10,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipPlacement
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.minimumInteractiveComponentSize
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -167,11 +168,12 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
         setMarker(index)
     }
 
-    Canvas(Modifier
-        .height(48.dp)
-        .fillMaxWidth()
-        .background(Color.Black)
-        .onPointerEvent(PointerEventType.Release) { onMouseClicked(it) }) {
+    Canvas(
+        Modifier
+            .height(48.dp)
+            .fillMaxWidth()
+            .background(Color.Black)
+            .onPointerEvent(PointerEventType.Release) { onMouseClicked(it) }) {
         height = size.height
         width = size.width
         trigger  // Don't remove, tricks app into recomposing
@@ -210,9 +212,11 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun PaletteBar() {
+    var animationRate by remember { mutableStateOf(64f) }
+    var animationDirection by remember { mutableStateOf(false) }
     val iconScale = 3.0f
     val placement = TooltipPlacement.ComponentRect(Alignment.TopStart, Alignment.TopEnd)
 
@@ -248,13 +252,56 @@ fun PaletteBar() {
                 }
             }
             Column {
-                IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.ANIMATE)) }) {
-                    Icon(
-                        painterResource(Res.drawable.animate32),
-                        "Animate Palette",
-                        Modifier.scale(iconScale),
-                        tint = Color.Unspecified
-                    )
+                ToolTip("Toggles palette animation", placement = placement) {
+                    IconButton(onClick = { EventBus.publish(PaletteEvent(PaletteAction.ANIMATE)) }) {
+                        Icon(
+                            painterResource(Res.drawable.animate32),
+                            "Animate Palette",
+                            Modifier.scale(iconScale),
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
+            }
+            Column {
+                ToolTip("Reverse the direction of palette animation.") {
+                    Row(
+                        Modifier.wrapContentHeight().padding(10.dp, 0.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Reverse: ", color = MaterialTheme.colorScheme.primary)
+                        Checkbox(
+                            animationDirection,
+                            {
+                                animationDirection = !animationDirection
+                                EventBus.publish(PaletteEvent(PaletteAction.DIRECTION_CHANGED, animationDirection))
+                            },
+                        )
+                    }
+                }
+            }
+            Column {
+                ToolTip("Change speed of palette animation.") {
+                    Row(
+                        Modifier.wrapContentHeight().padding(10.dp, 0.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Delay (ms): ", color = MaterialTheme.colorScheme.primary)
+                        Slider(
+                            animationRate,
+                            modifier = Modifier.width(500.dp),
+                            onValueChange = { animationRate = it },
+                            valueRange = (1f..256f),
+                            steps = 64,
+                            enabled = true,
+                            onValueChangeFinished = {
+                                EventBus.publish(PaletteEvent(PaletteAction.RATE_CHANGED, animationRate))
+                            },
+                            thumb = {
+                                SliderThumb(it)
+                            }
+                        )
+                    }
                 }
             }
             Column {
@@ -293,8 +340,11 @@ fun PaletteBar() {
                     if (it.action == CalculateAction.COMPLETE) enabled = true
                 }
 
-                ToolTip("Mark all of the colors in the palette that are used in the image. " +
-                        "Most likely all colors will be marked unless you've set a color range.", placement = placement) {
+                ToolTip(
+                    "Mark all of the colors in the palette that are used in the image. " +
+                            "Most likely all colors will be marked unless you've set a color range.",
+                    placement = placement
+                ) {
                     Button(
                         onClick = { EventBus.publish(CalculateEvent(CalculateAction.SHOW_USED_COLORS)) },
                         enabled = enabled

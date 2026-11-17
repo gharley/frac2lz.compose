@@ -18,6 +18,7 @@ import java.util.*
 import javax.imageio.ImageIO
 import javax.swing.JPanel
 import javax.swing.Timer
+import kotlin.math.abs
 import kotlin.reflect.KProperty
 
 open class SwingImageClass :
@@ -57,13 +58,14 @@ open class SwingImageClass :
 
     private var colorOffset = 0
 
-    private fun rotatePalette() {
+    private fun rotatePalette(forward: Boolean = true) {
         val shifted = IntArray(indexColors.size)
 
         for (i in 0 until palette!!.size) {
             val sourceIndex = (i + colorOffset) % palette!!.size
 
-            shifted[i] = indexColors[sourceIndex]
+            if (forward) shifted[i] = indexColors[sourceIndex]
+            else shifted[indexColors.lastIndex - i] = indexColors[sourceIndex]
         }
 
         // Recreate the IndexColorModel with the shifted color bytes
@@ -78,22 +80,30 @@ open class SwingImageClass :
         image = BufferedImage(colorModel, raster, false, null)
 
         colorOffset++
-        colorOffset %= colorModelSize
+        colorOffset %= palette!!.size
 
         repaint()
     }
 
     private var animating = false
     private var delay = 64
+    private var animationDirection = false
 
     private fun toggleAnimation() {
         if (animating) animating = false
         else {
             animating = true
-            Timer(delay) {
-                if (!animating) return@Timer
-                rotatePalette()
-            }.start()
+            val timer = Timer(delay) { e ->
+                val thisTimer = e.source as Timer
+
+                if (!animating) thisTimer.stop()
+
+                thisTimer.delay = delay // In case it changed
+
+                rotatePalette(animationDirection)
+            }
+
+            timer.start()
         }
     }
 
@@ -199,7 +209,12 @@ open class SwingImageClass :
         }
 
         EventBus.listen(PaletteEvent::class.java).subscribe {
-            if (it.action == PaletteAction.ANIMATE) toggleAnimation()
+            when (it.action) {
+                PaletteAction.ANIMATE -> toggleAnimation()
+                PaletteAction.DIRECTION_CHANGED -> {animationDirection = it.data as Boolean}
+                PaletteAction.RATE_CHANGED -> {delay = (it.data as Float).toInt()}
+                else -> {}
+            }
         }
 
         addMouseListener(MouseMoveListener())
