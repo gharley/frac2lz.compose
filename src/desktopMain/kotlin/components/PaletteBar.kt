@@ -216,6 +216,8 @@ fun PaletteCanvas(pal: Palette, fractal: Fractal) {
 fun PaletteBar() {
     var animationRate by remember { mutableStateOf(64f) }
     var animationDirection by remember { mutableStateOf(false) }
+
+    val currentRate = animationRate
     val iconScale = 3.0f
     val placement = TooltipPlacement.ComponentRect(Alignment.TopStart, Alignment.TopEnd)
 
@@ -294,7 +296,7 @@ fun PaletteBar() {
                             steps = 64,
                             enabled = true,
                             onValueChangeFinished = {
-                                EventBus.publish(PaletteEvent(PaletteAction.RATE_CHANGED, animationRate))
+                                EventBus.publish(PaletteEvent(PaletteAction.RATE_CHANGED, animationRate - currentRate))
                             },
                             thumb = {
                                 SliderThumb(it)

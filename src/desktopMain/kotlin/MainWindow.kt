@@ -2,14 +2,16 @@ import action.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType.Companion.KeyUp
 import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
@@ -42,240 +44,256 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
         var fullScreen by remember { mutableStateOf(false) }
 
 //        key(fullScreen) {
-            Window(
-                onCloseRequest = { closeFunction() },
-                onKeyEvent = {
-                    if (it.key == Key.F) {
-                        fullScreen = true
-                        true
-                    } else if (it.key == Key.Escape) {
-                        fullScreen = false
-                        true
-                    } else false
-                },
-                title = appName,
-                icon = painterResource(Res.drawable.frac2lz128),
-                state = WindowState(placement = WindowPlacement.Maximized),
+        Window(
+            onCloseRequest = { closeFunction() },
+            onKeyEvent = {
+                if (it.type == KeyUp) {
+                    when {
+                        it.key == Key.A -> {
+                            EventBus.publish(PaletteEvent(PaletteAction.ANIMATE))
+                        }
+                        it.key == Key.F -> {
+                            fullScreen = !fullScreen
+                        }
+                        it.key == Key.R -> {
+                            EventBus.publish(PaletteEvent(PaletteAction.DIRECTION_CHANGED))
+                        }
+                        it.key == Key.Escape -> {
+                            fullScreen = false
+                        }
+                        it.key == Key.DirectionLeft -> {
+                            EventBus.publish(PaletteEvent(PaletteAction.RATE_CHANGED, -10F))
+                        }
+                        it.key == Key.DirectionRight -> {
+                            EventBus.publish(PaletteEvent(PaletteAction.RATE_CHANGED, 10F))
+                        }
+                    }
+                }
+                false
+            },
+            title = appName,
+            icon = painterResource(Res.drawable.frac2lz128),
+            state = WindowState(placement = WindowPlacement.Maximized),
 //                undecorated = fullScreen,
-            ) {
-                MainMenu()
+        ) {
+            MainMenu()
 
-                val fractal: Fractal = remember { Mandelbrot() }
-                var palette by remember { mutableStateOf(Palette()) }
+            val fractal: Fractal = remember { Mandelbrot() }
+            var palette by remember { mutableStateOf(Palette()) }
 
-                var jsonLoaded by remember { mutableStateOf(false) }
-                var subscribed by remember { mutableStateOf(false) }
+            var jsonLoaded by remember { mutableStateOf(false) }
+            var subscribed by remember { mutableStateOf(false) }
 
-                fun getInitPath(key: String): String {
-                    return if (properties.containsKey(key)) properties[key] as String
-                    else "./"
+            fun getInitPath(key: String): String {
+                return if (properties.containsKey(key)) properties[key] as String
+                else "./"
+            }
+
+            fun getFile(initPath: String, extFilter: String, save: Boolean = false, title: String = ""): File? {
+                val dlg = FileDialog(this.window, title, if (save) FileDialog.SAVE else FileDialog.LOAD)
+
+                dlg.directory = initPath
+                dlg.file = "*$extFilter"
+                dlg.filenameFilter = FilenameFilter { _, name -> name.endsWith(extFilter) }
+                dlg.isVisible = true
+
+                var filename = dlg.file
+                val directory = dlg.directory
+
+                if (!filename.isNullOrEmpty() && !filename.endsWith(extFilter)) filename += extFilter
+
+                return if (directory.isNullOrEmpty() || filename.isNullOrEmpty()) null
+                else File(directory, filename)
+            }
+
+            fun onOpen() {
+                val file = getFile(getInitPath("2lzPath"), ".2lz", title = "Load Fractal Image")
+
+                if (file != null) {
+                    properties["2lzPath"] = file.parent ?: "./"
+
+                    val stream = ObjectInputStream(file.inputStream())
+
+                    fractal.readObject(stream)
+                    palette.readObject(stream)
+
+                    stream.close()
+
+                    EventBus.publish(AppTitle(file.name))
+                    EventBus.publish(FractalSizeEvent(fractal.params.width, fractal.params.height))
+
+                    fractal.refreshImage()
+                }
+            }
+
+            fun onOpenJson() {
+                val file = getFile(getInitPath("jsonPath"), ".json", title = "Load JSON Specification")
+
+                if (file != null) {
+                    properties["jsonPath"] = file.parent ?: "./"
+
+                    val stream: InputStream = file.inputStream()
+                    val reader: JsonReader = Json.createReader(stream)
+                    val data: JsonObject = reader.readObject()
+
+                    EventBus.publish(AppTitle(file.name))
+
+                    fractal.fromJson(data)
+                    jsonLoaded = true
+                }
+            }
+
+            fun onOpenPalette() {
+                val file = getFile(getInitPath("palPath"), ".pal", title = "Load Palette")
+
+                if (file != null) {
+                    properties["palPath"] = file.parent ?: "./"
+
+                    val stream = ObjectInputStream(file.inputStream())
+
+                    palette.readObject(stream)
+                    stream.close()
+
+                    fractal.refreshImage()
+                }
+            }
+
+            fun onSave() {
+                val file = getFile(getInitPath("2lzPath"), ".2lz", true, "Save Fractal Image")
+
+                if (file != null) {
+                    properties["2lzPath"] = file.parent ?: "./"
+
+                    val stream = ObjectOutputStream(file.outputStream())
+
+                    fractal.writeObject(stream)
+                    palette.writeObject(stream)
+
+                    stream.close()
+
+                    EventBus.publish(AppTitle(file.name))
+                }
+            }
+
+            fun onSaveJson() {
+                val file = getFile(getInitPath("jsonPath"), ".json", true, title = "Save JSON Specification")
+
+                if (file != null) {
+                    properties["jsonPath"] = file.parent ?: "./"
+
+                    EventBus.publish(AppTitle(file.name))
+
+                    val stream: OutputStream = file.outputStream()
+                    val writer = Json.createWriter(stream)
+                    val data = fractal.toJson()
+
+                    writer.writeObject(data)
+                }
+            }
+
+            fun onSaveImage() {
+                val file = getFile(getInitPath("imgPath"), ".png", true, title = "Export Image")
+
+                if (file != null) {
+                    properties["imgPath"] = file.parent ?: "./"
+                    val filename = file.absolutePath
+
+                    EventBus.publish(FileEvent(FileAction.WRITE_IMAGE, filename))
+                }
+            }
+
+            fun onSavePalette() {
+                val file = getFile(getInitPath("palPath"), ".pal", true, title = "Save Palette")
+
+                if (file != null) {
+                    properties["palPath"] = file.parent ?: "./"
+
+                    val stream = ObjectOutputStream(file.outputStream())
+
+                    palette.writeObject(stream)
+                    stream.close()
+                }
+            }
+
+            if (!subscribed) {
+                subscribed = true
+
+
+                EventBus.listen(AppTitle::class.java).subscribe {
+                    var appTitle = appName + ": " + VersionInfo.VERSION
+
+                    if (it.title.isNotEmpty()) {
+                        appTitle += " - " + it.title
+                    }
+
+                    this.window.title = appTitle
                 }
 
-                fun getFile(initPath: String, extFilter: String, save: Boolean = false, title: String = ""): File? {
-                    val dlg = FileDialog(this.window, title, if (save) FileDialog.SAVE else FileDialog.LOAD)
-
-                    dlg.directory = initPath
-                    dlg.file = "*$extFilter"
-                    dlg.filenameFilter = FilenameFilter { _, name -> name.endsWith(extFilter) }
-                    dlg.isVisible = true
-
-                    var filename = dlg.file
-                    val directory = dlg.directory
-
-                    if (!filename.isNullOrEmpty() && !filename.endsWith(extFilter)) filename += extFilter
-
-                    return if (directory.isNullOrEmpty() || filename.isNullOrEmpty()) null
-                    else File(directory, filename)
-                }
-
-                fun onOpen() {
-                    val file = getFile(getInitPath("2lzPath"), ".2lz", title = "Load Fractal Image")
-
-                    if (file != null) {
-                        properties["2lzPath"] = file.parent ?: "./"
-
-                        val stream = ObjectInputStream(file.inputStream())
-
-                        fractal.readObject(stream)
-                        palette.readObject(stream)
-
-                        stream.close()
-
-                        EventBus.publish(AppTitle(file.name))
-                        EventBus.publish(FractalSizeEvent(fractal.params.width, fractal.params.height))
-
-                        fractal.refreshImage()
+                EventBus.listen(FileEvent::class.java).subscribe {
+                    when (it.action) {
+                        FileAction.OPEN_FRACTAL -> onOpen()
+                        FileAction.OPEN_JSON -> onOpenJson()
+                        FileAction.OPEN_PALETTE -> onOpenPalette()
+                        FileAction.SAVE_FRACTAL -> onSave()
+                        FileAction.SAVE_JSON -> onSaveJson()
+                        FileAction.SAVE_PALETTE -> onSavePalette()
+                        FileAction.SAVE_IMAGE -> onSaveImage()
+                        else -> {}
                     }
                 }
 
-                fun onOpenJson() {
-                    val file = getFile(getInitPath("jsonPath"), ".json", title = "Load JSON Specification")
-
-                    if (file != null) {
-                        properties["jsonPath"] = file.parent ?: "./"
-
-                        val stream: InputStream = file.inputStream()
-                        val reader: JsonReader = Json.createReader(stream)
-                        val data: JsonObject = reader.readObject()
-
-                        EventBus.publish(AppTitle(file.name))
-
-                        fractal.fromJson(data)
-                        jsonLoaded = true
-                    }
+                EventBus.listen(NewPaletteEvent::class.java).subscribe {
+                    palette = Palette(it.palette)
                 }
 
-                fun onOpenPalette() {
-                    val file = getFile(getInitPath("palPath"), ".pal", title = "Load Palette")
-
-                    if (file != null) {
-                        properties["palPath"] = file.parent ?: "./"
-
-                        val stream = ObjectInputStream(file.inputStream())
-
-                        palette.readObject(stream)
-                        stream.close()
-
-                        fractal.refreshImage()
-                    }
+                EventBus.listen(UIEvent::class.java).subscribe {
+                    if (it.action == UIAction.REFRESH && fractal.hasZValues()) fractal.refreshImage()
                 }
 
-                fun onSave() {
-                    val file = getFile(getInitPath("2lzPath"), ".2lz", true, "Save Fractal Image")
+                EventBus.publish(AppTitle(""))
+            }
 
-                    if (file != null) {
-                        properties["2lzPath"] = file.parent ?: "./"
-
-                        val stream = ObjectOutputStream(file.outputStream())
-
-                        fractal.writeObject(stream)
-                        palette.writeObject(stream)
-
-                        stream.close()
-
-                        EventBus.publish(AppTitle(file.name))
+            Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
+                Row(Modifier.weight(1f)) {
+                    if (jsonLoaded) {
+                        YesNoAlert(
+                            title = "JSON File Loaded",
+                            text = "Do you want to recalculate now?",
+                            dismiss = { jsonLoaded = false },
+                            confirm = {
+                                EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
+                                jsonLoaded = false
+                            })
+                    } else {
+                        Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
+                        if (!fullScreen) Column { SettingsPanel(fractal.params, palette, refresh) }
                     }
                 }
-
-                fun onSaveJson() {
-                    val file = getFile(getInitPath("jsonPath"), ".json", true, title = "Save JSON Specification")
-
-                    if (file != null) {
-                        properties["jsonPath"] = file.parent ?: "./"
-
-                        EventBus.publish(AppTitle(file.name))
-
-                        val stream: OutputStream = file.outputStream()
-                        val writer = Json.createWriter(stream)
-                        val data = fractal.toJson()
-
-                        writer.writeObject(data)
-                    }
-                }
-
-                fun onSaveImage() {
-                    val file = getFile(getInitPath("imgPath"), ".png", true, title = "Export Image")
-
-                    if (file != null) {
-                        properties["imgPath"] = file.parent ?: "./"
-                        val filename = file.absolutePath
-
-                        EventBus.publish(FileEvent(FileAction.WRITE_IMAGE, filename))
-                    }
-                }
-
-                fun onSavePalette() {
-                    val file = getFile(getInitPath("palPath"), ".pal", true, title = "Save Palette")
-
-                    if (file != null) {
-                        properties["palPath"] = file.parent ?: "./"
-
-                        val stream = ObjectOutputStream(file.outputStream())
-
-                        palette.writeObject(stream)
-                        stream.close()
-                    }
-                }
-
-                if (!subscribed) {
-                    subscribed = true
-
-
-                    EventBus.listen(AppTitle::class.java).subscribe {
-                        var appTitle = appName + ": " + VersionInfo.VERSION
-
-                        if (it.title.isNotEmpty()) {
-                            appTitle += " - " + it.title
-                        }
-
-                        this.window.title = appTitle
-                    }
-
-                    EventBus.listen(FileEvent::class.java).subscribe {
-                        when (it.action) {
-                            FileAction.OPEN_FRACTAL -> onOpen()
-                            FileAction.OPEN_JSON -> onOpenJson()
-                            FileAction.OPEN_PALETTE -> onOpenPalette()
-                            FileAction.SAVE_FRACTAL -> onSave()
-                            FileAction.SAVE_JSON -> onSaveJson()
-                            FileAction.SAVE_PALETTE -> onSavePalette()
-                            FileAction.SAVE_IMAGE -> onSaveImage()
-                            else -> {}
-                        }
-                    }
-
-                    EventBus.listen(NewPaletteEvent::class.java).subscribe {
-                        palette = Palette(it.palette)
-                    }
-
-                    EventBus.listen(UIEvent::class.java).subscribe {
-                        if (it.action == UIAction.REFRESH && fractal.hasZValues()) fractal.refreshImage()
-                    }
-
-                    EventBus.publish(AppTitle(""))
-                }
-
-                Column(Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
-                    Row(Modifier.weight(1f)) {
-                        if (jsonLoaded) {
-                            YesNoAlert(
-                                title = "JSON File Loaded",
-                                text = "Do you want to recalculate now?",
-                                dismiss = { jsonLoaded = false },
-                                confirm = {
-                                    EventBus.publish(CalculateEvent(CalculateAction.RECALCULATE))
-                                    jsonLoaded = false
-                                })
-                        } else {
-                            Column(Modifier.weight(1f)) { FractalImage(fractal.params, palette) }
-                            if (!fullScreen) Column { SettingsPanel(fractal.params, palette, refresh) }
-                        }
-                    }
-                    if (!fullScreen) {
-                        PaletteCanvas(palette, fractal)
-                        Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Column { Text("Color Range:", color = MaterialTheme.colorScheme.primary) }
-                            Column(Modifier.weight(1f)) {
-                                PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
-                                    palette.colorRange = it
-                                    checkRefresh()
-                                }
+                if (!fullScreen) {
+                    PaletteCanvas(palette, fractal)
+                    Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Column { Text("Color Range:", color = MaterialTheme.colorScheme.primary) }
+                        Column(Modifier.weight(1f)) {
+                            PaletteSlider(1f, 100f, PaletteSliderType.COLOR_RANGE, palette) {
+                                palette.colorRange = it
+                                checkRefresh()
                             }
                         }
-                        Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Column { Text("Palette Size:", color = MaterialTheme.colorScheme.primary) }
-                            Column(Modifier.weight(1f)) {
-                                PaletteSlider(2f, 255f, PaletteSliderType.SIZE, palette) {
-                                    palette.size = it
-                                    checkRefresh()
-                                }
+                    }
+                    Row(Modifier.fillMaxWidth().padding(3.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Column { Text("Palette Size:", color = MaterialTheme.colorScheme.primary) }
+                        Column(Modifier.weight(1f)) {
+                            PaletteSlider(2f, 255f, PaletteSliderType.SIZE, palette) {
+                                palette.size = it
+                                checkRefresh()
                             }
                         }
-                        Row { PaletteBar() }
-                        StatusBar(palette)
                     }
+                    Row { PaletteBar() }
+                    StatusBar(palette)
                 }
             }
         }
     }
+}
 //}

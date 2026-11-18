@@ -9,12 +9,7 @@ import java.awt.Graphics2D
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.geom.AffineTransform
-import java.awt.image.BufferedImage
-import java.awt.image.ColorModel
-import java.awt.image.DataBuffer
-import java.awt.image.DirectColorModel
-import java.awt.image.IndexColorModel
-import java.awt.image.MultiPixelPackedSampleModel
+import java.awt.image.*
 import java.io.File
 import java.lang.Double.min
 import java.util.*
@@ -104,7 +99,7 @@ open class SwingImageClass :
 
     private var animating = false
     private var delay = 64
-    private var animationDirection = false
+    var animationDirection = false
 
     private fun toggleAnimation() {
         if (animating) animating = false
@@ -124,6 +119,10 @@ open class SwingImageClass :
 
             timer.start()
         }
+    }
+
+    private fun toggleDirection() {
+        animationDirection = !animationDirection
     }
 
     private class Delegate<T>(private var value: T) {
@@ -232,12 +231,12 @@ open class SwingImageClass :
         EventBus.listen(PaletteEvent::class.java).subscribe {
             when (it.action) {
                 PaletteAction.ANIMATE -> toggleAnimation()
-                PaletteAction.DIRECTION_CHANGED -> {
-                    animationDirection = it.data as Boolean
-                }
-
+                PaletteAction.DIRECTION_CHANGED -> toggleDirection()
                 PaletteAction.RATE_CHANGED -> {
-                    delay = (it.data as Float).toInt()
+                    val delta = (it.data as Float).toInt()
+
+                    delay = if (delta < 0) (delay + delta).coerceAtLeast(0)
+                    else (delay + delta).coerceAtMost(256)
                 }
 
                 else -> {}
@@ -266,7 +265,6 @@ open class SwingImageClass :
         repaint(0, 0, width, height)
 
         zoomBox!!.isEnabled = false
-//        scaleImage()
     }
 
     private fun scaleImage() {

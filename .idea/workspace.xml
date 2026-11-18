@@ -11,7 +11,9 @@
   <component name="ChangeListManager">
     <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="working on restoring get color from fractal">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
@@ -135,61 +137,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="0.0" />
-      <entry key="MS500" value="0.0" />
-      <entry key="S2" value="4.9089232067236235E-196" />
-      <entry key="S5" value="7.523059475974593E-79" />
-      <entry key="S10" value="8.673557214877062E-40" />
-      <entry key="S30" value="9.536721117784491E-14" />
-      <entry key="S60" value="3.08822716900101E-7" />
-      <entry key="M2" value="5.587545223808991E-4" />
-      <entry key="M5" value="0.059420101498676735" />
-      <entry key="M10" value="0.4096718361950194" />
-      <entry key="M15" value="0.9226927770722856" />
-      <entry key="M30" value="2.4309657018649706" />
-      <entry key="H1" value="5.29477623697105" />
-      <entry key="H2" value="13.172180642623976" />
-      <entry key="H4" value="34.99513724726747" />
-      <entry key="D1" value="177.34700339963524" />
-      <entry key="W1" value="332.45401589127437" />
+      <entry key="MS100" value="5.840839274347208E-81" />
+      <entry key="MS500" value="8.980386971410412E-17" />
+      <entry key="S2" value="9.73472668800655E-5" />
+      <entry key="S5" value="0.02485017806944257" />
+      <entry key="S10" value="0.15763940648081573" />
+      <entry key="S30" value="0.5433201366500254" />
+      <entry key="S60" value="0.8165273959361061" />
+      <entry key="M2" value="1.4584584466874169" />
+      <entry key="M5" value="4.39151568754598" />
+      <entry key="M10" value="8.308150449379898" />
+      <entry key="M15" value="11.063220449942037" />
+      <entry key="M30" value="17.938591271740144" />
+      <entry key="H1" value="28.208821929121438" />
+      <entry key="H2" value="38.821027272699894" />
+      <entry key="H4" value="48.86088841186532" />
+      <entry key="D1" value="165.41219080190612" />
+      <entry key="W1" value="368.68646927409065" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0000107746812206" />
-      <entry key="S2" value="1.0598261147297414" />
-      <entry key="S5" value="1.4490129007217973" />
-      <entry key="S10" value="2.1971032912931987" />
-      <entry key="S30" value="3.9204339278919393" />
-      <entry key="S60" value="4.791389339740867" />
-      <entry key="M2" value="5.347065774915215" />
-      <entry key="M5" value="5.895093647678363" />
-      <entry key="M10" value="6.895469702445104" />
-      <entry key="M15" value="7.983526245061103" />
-      <entry key="M30" value="10.494011166716481" />
-      <entry key="H1" value="13.519658190527176" />
-      <entry key="H2" value="20.318317691441173" />
-      <entry key="H4" value="38.98280140760218" />
-      <entry key="D1" value="145.89819760093155" />
-      <entry key="W1" value="264.8571812717753" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0000000147164005" />
+      <entry key="S10" value="1.0001213413618417" />
+      <entry key="S30" value="1.0526240600267702" />
+      <entry key="S60" value="1.281967615439908" />
+      <entry key="M2" value="1.8400474543044059" />
+      <entry key="M5" value="3.8346491187863028" />
+      <entry key="M10" value="6.437782546502215" />
+      <entry key="M15" value="8.30702272670515" />
+      <entry key="M30" value="12.81508319689654" />
+      <entry key="H1" value="19.07618117578947" />
+      <entry key="H2" value="25.322706272391542" />
+      <entry key="H4" value="32.0933132189829" />
+      <entry key="D1" value="125.10804943786397" />
+      <entry key="W1" value="283.7930428732785" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="2.133906056709222E-7" />
-      <entry key="MS500" value="0.04632710701109011" />
-      <entry key="S2" value="0.47548651571509887" />
-      <entry key="S5" value="0.9827019953713421" />
-      <entry key="S10" value="1.7664567730930945" />
-      <entry key="S30" value="3.6288975442583276" />
-      <entry key="S60" value="4.608173192500839" />
-      <entry key="M2" value="5.243917472148392" />
-      <entry key="M5" value="5.903468748204357" />
-      <entry key="M10" value="7.26555382238714" />
-      <entry key="M15" value="8.87017148299936" />
-      <entry key="M30" value="12.896503513597564" />
-      <entry key="H1" value="18.794376950604985" />
-      <entry key="H2" value="33.475380767475386" />
-      <entry key="H4" value="73.96306456052572" />
-      <entry key="D1" value="323.233830871777" />
-      <entry key="W1" value="597.3078682736126" />
+      <entry key="MS100" value="2.40076911462955E-7" />
+      <entry key="MS500" value="0.04743185165543926" />
+      <entry key="S2" value="0.46677279299154567" />
+      <entry key="S5" value="0.7618026975266902" />
+      <entry key="S10" value="1.0154530832928574" />
+      <entry key="S30" value="1.5404840048591275" />
+      <entry key="S60" value="2.0557671857598616" />
+      <entry key="M2" value="3.253747381645572" />
+      <entry key="M5" value="8.172063358222518" />
+      <entry key="M10" value="14.693238247316604" />
+      <entry key="M15" value="19.319559836471857" />
+      <entry key="M30" value="30.700162317910372" />
+      <entry key="H1" value="47.2323190424069" />
+      <entry key="H2" value="64.10292329602915" />
+      <entry key="H4" value="80.92712867942383" />
+      <entry key="D1" value="290.5076718046356" />
+      <entry key="W1" value="652.4755707710876" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -587,7 +589,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794950360156</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="working on restoring get color from fractal">
+      <option name="closed" value="true" />
+      <created>1794983080568</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1794983080568</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -642,6 +652,16 @@
           <properties class="java.lang.NullPointerException" package="java.lang" />
           <option name="timeStamp" value="13" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/components/ZoomBox.kt</url>
+          <line>47</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt</url>
+          <line>49</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
