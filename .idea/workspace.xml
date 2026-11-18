@@ -9,10 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="working on full screen">
+    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="working on restoring get color from fractal">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/MainWindow.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/action/constants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/action/constants.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
@@ -136,61 +135,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="3.0089934138522775E-10" />
-      <entry key="MS500" value="0.012464769372016135" />
-      <entry key="S2" value="0.3341343016574249" />
-      <entry key="S5" value="0.6450129360975936" />
-      <entry key="S10" value="0.8031269738326522" />
-      <entry key="S30" value="0.9295257048472995" />
-      <entry key="S60" value="0.9641281962498053" />
-      <entry key="M2" value="0.9882874318425128" />
-      <entry key="M5" value="1.4673847822177246" />
-      <entry key="M10" value="3.8219750545661113" />
-      <entry key="M15" value="6.638657403406869" />
-      <entry key="M30" value="13.256270890568002" />
-      <entry key="H1" value="22.22883557550795" />
-      <entry key="H2" value="38.88921541158675" />
-      <entry key="H4" value="67.80939410775267" />
-      <entry key="D1" value="180.55346471845874" />
-      <entry key="W1" value="301.09064480859655" />
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="4.9089232067236235E-196" />
+      <entry key="S5" value="7.523059475974593E-79" />
+      <entry key="S10" value="8.673557214877062E-40" />
+      <entry key="S30" value="9.536721117784491E-14" />
+      <entry key="S60" value="3.08822716900101E-7" />
+      <entry key="M2" value="5.587545223808991E-4" />
+      <entry key="M5" value="0.059420101498676735" />
+      <entry key="M10" value="0.4096718361950194" />
+      <entry key="M15" value="0.9226927770722856" />
+      <entry key="M30" value="2.4309657018649706" />
+      <entry key="H1" value="5.29477623697105" />
+      <entry key="H2" value="13.172180642623976" />
+      <entry key="H4" value="34.99513724726747" />
+      <entry key="D1" value="177.34700339963524" />
+      <entry key="W1" value="332.45401589127437" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0000000000025888" />
-      <entry key="S10" value="1.000001609008921" />
-      <entry key="S30" value="1.0118791672409826" />
-      <entry key="S60" value="1.1209639107138867" />
-      <entry key="M2" value="1.4522918315196451" />
-      <entry key="M5" value="2.660994306818842" />
-      <entry key="M10" value="5.909714561339649" />
-      <entry key="M15" value="9.782823096331308" />
-      <entry key="M30" value="19.250324216582083" />
-      <entry key="H1" value="30.32388273698474" />
-      <entry key="H2" value="44.317086711544015" />
-      <entry key="H4" value="63.3707681260894" />
-      <entry key="D1" value="138.33454538251777" />
-      <entry key="W1" value="230.7787134271042" />
+      <entry key="MS500" value="1.0000107746812206" />
+      <entry key="S2" value="1.0598261147297414" />
+      <entry key="S5" value="1.4490129007217973" />
+      <entry key="S10" value="2.1971032912931987" />
+      <entry key="S30" value="3.9204339278919393" />
+      <entry key="S60" value="4.791389339740867" />
+      <entry key="M2" value="5.347065774915215" />
+      <entry key="M5" value="5.895093647678363" />
+      <entry key="M10" value="6.895469702445104" />
+      <entry key="M15" value="7.983526245061103" />
+      <entry key="M30" value="10.494011166716481" />
+      <entry key="H1" value="13.519658190527176" />
+      <entry key="H2" value="20.318317691441173" />
+      <entry key="H4" value="38.98280140760218" />
+      <entry key="D1" value="145.89819760093155" />
+      <entry key="W1" value="264.8571812717753" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="3.480467131354633E-10" />
-      <entry key="MS500" value="0.013043172372185328" />
-      <entry key="S2" value="0.45698275407171396" />
-      <entry key="S5" value="1.0757003377820076" />
-      <entry key="S10" value="1.459131727008683" />
-      <entry key="S30" value="1.8096423549415595" />
-      <entry key="S60" value="2.0141979933973664" />
-      <entry key="M2" value="2.400475679863645" />
-      <entry key="M5" value="4.10185701042667" />
-      <entry key="M10" value="9.697925077817446" />
-      <entry key="M15" value="16.38225057407494" />
-      <entry key="M30" value="32.46664642339189" />
-      <entry key="H1" value="52.518810139639925" />
-      <entry key="H2" value="83.17605007660046" />
-      <entry key="H4" value="131.15331828282854" />
-      <entry key="D1" value="318.8760892505001" />
-      <entry key="W1" value="531.8662456581519" />
+      <entry key="MS100" value="2.133906056709222E-7" />
+      <entry key="MS500" value="0.04632710701109011" />
+      <entry key="S2" value="0.47548651571509887" />
+      <entry key="S5" value="0.9827019953713421" />
+      <entry key="S10" value="1.7664567730930945" />
+      <entry key="S30" value="3.6288975442583276" />
+      <entry key="S60" value="4.608173192500839" />
+      <entry key="M2" value="5.243917472148392" />
+      <entry key="M5" value="5.903468748204357" />
+      <entry key="M10" value="7.26555382238714" />
+      <entry key="M15" value="8.87017148299936" />
+      <entry key="M30" value="12.896503513597564" />
+      <entry key="H1" value="18.794376950604985" />
+      <entry key="H2" value="33.475380767475386" />
+      <entry key="H4" value="73.96306456052572" />
+      <entry key="D1" value="323.233830871777" />
+      <entry key="W1" value="597.3078682736126" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -214,7 +213,7 @@
     "Gradle.Frac2lz_compose [packageDistributionForCurrentOS].executor": "Run",
     "Gradle.Frac2lz_compose [suggestRuntimeModules].executor": "Run",
     "Gradle.Main [desktop].executor": "Run",
-    "Gradle.Run.executor": "Debug",
+    "Gradle.Run.executor": "Run",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -580,7 +579,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794938819175</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="working on restoring get color from fractal">
+      <option name="closed" value="true" />
+      <created>1794950360156</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1794950360156</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -613,7 +620,8 @@
     <MESSAGE value="working on animation" />
     <MESSAGE value="added animation controls" />
     <MESSAGE value="working on full screen" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on full screen" />
+    <MESSAGE value="working on restoring get color from fractal" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on restoring get color from fractal" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -634,11 +642,6 @@
           <properties class="java.lang.NullPointerException" package="java.lang" />
           <option name="timeStamp" value="13" />
         </breakpoint>
-        <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt</url>
-          <line>55</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>

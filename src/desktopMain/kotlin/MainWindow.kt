@@ -229,7 +229,7 @@ fun MainWindow(props: Properties, closeFunction: () -> Unit) {
                     }
 
                     EventBus.listen(UIEvent::class.java).subscribe {
-                        if (it.action == UIAction.REFRESH) fractal.refreshImage()
+                        if (it.action == UIAction.REFRESH && fractal.hasZValues()) fractal.refreshImage()
                     }
 
                     EventBus.publish(AppTitle(""))

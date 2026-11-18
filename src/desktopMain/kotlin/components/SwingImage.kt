@@ -10,8 +10,11 @@ import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
+import java.awt.image.ColorModel
 import java.awt.image.DataBuffer
+import java.awt.image.DirectColorModel
 import java.awt.image.IndexColorModel
+import java.awt.image.MultiPixelPackedSampleModel
 import java.io.File
 import java.lang.Double.min
 import java.util.*
@@ -25,38 +28,47 @@ open class SwingImageClass :
     var scale = 0.0
     val colorModelSize = 256
 
+    private fun getColorModel(type: Int): ColorModel {
+        if (type == BufferedImage.TYPE_INT_RGB) {
+            return DirectColorModel(32, 0x00ff0000, 0x0000ff00, 0x000000ff)
+        } else {
+            val size = palette!!.size
+
+            indexColors = IntArray(size)
+            indexColors.fill(0)
+
+            for (i in 0..<size) {
+                val data = FractalPointData(i + 1L)
+
+                indexColors[i] = palette!!.color(data).toArgb()
+            }
+
+            return IndexColorModel(
+                8, palette!!.size,
+                indexColors, 0, false, -1, DataBuffer.TYPE_BYTE
+            )
+        }
+    }
+
     fun createSwingImage(clear: Boolean = true) {
+        val currentType = if (this::image.isInitialized) image.type else -1
+        val newType = if (palette!!.getColorFromFractal) BufferedImage.TYPE_INT_RGB else BufferedImage.TYPE_BYTE_INDEXED
+
         if (imgHeight != 0 && imgWidth != 0) {
-            if (clear) {
+            if (clear || currentType != newType) {
                 pixels = IntArray(imgWidth * imgHeight)
                 pixels.fill(0)
             }
 
-            val currentType = if (this::image.isInitialized) image.type else -1
-
-            if (palette!!.getColorFromFractal) {
-                BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_INT_RGB)
+            if (newType == BufferedImage.TYPE_INT_RGB) {
+                image = BufferedImage(imgWidth, imgHeight, newType)
+                image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels)
             } else {
-                val size = palette!!.size
-
-                indexColors = IntArray(size)
-                indexColors.fill(0)
-
-                for (i in 0..<size) {
-                    val data = FractalPointData(i + 1L)
-
-                    indexColors[i] = palette!!.color(data).toArgb()
-                }
-
-                val colorModel = IndexColorModel(8, palette!!.size, indexColors, 0, false, -1, DataBuffer.TYPE_BYTE)
-
-                image = BufferedImage(imgWidth, imgHeight, BufferedImage.TYPE_BYTE_INDEXED, colorModel)
+                image = BufferedImage(imgWidth, imgHeight, newType, getColorModel(newType) as IndexColorModel)
+                image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels.toByteArray())
             }
 
-            val inData = if (palette!!.getColorFromFractal) pixels else pixels.toByteArray()
-            image.raster.setDataElements(0, 0, imgWidth, imgHeight, inData)
-
-            if (image.type != currentType) EventBus.publish(UIEvent(UIAction.REFRESH))
+            if (newType != currentType) EventBus.publish(UIEvent(UIAction.REFRESH))
             else repaint()
         }
     }
@@ -97,6 +109,8 @@ open class SwingImageClass :
     private fun toggleAnimation() {
         if (animating) animating = false
         else {
+            if (image.type != BufferedImage.TYPE_BYTE_INDEXED) return
+
             animating = true
             val timer = Timer(delay) { e ->
                 val thisTimer = e.source as Timer
@@ -183,13 +197,13 @@ open class SwingImageClass :
             }
 
             try {
-                pixels[it.row * imgWidth + it.column] = color as Int
+                pixels[it.row * imgWidth + it.column] = color
 
                 if (it.endOfRow) {
                     lastPoint = it.data
 
                     if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) {
-                        val inData = if (palette!!.getColorFromFractal) pixels else pixels.toByteArray()
+                        val inData = if (image.type == BufferedImage.TYPE_INT_RGB) pixels else pixels.toByteArray()
                         image.raster.setDataElements(0, 0, imgWidth, imgHeight, inData)
                         repaint()
                     }
