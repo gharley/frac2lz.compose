@@ -40,6 +40,9 @@ class Palette {
             return value
         }
 
+        private val updateProperties =
+            arrayOf("colorRange", "getColorFromFractal", "useSecondarySmoothing", "refineRange")
+
         operator fun setValue(palette: Palette, property: KProperty<*>, t: T) {
             if (value == t) return
             value = t
@@ -51,7 +54,7 @@ class Palette {
                     PaletteType.SMOOTH -> palette.buildPalette(palette.smoothColor)
                     PaletteType.CUSTOM -> palette.buildDefaultPalette()
                 }
-            } else if (property.name == "colorRange") palette.fireUpdate()
+            } else if (property.name in updateProperties) palette.fireUpdate()
         }
     }
 
