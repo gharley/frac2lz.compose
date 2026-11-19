@@ -23,7 +23,7 @@ open class SwingImageClass :
     var scale = 0.0
     val colorModelSize = 256
 
-    private fun getColorModel(type: Int): IndexColorModel {
+    private fun getIndexColorModel(): IndexColorModel {
         val size = palette!!.size
 
         indexColors = IntArray(size) { i -> palette!!.colors[i].toArgb() }
@@ -48,7 +48,7 @@ open class SwingImageClass :
                 image = BufferedImage(imgWidth, imgHeight, newType)
                 image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels)
             } else {
-                image = BufferedImage(imgWidth, imgHeight, newType, getColorModel(newType))
+                image = BufferedImage(imgWidth, imgHeight, newType, getIndexColorModel())
                 image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels.toByteArray())
             }
 
@@ -134,8 +134,6 @@ open class SwingImageClass :
 
     var palette: Palette? = null
     var zoomBox: ZoomBox? = null
-    var firstPoint = FractalPointData()
-    var lastPoint = FractalPointData()
     private var pixels = IntArray(imgWidth * imgHeight)
     private lateinit var image: BufferedImage
     private val imageTransform = AffineTransform()
@@ -181,15 +179,12 @@ open class SwingImageClass :
 
             if (it.row == 0 && it.column == 0) {
                 prepareForCalc()
-                firstPoint = it.data
             }
 
             try {
                 pixels[it.row * imgWidth + it.column] = color
 
                 if (it.endOfRow) {
-                    lastPoint = it.data
-
                     if ((refreshRate < 100 && it.row % refreshRate == 0) || it.row == imgHeight - 1) {
                         val inData = if (image.type == BufferedImage.TYPE_INT_RGB) pixels else pixels.toByteArray()
                         image.raster.setDataElements(0, 0, imgWidth, imgHeight, inData)

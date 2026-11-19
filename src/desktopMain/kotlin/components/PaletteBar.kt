@@ -326,6 +326,20 @@ fun PaletteBar() {
                         }
                     }
 
+                    EventBus.listen(PaletteEvent::class.java).subscribe {
+                        when (it.action) {
+                            PaletteAction.DIRECTION_CHANGED -> animationDirection = !animationDirection
+                            PaletteAction.RATE_CHANGED -> {
+                                val delta = (it.data as Float).toInt()
+
+                                animationRate = if (delta < 0) (animationRate + delta).coerceAtLeast(0f)
+                                else (animationRate + delta).coerceAtMost(256f)
+                            }
+
+                            else -> {}
+                        }
+                    }
+
                     Button(
                         onClick = { EventBus.publish(PaletteEvent(PaletteAction.INTERPOLATE)) },
                         enabled = enableButton

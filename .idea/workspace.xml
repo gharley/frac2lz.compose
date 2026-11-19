@@ -9,8 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="fixed palette update bug">
+    <list default="true" id="8691d6a6-065f-4d8c-ba8a-105c3dbb6bc4" name="Changes" comment="fixed index palette creation bug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/desktopMain/kotlin/components/SwingImage.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/version.properties" afterDir="false" />
     </list>
@@ -134,61 +135,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="3.4786488578521313E-243" />
-      <entry key="MS500" value="3.223161883093732E-49" />
-      <entry key="S2" value="7.534779189490033E-13" />
-      <entry key="S5" value="1.4152338640560807E-5" />
-      <entry key="S10" value="0.0037620180678036704" />
-      <entry key="S30" value="0.1612215717540565" />
-      <entry key="S60" value="0.5097850820413625" />
-      <entry key="M2" value="1.3536286881470707" />
-      <entry key="M5" value="4.094215643269195" />
-      <entry key="M10" value="7.402312534992964" />
-      <entry key="M15" value="9.597330048705818" />
-      <entry key="M30" value="14.702445906529375" />
-      <entry key="H1" value="24.96975406681106" />
-      <entry key="H2" value="40.62034226756482" />
-      <entry key="H4" value="57.50782647360345" />
-      <entry key="D1" value="180.70372320651097" />
-      <entry key="W1" value="389.93155925598154" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.00000000131738" />
+      <entry key="S5" value="1.0004106621762523" />
+      <entry key="S10" value="1.0284833954801538" />
+      <entry key="S30" value="1.484118212239327" />
+      <entry key="S60" value="1.9838199358884185" />
+      <entry key="M2" value="2.4026652537928026" />
+      <entry key="M5" value="2.73871032926328" />
+      <entry key="M10" value="3.071873435128722" />
+      <entry key="M15" value="3.8368836597933345" />
+      <entry key="M30" value="7.851298411809717" />
+      <entry key="H1" value="17.836878004757214" />
+      <entry key="H2" value="35.14303729122366" />
+      <entry key="H4" value="55.67879568152478" />
+      <entry key="D1" value="183.9204235710236" />
+      <entry key="W1" value="397.15112439859445" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0000000000000977" />
-      <entry key="S2" value="1.0006299357689732" />
-      <entry key="S5" value="1.0719327885486205" />
-      <entry key="S10" value="1.3786497390768377" />
-      <entry key="S30" value="2.3381296446328133" />
-      <entry key="S60" value="3.1157909545471685" />
-      <entry key="M2" value="4.112909733891718" />
-      <entry key="M5" value="5.48607417933394" />
-      <entry key="M10" value="6.363673648161532" />
-      <entry key="M15" value="6.836953361319334" />
-      <entry key="M30" value="8.398141890613385" />
-      <entry key="H1" value="13.198794787295828" />
-      <entry key="H2" value="21.491939259019063" />
-      <entry key="H4" value="31.494696941823378" />
-      <entry key="D1" value="126.83741470528255" />
-      <entry key="W1" value="289.71922128421085" />
+      <entry key="MS100" value="4.625283778251893E-62" />
+      <entry key="MS500" value="5.407887852028209E-13" />
+      <entry key="S2" value="8.575450001823793E-4" />
+      <entry key="S5" value="0.059334287664624424" />
+      <entry key="S10" value="0.24422195156437454" />
+      <entry key="S30" value="0.7105449600972307" />
+      <entry key="S60" value="1.0835595609969588" />
+      <entry key="M2" value="1.430533638959288" />
+      <entry key="M5" value="1.7370779526934876" />
+      <entry key="M10" value="1.9283016956144876" />
+      <entry key="M15" value="2.2343398928433813" />
+      <entry key="M30" value="3.792776839467171" />
+      <entry key="H1" value="8.154999271203025" />
+      <entry key="H2" value="16.69313552048789" />
+      <entry key="H4" value="28.045621094626785" />
+      <entry key="D1" value="124.88821370596546" />
+      <entry key="W1" value="290.41321333090826" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.154280079669314E-14" />
-      <entry key="MS500" value="0.0016310310926347864" />
-      <entry key="S2" value="0.2011841360328759" />
-      <entry key="S5" value="0.5748670043422105" />
-      <entry key="S10" value="1.0399495834554093" />
-      <entry key="S30" value="2.2892899105466435" />
-      <entry key="S60" value="3.4677677800585394" />
-      <entry key="M2" value="5.349317676339743" />
-      <entry key="M5" value="9.508042050195343" />
-      <entry key="M10" value="13.715948931085341" />
-      <entry key="M15" value="16.394268381004" />
-      <entry key="M30" value="23.071277825901717" />
-      <entry key="H1" value="38.139050047187546" />
-      <entry key="H2" value="62.08264995339335" />
-      <entry key="H4" value="88.97869010899107" />
-      <entry key="D1" value="307.5285216490699" />
-      <entry key="W1" value="679.6467708166073" />
+      <entry key="MS100" value="5.976417556232315E-10" />
+      <entry key="MS500" value="0.014298424501999234" />
+      <entry key="S2" value="0.3459346620040847" />
+      <entry key="S5" value="0.682823115463477" />
+      <entry key="S10" value="1.006205789444397" />
+      <entry key="S30" value="2.0424130663544524" />
+      <entry key="S60" value="2.9651299902965733" />
+      <entry key="M2" value="3.769726414754969" />
+      <entry key="M5" value="4.445989874213636" />
+      <entry key="M10" value="4.983808041776936" />
+      <entry key="M15" value="6.058453806211176" />
+      <entry key="M30" value="11.631991106617223" />
+      <entry key="H1" value="25.975132806354505" />
+      <entry key="H2" value="51.814394068599036" />
+      <entry key="H4" value="83.7039391383938" />
+      <entry key="D1" value="308.79628476784524" />
+      <entry key="W1" value="687.5603276097772" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -212,7 +213,7 @@
     "Gradle.Frac2lz_compose [packageDistributionForCurrentOS].executor": "Run",
     "Gradle.Frac2lz_compose [suggestRuntimeModules].executor": "Run",
     "Gradle.Main [desktop].executor": "Run",
-    "Gradle.Run.executor": "Run",
+    "Gradle.Run.executor": "Debug",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -610,7 +611,15 @@
       <option name="project" value="LOCAL" />
       <updated>1795048727896</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="fixed index palette creation bug">
+      <option name="closed" value="true" />
+      <created>1795049872450</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1795049872450</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -646,7 +655,8 @@
     <MESSAGE value="working on restoring get color from fractal" />
     <MESSAGE value="added some keyboard shortcuts" />
     <MESSAGE value="fixed palette update bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed palette update bug" />
+    <MESSAGE value="fixed index palette creation bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed index palette creation bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -673,9 +683,9 @@
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
-          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/components/FractalImage.kt</url>
-          <line>37</line>
-          <option name="timeStamp" value="23" />
+          <url>file://$PROJECT_DIR$/src/desktopMain/kotlin/components/PaletteBar.kt</url>
+          <line>334</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
