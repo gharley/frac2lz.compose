@@ -23,30 +23,19 @@ open class SwingImageClass :
     var scale = 0.0
     val colorModelSize = 256
 
-    private fun getColorModel(type: Int): ColorModel {
-        if (type == BufferedImage.TYPE_INT_RGB) {
-            return DirectColorModel(32, 0x00ff0000, 0x0000ff00, 0x000000ff)
-        } else {
-            val size = palette!!.size
+    private fun getColorModel(type: Int): IndexColorModel {
+        val size = palette!!.size
 
-            indexColors = IntArray(size)
-            indexColors.fill(0)
+        indexColors = IntArray(size) { i -> palette!!.colors[i].toArgb() }
 
-            for (i in 0..<size) {
-                val data = FractalPointData(i + 1L)
-
-                indexColors[i] = palette!!.color(data).toArgb()
-            }
-
-            return IndexColorModel(
-                8, palette!!.size,
-                indexColors, 0, false, -1, DataBuffer.TYPE_BYTE
-            )
-        }
+        return IndexColorModel(
+            8, palette!!.size,
+            indexColors, 0, false, -1, DataBuffer.TYPE_BYTE
+        )
     }
 
     fun createSwingImage(clear: Boolean = true) {
-        val currentType = if (this::image.isInitialized) image.type else -1
+        val currentType = if (this::image.isInitialized) image.type else BufferedImage.TYPE_BYTE_INDEXED
         val newType = if (palette!!.getColorFromFractal) BufferedImage.TYPE_INT_RGB else BufferedImage.TYPE_BYTE_INDEXED
 
         if (imgHeight != 0 && imgWidth != 0) {
@@ -59,7 +48,7 @@ open class SwingImageClass :
                 image = BufferedImage(imgWidth, imgHeight, newType)
                 image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels)
             } else {
-                image = BufferedImage(imgWidth, imgHeight, newType, getColorModel(newType) as IndexColorModel)
+                image = BufferedImage(imgWidth, imgHeight, newType, getColorModel(newType))
                 image.raster.setDataElements(0, 0, imgWidth, imgHeight, pixels.toByteArray())
             }
 
